@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{943260
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{431219E1-FC29-4D1B-8ED7-92549C2E2CD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{C977CF35-E810-4B3F-A636-D8B56763D090}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C977CF35-E810-4B3F-A636-D8B56763D090}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C977CF35-E810-4B3F-A636-D8B56763D090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{431219E1-FC29-4D1B-8ED7-92549C2E2CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{431219E1-FC29-4D1B-8ED7-92549C2E2CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{431219E1-FC29-4D1B-8ED7-92549C2E2CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{431219E1-FC29-4D1B-8ED7-92549C2E2CD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
