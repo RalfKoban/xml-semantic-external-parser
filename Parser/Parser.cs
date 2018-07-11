@@ -121,8 +121,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
             IXmlLineInfo info = node;
             IXmlLineInfo next = node.NextNode;
 
-            // we have to correct position because we want the leading '<' or trailing '>'
-            var startPosition = GetStartCorrection(info) + 1;
+            // we have to correct position because we want to be before the leading '<' or after the trailing '>'
+            var startPosition = GetStartCorrection(info);
             var endPosition = GetEndCorrection(next) + 1;
 
             var start = new LineInfo(info.LineNumber, startPosition);
