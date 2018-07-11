@@ -1,0 +1,67 @@
+# Documentation/Reference: https://www.appveyor.com/docs/appveyor-yml/
+
+# Semantic Versioning http://semver.org/
+version: 0.0.{build}
+
+image: Visual Studio 2017
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+init:
+- git config --global core.autocrlf true
+
+# environment:
+
+install:
+  - choco install gitversion.portable -pre -y
+  
+# Install NUnit console runner
+#  - ps: Start-FileDownload $env:NUnitRunnerUri -FileName NUnitInstaller.zip
+#  - cmd: 7z x NUnitInstaller.zip -y
+  
+# clone directory
+clone_folder: c:\projects\XmlSemanticParsers
+
+# fetch repository as zip archive (when next line is uncommented)
+# shallow_clone: true
+
+# skip specific commits
+skip_commits:
+  files:
+    - /*.md
+
+before_build:
+- nuget restore "c:\projects\XmlSemanticParsers\XmlSemanticParser.sln"
+
+# enable patching of AssemblyInfo.* files
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+
+build:
+  parallel: true
+  project: XmlSemanticParser.sln
+  verbosity: minimal
+
+platform:
+  - Any CPU
+
+configuration:
+  - Debug
+#  - Release
+
+test_script:
+-  .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:" "".\Tests\bin\Tests.dll"" --workers=16 " -returntargetcode -filter:"+[MiKo*]* -[*Test*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -excludebyfile:*\*Designer.cs -hideskipped:All -output:"c:\projects\XmlSemanticParsers\CodeCoverage.xml"
+
+# Codecov Flags (https://docs.codecov.io/v4.3.6/docs/flags)
+# - .\packages\Codecov.1.0.5\tools\codecov.exe -f "c:\projects\XmlSemanticParsers\CodeCoverage.xml" -t TOKEN_HERE --flag api
+
+# cache:
+
