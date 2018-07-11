@@ -40,7 +40,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             root.Children.AddRange(ParseElement(documentRoot));
 
-            var file = new Yaml.File {Name = path, FooterSpan = new CharacterSpan(0, -1)};
+            var file = new Yaml.File
+                           {
+                               Name = path,
+                               LocationSpan = new LocationSpan(new LineInfo(1, 0), new LineInfo(allLines.Length, 0)),
+                               FooterSpan = new CharacterSpan(GetCharacterLengthToPosition(documentRoot.NextNode), allText.Length - 1),
+                           };
             file.Children.Add(root);
 
             return file;
@@ -93,18 +98,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
             IXmlLineInfo info = node;
             IXmlLineInfo next = node.NextNode;
 
-            var startingLines = info.LineNumber - 1;
-            var endingLines = next.LineNumber - 1;
-
             // we have to correct position because we want the leading '<' or trailing '>'
             var startCorrection = GetStartCorrection(info);
             var endCorrection = GetEndCorrection(next);
 
-            var start = _lines.Take(startingLines).Sum(_ => _.Length) + startCorrection;
-            var end = _lines.Take(endingLines).Sum(_ => _.Length) + endCorrection;
+            var start = GetCharacterLengthToLine(info) + startCorrection;
+            var end = GetCharacterLengthToLine(next) + endCorrection;
 
             return new CharacterSpan(start, end);
         }
+
+        private int GetCharacterLengthToPosition(IXmlLineInfo info) => GetCharacterLengthToLine(info) + info.LinePosition; // TODO: RKN Footer is strange
+
+        private int GetCharacterLengthToLine(IXmlLineInfo info) => GetCharacterLengthToLine(info.LineNumber - 1);
+
+        private int GetCharacterLengthToLine(int line) => _lines.Take(line).Sum(_ => _.Length);
 
         private int GetStartCorrection(IXmlLineInfo info) => GetCorrection(info, '<');
 
