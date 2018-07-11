@@ -26,4 +26,4 @@ flags:
       - Tests/
 
 codecov:
-  token: TOKEN_HERE
+  token: af3796ce-0f24-4014-95b1-c2d6dc80b800
