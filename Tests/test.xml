@@ -9,4 +9,15 @@
 
   </forth>
   <fifth />
+  <sixth>
+    <nested>
+      <!--
+      Some comment
+      -->
+    </nested>
+  </sixth>
+  <seventh>
+    <nested>
+<!-- strange item -->
+    </nested></seventh>
 </something>

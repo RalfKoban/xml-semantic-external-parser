@@ -28,7 +28,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void File_LocationSpan_matches()
         {
             Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(13, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(24, 0)));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var root = _objectUnderTest.Children.Single();
 
             Assert.That(root.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)));
-            Assert.That(root.LocationSpan.End, Is.EqualTo(new LineInfo(12, 12)));
+            Assert.That(root.LocationSpan.End, Is.EqualTo(new LineInfo(23, 12)));
         }
 
         [Test]
@@ -65,10 +65,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("third", 7, 3, 7, 50)]
         [TestCase("forth", 8, 3, 10, 10)]
         [TestCase("fifth", 11, 3, 11, 11)]
-        public void First_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos)
+        [TestCase("sixth", 12, 3, 18, 10)]
+        [TestCase("seventh", 19, 3, 22, 23)]
+        public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos)
         {
             var root = _objectUnderTest.Children.Single();
             var node = root.Children.First(_ => _.Name == name);
+
+            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
+            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
+        }
+
+        [TestCase("third", "nested", 7, 10, 7, 42)]
+        [TestCase("sixth", "nested", 13, 5, 17, 13)]
+        [TestCase("seventh", "nested", 20, 5, 22, 13)]
+        public void Second_level_element_LocationSpan_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos)
+        {
+            var root = _objectUnderTest.Children.Single();
+            var parent = root.Children.OfType<Container>().First(_ => _.Name == parentName);
+            var node = parent.Children.First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
