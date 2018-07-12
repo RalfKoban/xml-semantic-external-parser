@@ -5,7 +5,6 @@ using YamlDotNet.Serialization;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
-    [DebuggerDisplay("Line: {LineNumber}, Position: {LinePosition}")]
     public sealed class LineInfo : IEquatable<LineInfo>
     {
         public LineInfo(int lineNumber, int linePosition)
@@ -44,5 +43,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                 return (LineNumber * 397) ^ LinePosition;
             }
         }
+
+        public override string ToString() => $"Line: {LineNumber}, Position: {LinePosition}";
     }
 }

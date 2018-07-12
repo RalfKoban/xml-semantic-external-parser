@@ -10,7 +10,7 @@ using File = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    internal class Parser
+    public sealed class Parser
     {
         private readonly List<string> _lines = new List<string>();
 
@@ -48,8 +48,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
                            };
             file.Children.Add(root);
 
+            Resort(file.Children);
+
             return file;
         }
+
+        private static XNode FindNextNode(XNode node) => node.NextNode ?? FindNextNode(node.Parent);
 
         private ContainerOrTerminalNode Parse(XNode node)
         {
@@ -58,7 +62,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 case XmlNodeType.Element:
                 {
-                    var element = (XElement) node;
+                    var element = (XElement)node;
 
                     var container = new Container
                                         {
@@ -66,7 +70,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                             Name = element.Name.LocalName,
                                             LocationSpan = GetLocationSpan(node),
                                             // HeaderSpan = TODO: RKN
-                                            // FooterSpan = TODO: RKN
+                                            // FooterSpan = // TODO: RKN : get next node, get at that position and take a look until the first '</' or '/>' is found --> that's the footer
                                         };
 
                     container.Children.AddRange(ParseElement(element));
@@ -91,12 +95,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private IEnumerable<ContainerOrTerminalNode> ParseElement(XElement element) => element.Nodes().Select(Parse).Where(_ => _ != null).OrderBy(_ => _.LocationSpan.Start.LineNumber).ThenBy(_ => _.LocationSpan.Start.LinePosition);
+        private IEnumerable<ContainerOrTerminalNode> ParseElement(XElement element) => element.Nodes().Select(Parse).Where(_ => _ != null);
 
         private CharacterSpan GetCharacterSpan(XNode node)
         {
             IXmlLineInfo info = node;
-            IXmlLineInfo next = node.NextNode;
+            IXmlLineInfo next = FindNextNode(node);
 
             // we have to correct position because we want the leading '<' or trailing '>'
             var startCorrection = GetStartCorrection(info);
@@ -120,23 +124,65 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private int GetCorrection(IXmlLineInfo info, char value)
         {
+            if (info is null)
+            {
+                return -1;
+            }
+
             var line = _lines[info.LineNumber - 1];
-            return line.Substring(0, info.LinePosition).LastIndexOf(value);
+            return line.Substring(0, info.LinePosition).LastIndexOf(value) + 1;
         }
 
         private LocationSpan GetLocationSpan(XNode node)
         {
             IXmlLineInfo info = node;
-            IXmlLineInfo next = node.NextNode;
+            IXmlLineInfo next = FindNextNode(node); // we won't have a nested child
 
             // we have to correct position because we want to be before the leading '<' or after the trailing '>'
             var startPosition = GetStartCorrection(info);
-            var endPosition = GetEndCorrection(next) + 1;
+            var endPosition = GetEndCorrection(next);
 
             var start = new LineInfo(info.LineNumber, startPosition);
             var end = new LineInfo(next.LineNumber, endPosition);
 
             return new LocationSpan(start, end);
+        }
+
+        private void Resort(List<ContainerOrTerminalNode> nodes)
+        {
+            nodes.Sort(CompareStartPosition);
+
+            foreach (var node in nodes.OfType<Container>())
+            {
+                Resort(node.Children);
+            }
+        }
+
+        private void Resort(List<Container> nodes)
+        {
+            nodes.Sort(CompareStartPosition);
+
+            foreach (var node in nodes)
+            {
+                Resort(node.Children);
+            }
+        }
+
+        private static int CompareStartPosition(ContainerOrTerminalNode x, ContainerOrTerminalNode y)
+        {
+            var xLineNumber = x.LocationSpan.Start.LineNumber;
+            var yLineNumber = y.LocationSpan.Start.LineNumber;
+            if (xLineNumber < yLineNumber)
+            {
+                return -1;
+            }
+
+            if (xLineNumber > yLineNumber)
+            {
+                return 1;
+            }
+
+            return x.LocationSpan.Start.LinePosition - y.LocationSpan.Start.LinePosition;
         }
     }
 }
