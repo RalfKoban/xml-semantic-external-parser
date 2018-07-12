@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -9,19 +11,22 @@ namespace MiKoSolutions.SemanticParsers.Xml
     [TestFixture]
     public class ParserTests
     {
-        private File _objectUnderTest;
+        private Yaml.File _objectUnderTest;
 
         [SetUp]
         public void PrepareTest()
         {
+            var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
+            var fileName = Path.Combine(parentDirectory, "test.xml");
+
             var parser = new Parser();
-            _objectUnderTest = parser.Parse("test.xml");
+            _objectUnderTest = parser.Parse(fileName);
         }
 
         [Test]
         public void File_Name_matches()
         {
-            Assert.That(_objectUnderTest.Name, Is.EqualTo("test.xml"));
+            Assert.That(_objectUnderTest.Name, Does.EndWith(Path.DirectorySeparatorChar + "test.xml"));
         }
 
         [Test]
