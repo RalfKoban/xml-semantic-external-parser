@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<something>
+  <!-- first comment -->
+  <?some definition ?>
+  <first element="true"></first>
+  <second element="true"> </second>
+  <third><nested><!-- comment --></nested></third>
+  <forth>
+
+  </forth>
+  <fifth />
+</something>
