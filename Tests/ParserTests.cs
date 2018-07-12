@@ -12,6 +12,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
     public class ParserTests
     {
         private Yaml.File _objectUnderTest;
+        private Yaml.Container _root;
 
         [SetUp]
         public void PrepareTest()
@@ -19,8 +20,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
             var fileName = Path.Combine(parentDirectory, "test.xml");
 
-            var parser = new Parser();
-            _objectUnderTest = parser.Parse(fileName);
+            _objectUnderTest = Parser.Parse(fileName);
+            _root = _objectUnderTest.Children.Single();
         }
 
         [Test]
@@ -33,33 +34,38 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void File_LocationSpan_matches()
         {
             Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(24, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)));
         }
 
         [Test]
         public void Root_LocationSpan_matches()
         {
-            var root = _objectUnderTest.Children.Single();
-
-            Assert.That(root.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)));
-            Assert.That(root.LocationSpan.End, Is.EqualTo(new LineInfo(23, 12)));
+            Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)));
+            Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
         }
 
         [Test]
         public void First_Comment_LocationSpan_matches()
         {
-            var root = _objectUnderTest.Children.Single();
-            var node = root.Children.First(_ => _.Type == "Comment");
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Type == "Comment");
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(3, 3)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(3, 24)));
         }
 
         [Test]
+        public void Last_Comment_LocationSpan_matches()
+        {
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.Last(_ => _.Type == "Comment");
+
+            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(25, 3)));
+            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(25, 20)));
+        }
+
+        [Test]
         public void ProcessingInstruction_LocationSpan_matches()
         {
-            var root = _objectUnderTest.Children.Single();
-            var node = root.Children.First(_ => _.Type == "ProcessingInstruction");
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Type == "ProcessingInstruction");
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(4, 3)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(4, 22)));
@@ -74,21 +80,18 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("seventh", 19, 3, 22, 23)]
         public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos)
         {
-            var root = _objectUnderTest.Children.Single();
-            var node = root.Children.First(_ => _.Name == name);
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
         }
 
-        // TODO : ignored [TestCase("third", "nested", 7, 10, 7, 42)]
+        [TestCase("third", "nested", 7, 10, 7, 42)]
         [TestCase("sixth", "nested", 13, 5, 17, 13)]
-        // TODO : ignored [TestCase("seventh", "nested", 20, 5, 22, 13)]
+        [TestCase("seventh", "nested", 20, 5, 22, 13)]
         public void Second_level_element_LocationSpan_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos)
         {
-            var root = _objectUnderTest.Children.Single();
-            var parent = root.Children.OfType<Container>().First(_ => _.Name == parentName);
-            var node = parent.Children.First(_ => _.Name == name);
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));

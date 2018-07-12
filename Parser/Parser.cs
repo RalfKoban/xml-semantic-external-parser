@@ -1,188 +1,199 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml;
-using System.Xml.Linq;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
-using File = System.IO.File;
-
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    public sealed class Parser
+    public static class Parser
     {
-        private readonly List<string> _lines = new List<string>();
-
-        public Yaml.File Parse(string path)
+        public static File Parse(string filePath)
         {
-            _lines.Clear();
-
-            var newLine = Environment.NewLine;
-
-            var allText = File.ReadAllText(path);
-
-            var allLines = allText.Split(new[] { newLine }, StringSplitOptions.None);
-            foreach (var line in allLines)
+            using (var reader = new XmlTextReader(filePath))
             {
-                _lines.Add(line + newLine);
+                var fileBegin = new LineInfo(reader.LineNumber + 1, reader.LinePosition);
+
+                var root = new Container
+                               {
+                                   Type = "root",
+                                   Name = "root",
+                               };
+
+                // Parse the XML and display the text content of each of the elements.
+                while (reader.Read())
+                {
+                    Parse(reader, root);
+                }
+
+                root.LocationSpan = new LocationSpan(root.Children.First().LocationSpan.Start, root.Children.Last().LocationSpan.End);
+
+                var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
+
+                var file = new File
+                               {
+                                   Name = filePath,
+                                   LocationSpan = new LocationSpan(fileBegin, fileEnd),
+                                   // FooterSpan = new CharacterSpan(GetCharacterLengthToPosition(documentRoot.NextNode), allText.Length - 1),
+                               };
+
+                file.Children.Add(root);
+
+                return file;
             }
-
-            var document = XDocument.Parse(allText, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
-            var documentRoot = document.Root;
-
-            var root = new Container
-                           {
-                               Type = documentRoot.NodeType.ToString(),
-                               Name = documentRoot.Name.LocalName,
-                               LocationSpan = GetLocationSpan(documentRoot),
-                           };
-
-            root.Children.AddRange(ParseElement(documentRoot));
-
-            var file = new Yaml.File
-                           {
-                               Name = path,
-                               LocationSpan = new LocationSpan(new LineInfo(1, 0), new LineInfo(allLines.Length, 0)),
-                               FooterSpan = new CharacterSpan(GetCharacterLengthToPosition(documentRoot.NextNode), allText.Length - 1),
-                           };
-            file.Children.Add(root);
-
-            Resort(file.Children);
-
-            return file;
         }
 
-        private static XNode FindNextNode(XNode node) => node.NextNode ?? FindNextNode(node.Parent);
-
-        private ContainerOrTerminalNode Parse(XNode node)
+        private static void Parse(XmlTextReader reader, Container parent)
         {
-            var nodeType = node.NodeType;
-            switch (nodeType)
+            switch (reader.NodeType)
             {
                 case XmlNodeType.Element:
                 {
-                    var element = (XElement)node;
-
-                    var container = new Container
-                                        {
-                                            Type = nodeType.ToString(),
-                                            Name = element.Name.LocalName,
-                                            LocationSpan = GetLocationSpan(node),
-                                            // HeaderSpan = TODO: RKN
-                                            // FooterSpan = // TODO: RKN : get next node, get at that position and take a look until the first '</' or '/>' is found --> that's the footer
-                                        };
-
-                    container.Children.AddRange(ParseElement(element));
-
-                    return container;
+                    ParseElement(reader, parent);
+                    break;
                 }
 
                 case XmlNodeType.ProcessingInstruction:
-                case XmlNodeType.Comment:
                 {
-                    return new TerminalNode
-                               {
-                                   Type = nodeType.ToString(),
-                                   Name = node.ToString(),
-                                   LocationSpan = GetLocationSpan(node),
-                                   Span = GetCharacterSpan(node),
-                               };
+                    ParseProcessingInstruction(reader, parent);
+                    break;
                 }
 
-                default:
-                    return null;
+                case XmlNodeType.Comment:
+                {
+                    ParseComment(reader, parent);
+                    break;
+                }
+
+                case XmlNodeType.XmlDeclaration:
+                {
+                    ParseXmlDeclaration(reader, parent);
+                    break;
+                }
             }
         }
 
-        private IEnumerable<ContainerOrTerminalNode> ParseElement(XElement element) => element.Nodes().Select(Parse).Where(_ => _ != null);
-
-        private CharacterSpan GetCharacterSpan(XNode node)
+        private static void ParseXmlDeclaration(XmlTextReader reader, Container parent)
         {
-            IXmlLineInfo info = node;
-            IXmlLineInfo next = FindNextNode(node);
+            var name = reader.Value;
+            var locationSpan = GetLocationSpan(reader);
 
-            // we have to correct position because we want the leading '<' or trailing '>'
-            var startCorrection = GetStartCorrection(info);
-            var endCorrection = GetEndCorrection(next);
+            var node = new TerminalNode
+                           {
+                               Type = nameof(XmlNodeType.XmlDeclaration),
+                               Name = name,
+                               LocationSpan = locationSpan,
+                               // Span = GetCharacterSpan(node),
+                           };
 
-            var start = GetCharacterLengthToLine(info) + startCorrection;
-            var end = GetCharacterLengthToLine(next) + endCorrection;
-
-            return new CharacterSpan(start, end);
+            parent.Children.Add(node);
         }
 
-        private int GetCharacterLengthToPosition(IXmlLineInfo info) => GetCharacterLengthToLine(info) + info.LinePosition; // TODO: RKN Footer is strange
-
-        private int GetCharacterLengthToLine(IXmlLineInfo info) => GetCharacterLengthToLine(info.LineNumber - 1);
-
-        private int GetCharacterLengthToLine(int line) => _lines.Take(line).Sum(_ => _.Length);
-
-        private int GetStartCorrection(IXmlLineInfo info) => GetCorrection(info, '<');
-
-        private int GetEndCorrection(IXmlLineInfo info) => GetCorrection(info, '>');
-
-        private int GetCorrection(IXmlLineInfo info, char value)
+        private static void ParseComment(XmlTextReader reader, Container parent)
         {
-            if (info is null)
+            var name = reader.Value;
+            var locationSpan = GetLocationSpan(reader);
+
+            var node = new TerminalNode
+                           {
+                               Type = nameof(XmlNodeType.Comment),
+                               Name = name,
+                               LocationSpan = locationSpan,
+                               // Span = GetCharacterSpan(node),
+                           };
+
+            parent.Children.Add(node);
+        }
+
+        private static void ParseProcessingInstruction(XmlTextReader reader, Container parent)
+        {
+            var name = reader.Name;
+            var locationSpan = GetLocationSpan(reader);
+
+            var node = new TerminalNode
+                           {
+                               Type = nameof(XmlNodeType.ProcessingInstruction),
+                               Name = name,
+                               LocationSpan = locationSpan,
+                               // Span = GetCharacterSpan(node),
+                           };
+
+            parent.Children.Add(node);
+        }
+
+        private static void ParseElement(XmlTextReader reader, Container parent)
+        {
+            var container = new Container
+                                {
+                                    Type = nameof(XmlNodeType.Element),
+                                    Name = reader.Name,
+                                    // HeaderSpan = TODO: RKN
+                                    // FooterSpan = // TODO: RKN : get next node, get at that position and take a look until the first '</' or '/>' is found --> that's the footer
+                                };
+
+            parent.Children.Add(container);
+
+            var isEmpty = reader.IsEmptyElement;
+
+            if (isEmpty)
             {
-                return -1;
+                container.LocationSpan = GetLocationSpan(reader);
             }
-
-            var line = _lines[info.LineNumber - 1];
-            return line.Substring(0, info.LinePosition).LastIndexOf(value) + 1;
-        }
-
-        private LocationSpan GetLocationSpan(XNode node)
-        {
-            IXmlLineInfo info = node;
-            IXmlLineInfo next = FindNextNode(node); // we won't have a nested child
-
-            // we have to correct position because we want to be before the leading '<' or after the trailing '>'
-            var startPosition = GetStartCorrection(info);
-            var endPosition = GetEndCorrection(next);
-
-            var start = new LineInfo(info.LineNumber, startPosition);
-            var end = new LineInfo(next.LineNumber, endPosition);
-
-            return new LocationSpan(start, end);
-        }
-
-        private void Resort(List<ContainerOrTerminalNode> nodes)
-        {
-            nodes.Sort(CompareStartPosition);
-
-            foreach (var node in nodes.OfType<Container>())
+            else
             {
-                Resort(node.Children);
+                var startingSpan = GetLocationSpan(reader);
+
+                while (reader.NodeType != XmlNodeType.EndElement)
+                {
+                    Parse(reader, container);
+
+                    // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an end element
+                    if (reader.NodeType == XmlNodeType.EndElement)
+                    {
+                        break;
+                    }
+
+                    if (!reader.Read())
+                    {
+                        break;
+                    }
+                }
+
+                var endingSpan = GetLocationSpan(reader);
+
+                container.LocationSpan = new LocationSpan(startingSpan.Start, endingSpan.End);
             }
         }
 
-        private void Resort(List<Container> nodes)
+        private static int GetPositionCorrectionByReader(XmlReader reader)
         {
-            nodes.Sort(CompareStartPosition);
-
-            foreach (var node in nodes)
+            switch (reader.NodeType)
             {
-                Resort(node.Children);
+                case XmlNodeType.Comment: return 4;               // 4 is length of <!--
+                case XmlNodeType.ProcessingInstruction: return 2; // 2 is length of <?
+                case XmlNodeType.Element: return 1;               // 1 is length of <
+                case XmlNodeType.EndElement: return 2;            // 2 is length of </
+                case XmlNodeType.XmlDeclaration: return 2;        // 2 is length of <?
+                default: return 0;
             }
         }
 
-        private static int CompareStartPosition(ContainerOrTerminalNode x, ContainerOrTerminalNode y)
+        //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
+        private static LocationSpan GetLocationSpan(XmlTextReader reader)
         {
-            var xLineNumber = x.LocationSpan.Start.LineNumber;
-            var yLineNumber = y.LocationSpan.Start.LineNumber;
-            if (xLineNumber < yLineNumber)
-            {
-                return -1;
-            }
+            var startCorrection = GetPositionCorrectionByReader(reader);
+            var start = new LineInfo(reader.LineNumber, reader.LinePosition - startCorrection);
 
-            if (xLineNumber > yLineNumber)
+            if (reader.Read())
             {
-                return 1;
-            }
+                var endCorrection = GetPositionCorrectionByReader(reader);
+                var end = new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // previous character needed
 
-            return x.LocationSpan.Start.LinePosition - y.LocationSpan.Start.LinePosition;
+                return new LocationSpan(start, end);
+            }
+            else
+            {
+                return new LocationSpan(start, start);
+            }
         }
     }
 }

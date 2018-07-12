@@ -15,10 +15,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var input = args[0];
             var output = args[1];
 
-            var graph = new Parser().Parse(input);
+            var file = Parser.Parse(input);
+            Resorter.Resort(file);
+
             using (var writer = File.CreateText(output))
             {
-                Yaml(writer, graph);
+                Yaml(writer, file);
             }
         }
 
