@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
 using File = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
@@ -37,7 +38,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 try
                 {
                     var file = Parser.Parse(fileToParse);
-                    Resorter.Resort(file);
 
                     using (var writer = File.CreateText(outputFileToWrite))
                     {

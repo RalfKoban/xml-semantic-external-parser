@@ -13,6 +13,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
     {
         public static File Parse(string filePath)
         {
+            var file = ParseCore(filePath);
+            Resorter.Resort(file);
+            return file;
+        }
+
+        public static File ParseCore(string filePath)
+        {
             using (var reader = new XmlTextReader(filePath))
             {
                 var file = new File
