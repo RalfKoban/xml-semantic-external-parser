@@ -41,5 +41,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                 return (Start * 397) ^ End;
             }
         }
+
+        public override string ToString() => $"Span: {Start}, {End}";
     }
 }

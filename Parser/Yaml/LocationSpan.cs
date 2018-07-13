@@ -44,5 +44,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                 return ((Start != null ? Start.GetHashCode() : 0) * 397) ^ (End != null ? End.GetHashCode() : 0);
             }
         }
+
+        public override string ToString() => $"Start: {Start}, End: {End}";
     }
 }

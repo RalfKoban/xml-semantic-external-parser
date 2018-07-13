@@ -35,6 +35,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
             Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)));
+
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(479, 480)));
         }
 
         [Test]
@@ -42,6 +44,18 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)));
             Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
+        }
+
+        [Test]
+        public void First_Element_LocationSpan_matches()
+        {
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something");
+
+            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)));
+            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
+
+            Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(41, 51)));
+            Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(467, 478)));
         }
 
         [Test]
@@ -71,19 +85,22 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(4, 22)));
         }
 
-        [TestCase("first", 5, 3, 5, 32)]
-        [TestCase("second", 6, 3, 6, 35)]
-        [TestCase("third", 7, 3, 7, 50)]
-        [TestCase("forth", 8, 3, 10, 10)]
-        [TestCase("fifth", 11, 3, 11, 11)]
-        [TestCase("sixth", 12, 3, 18, 10)]
-        [TestCase("seventh", 19, 3, 22, 23)]
-        public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos)
+        [TestCase("first", 5, 3, 5, 32, 106, 127, 128, 135)]
+        [TestCase("second", 6, 3, 6, 35, 140, 162, 164, 172)]
+        [TestCase("third", 7, 3, 7, 50, 177, 183, 217, 224)]
+        [TestCase("forth", 8, 3, 10, 10, 229, 235, 242, 249)]
+        [TestCase("fifth", 11, 3, 11, 11, 254, 262, 0, -1)]
+        [TestCase("sixth", 12, 3, 18, 10, 267, 273, 350, 357)]
+        [TestCase("seventh", 19, 3, 22, 23, 362, 370, 423, 432)]
+        public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Name == name);
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.OfType<Container>().First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
+
+            Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)));
+            Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)));
         }
 
         [TestCase("third", "nested", 7, 10, 7, 42)]
