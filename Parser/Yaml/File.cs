@@ -6,25 +6,25 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     public sealed class File
     {
-        [YamlMember(Alias = "type")]
+        [YamlMember(Alias = "type", Order = 1)]
         public string Type { get; } = "file";
 
-        [YamlMember(Alias = "name")]
+        [YamlMember(Alias = "name", Order = 2)]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "locationSpan")]
+        [YamlMember(Alias = "locationSpan", Order = 3)]
         public LocationSpan LocationSpan { get; set; }
 
-        [YamlMember(Alias = "footerSpan")]
+        [YamlMember(Alias = "footerSpan", Order = 4)]
         public CharacterSpan FooterSpan { get; set; }
 
-        [YamlMember(Alias = "children", Order = 42)]
+        [YamlMember(Alias = "children", Order = 6)]
         public List<Container> Children { get; } = new List<Container>();
 
-        [YamlMember(Alias = "parsingErrorsDetected")]
+        [YamlMember(Alias = "parsingErrorsDetected", Order = 5)]
         public bool ParsingErrorsDetected => ParsingErrors.Any();
 
-        [YamlMember(Alias = "parsingError")]
+        [YamlMember(Alias = "parsingError", Order = 7)]
         public List<ParsingError> ParsingErrors { get; } = new List<ParsingError>();
     }
 }
