@@ -20,6 +20,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         [YamlMember(Alias = "end")]
         public LineInfo End { get; }
 
+        public static bool operator ==(LocationSpan left, LocationSpan right) => Equals(left, right);
+
+        public static bool operator !=(LocationSpan left, LocationSpan right) => !Equals(left, right);
+
         public bool Equals(LocationSpan other)
         {
             if (ReferenceEquals(null, other))
@@ -32,7 +36,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                 return true;
             }
 
-            return Equals(Start, other.Start) && Equals(End, other.End);
+            return Start == other.Start && End == other.End;
         }
 
         public override bool Equals(object obj) => Equals(obj as LocationSpan);

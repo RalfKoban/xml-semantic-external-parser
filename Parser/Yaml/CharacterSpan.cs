@@ -17,6 +17,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         [YamlMember(Alias = "end")]
         public int End { get; }
 
+        public static bool operator ==(CharacterSpan left, CharacterSpan right) => Equals(left, right);
+
+        public static bool operator !=(CharacterSpan left, CharacterSpan right) => !Equals(left, right);
+
         public bool Equals(CharacterSpan other)
         {
             if (ReferenceEquals(null, other))

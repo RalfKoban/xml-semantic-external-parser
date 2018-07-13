@@ -19,6 +19,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         [YamlMember(Alias = "column")]
         public int LinePosition { get; }
 
+        public static bool operator ==(LineInfo left, LineInfo right) => Equals(left, right);
+
+        public static bool operator !=(LineInfo left, LineInfo right) => !Equals(left, right);
+
         public bool Equals(LineInfo other)
         {
             if (ReferenceEquals(null, other))
