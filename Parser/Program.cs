@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
-using MiKoSolutions.SemanticParsers.Xml.Yaml.Converters;
-
-using YamlDotNet.Serialization;
-
 using File = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
@@ -46,7 +41,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     using (var writer = File.CreateText(outputFileToWrite))
                     {
-                        Yaml(writer, file);
+                        YamlWriter.Write(writer, file);
                     }
 
                     var result = file.ParsingErrorsDetected ? "KO" : "OK";
@@ -61,15 +56,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     throw;
                 }
             }
-        }
-
-        private static void Yaml(TextWriter writer, object graph)
-        {
-            var serializer = new SerializerBuilder()
-                .WithTypeConverter(new CharacterSpanConverter())
-                .WithTypeConverter(new LocationSpanConverter())
-                .Build();
-            serializer.Serialize(writer, graph);
         }
     }
 }
