@@ -2,7 +2,7 @@
 using MiKoSolutions.SemanticParsers.Xml.Yaml.Converters;
 using YamlDotNet.Serialization;
 
-namespace MiKoSolutions.SemanticParsers.Xml
+namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     public static class YamlWriter
     {

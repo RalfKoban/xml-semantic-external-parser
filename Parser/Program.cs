@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using File = System.IO.File;
+using MiKoSolutions.SemanticParsers.Xml.Yaml;
+
+using SystemFile = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
@@ -20,7 +22,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var shell = args[0]; // reserved for future usage
             var flagFile = args[1];
 
-            File.WriteAllBytes(flagFile, new byte[] { 0x42 });
+            SystemFile.WriteAllBytes(flagFile, new byte[] { 0x42 });
 
             while (true)
             {
@@ -39,7 +41,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 {
                     var file = Parser.Parse(fileToParse);
 
-                    using (var writer = File.CreateText(outputFileToWrite))
+                    using (var writer = SystemFile.CreateText(outputFileToWrite))
                     {
                         YamlWriter.Write(writer, file);
                     }
