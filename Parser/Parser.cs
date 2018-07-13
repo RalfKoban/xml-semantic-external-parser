@@ -13,6 +13,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             using (var reader = new XmlTextReader(filePath))
             {
+                var file = new File
+                               {
+                                   Name = filePath,
+                                   FooterSpan = new CharacterSpan(0, -1), // there is no footer
+                               };
+
                 var map = CreateCharacterCountUntilLineMap(filePath);
 
                 var fileBegin = new LineInfo(reader.LineNumber + 1, reader.LinePosition);
@@ -23,30 +29,37 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                    Name = "root",
                                };
 
-                // Parse the XML and display the text content of each of the elements.
-                while (reader.Read())
+                try
                 {
-                    Parse(reader, root, map);
+                    // Parse the XML and display the text content of each of the elements.
+                    while (reader.Read())
+                    {
+                        Parse(reader, root, map);
+                    }
+
+                    var rootStart = root.Children.First().LocationSpan.Start;
+                    var rootEnd = root.Children.Last().LocationSpan.End;
+                    root.LocationSpan = new LocationSpan(rootStart, rootEnd);
+                    root.HeaderSpan = GetCharacterSpan(new LocationSpan(rootStart, rootStart), map);
+                    root.FooterSpan = GetCharacterSpan(new LocationSpan(rootEnd, rootEnd), map);
+
+                    var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
+
+                    var positionAfterLastElement = new LineInfo(rootEnd.LineNumber, rootEnd.LinePosition + 1); // we calculate the next one (either a new line character or a regular one)
+
+                    file.LocationSpan = new LocationSpan(fileBegin, fileEnd);
+
+                    if (positionAfterLastElement != fileEnd)
+                    {
+                        file.FooterSpan = GetCharacterSpan(new LocationSpan(positionAfterLastElement, fileEnd), map); // TODO: RKN user FooterSpan (0, -1) if there is no footer
+                    }
+
+                    file.Children.Add(root);
                 }
-
-                var rootStart = root.Children.First().LocationSpan.Start;
-                var rootEnd = root.Children.Last().LocationSpan.End;
-                root.LocationSpan = new LocationSpan(rootStart, rootEnd);
-                root.HeaderSpan = GetCharacterSpan(new LocationSpan(rootStart, rootStart), map);
-                root.FooterSpan = GetCharacterSpan(new LocationSpan(rootEnd, rootEnd), map);
-
-                var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
-
-                var positionAfterLastElement = new LineInfo(rootEnd.LineNumber, rootEnd.LinePosition + 1); // we calculate the next one (either a new line character or a regular one)
-
-                var file = new File
-                               {
-                                   Name = filePath,
-                                   LocationSpan = new LocationSpan(fileBegin, fileEnd),
-                                   FooterSpan = GetCharacterSpan(new LocationSpan(positionAfterLastElement, fileEnd), map), // TODO: RKN user FooterSpan (0, -1) if there is no footer
-                               };
-
-                file.Children.Add(root);
+                catch (Exception ex)
+                {
+                    file.ParsingErrors.Add(new ParsingError { ErrorMessage = ex.Message });
+                }
 
                 return file;
             }
