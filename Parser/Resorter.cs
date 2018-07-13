@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml
@@ -42,6 +43,5 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             return x.LocationSpan.Start.LinePosition - y.LocationSpan.Start.LinePosition;
         }
-
     }
 }
