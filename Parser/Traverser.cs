@@ -6,7 +6,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Traverser
     {
-        public static IEnumerable<ContainerOrTerminalNode> Traverse(File file)
+        public static IReadOnlyList<ContainerOrTerminalNode> Traverse(File file)
         {
             var results = new List<ContainerOrTerminalNode>();
 
