@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-
+using System.Text;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
@@ -44,24 +44,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)));
             Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
-        }
 
-        [Test]
-        public void First_Element_LocationSpan_matches()
-        {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something");
-
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)));
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
-
-            Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(41, 51)));
-            Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(467, 478)));
+            Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 51)));
+            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(467, 478)));
         }
 
         [Test]
         public void First_Comment_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Type == "Comment");
+            var node = _root.Children.First(_ => _.Type == "Comment");
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(3, 3)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(3, 24)));
@@ -70,7 +61,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void Last_Comment_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.Last(_ => _.Type == "Comment");
+            var node = _root.Children.Last(_ => _.Type == "Comment");
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(25, 3)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(25, 20)));
@@ -79,7 +70,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void ProcessingInstruction_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.First(_ => _.Type == "ProcessingInstruction");
+            var node = _root.Children.First(_ => _.Type == "ProcessingInstruction");
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(4, 3)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(4, 22)));
@@ -94,7 +85,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("seventh", 19, 3, 22, 23, 362, 370, 423, 432)]
         public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.OfType<Container>().First(_ => _.Name == name);
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
@@ -108,10 +99,22 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("seventh", "nested", 20, 5, 22, 13)]
         public void Second_level_element_LocationSpan_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos)
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == "something").Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
+            var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
 
             Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
             Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
+        }
+
+        [Test, Ignore("Just to get the string")]
+        public void RoundTrip()
+        {
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
+            {
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
+
+            Assert.Fail(builder.ToString());
         }
     }
 }

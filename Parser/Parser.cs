@@ -5,6 +5,8 @@ using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
+using Container = MiKoSolutions.SemanticParsers.Xml.Yaml.Container;
+
 namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Parser
@@ -23,25 +25,26 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                 var fileBegin = new LineInfo(reader.LineNumber + 1, reader.LinePosition);
 
-                var root = new Container
-                               {
-                                   Type = "root",
-                                   Name = "root",
-                               };
-
                 try
                 {
+                    var dummyRoot = new Container();
+
                     // Parse the XML and display the text content of each of the elements.
                     while (reader.Read())
                     {
-                        Parse(reader, root, map);
+                        Parse(reader, dummyRoot, map);
                     }
 
-                    var rootStart = root.Children.First().LocationSpan.Start;
-                    var rootEnd = root.Children.Last().LocationSpan.End;
+                    var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().First();
+                    var root = dummyRoot.Children.OfType<Container>().Last();
+
+                    // let root include the XML declaration
+                    var rootStart = xmlDeclaration.LocationSpan.Start;
+                    var rootEnd = root.LocationSpan.End;
+
+                    // adjust positions
                     root.LocationSpan = new LocationSpan(rootStart, rootEnd);
-                    root.HeaderSpan = GetCharacterSpan(new LocationSpan(rootStart, rootStart), map);
-                    root.FooterSpan = GetCharacterSpan(new LocationSpan(rootEnd, rootEnd), map);
+                    root.HeaderSpan = new CharacterSpan(xmlDeclaration.Span.Start, root.HeaderSpan.End);
 
                     var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
 
