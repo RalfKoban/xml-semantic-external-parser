@@ -34,5 +34,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase(3, 10, ExpectedResult = 26)]
         [TestCase(18, 12, ExpectedResult = 12)]
         public int GetLineLength(int lineNumber, int linePosition) => _objectUnderTest.GetLineLength(new LineInfo(lineNumber, linePosition));
+
+        [TestCase(3, 10, 63)]
+        [TestCase(18, 12, 359)]
+        public void GetLineInfo(int lineNumber, int linePosition, int characterPosition) => Assert.That(_objectUnderTest.GetLineInfo(characterPosition), Is.EqualTo(new LineInfo(lineNumber, linePosition)));
     }
 }

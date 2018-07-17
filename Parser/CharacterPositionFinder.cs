@@ -51,5 +51,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var pair = _map[lineNumber];
             return pair.Key;
         }
+
+        public LineInfo GetLineInfo(int characterPosition)
+        {
+            foreach (var pair in _map)
+            {
+                var difference = pair.Value.Value - characterPosition;
+                if (difference < 0)
+                {
+                    continue;
+                }
+
+                return new LineInfo(pair.Key, pair.Value.Key - difference);
+            }
+
+            return null;
+        }
     }
 }
