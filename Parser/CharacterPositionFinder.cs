@@ -42,9 +42,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return pair.Value + lineInfo.LinePosition;
         }
 
-        public int GetLineLength(LineInfo lineInfo)
+        public int GetLineLength(LineInfo lineInfo) => GetLineLength(lineInfo.LineNumber);
+
+        public int GetLineLength(int lineNumber)
         {
-            var pair = _map[lineInfo.LineNumber];
+            var pair = _map[lineNumber];
             return pair.Key;
         }
     }

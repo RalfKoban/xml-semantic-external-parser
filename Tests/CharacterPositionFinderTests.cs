@@ -23,6 +23,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase(18, 12, ExpectedResult = 359)]
         public int GetCharacterPosition(int lineNumber, int linePosition) => _objectUnderTest.GetCharacterPosition(new LineInfo(lineNumber, linePosition));
 
+        [TestCase(3, ExpectedResult = 26)]
+        [TestCase(18, ExpectedResult = 12)]
+        public int GetLineLength(int lineNumber) => _objectUnderTest.GetLineLength(lineNumber);
+
         [TestCase(3, 10, ExpectedResult = 26)]
         [TestCase(18, 12, ExpectedResult = 12)]
         public int GetLineLength(int lineNumber, int linePosition) => _objectUnderTest.GetLineLength(new LineInfo(lineNumber, linePosition));
