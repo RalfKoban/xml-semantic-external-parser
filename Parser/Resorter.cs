@@ -29,19 +29,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static int CompareStartPosition(ContainerOrTerminalNode x, ContainerOrTerminalNode y)
         {
-            var xLineNumber = x.LocationSpan.Start.LineNumber;
-            var yLineNumber = y.LocationSpan.Start.LineNumber;
-            if (xLineNumber < yLineNumber)
+            var startX = x.LocationSpan.Start;
+            var startY = y.LocationSpan.Start;
+
+            var result = startX.LineNumber - startY.LineNumber;
+            if (result == 0)
             {
-                return -1;
+                result = startX.LinePosition - startY.LinePosition;
             }
 
-            if (xLineNumber > yLineNumber)
-            {
-                return 1;
-            }
-
-            return x.LocationSpan.Start.LinePosition - y.LocationSpan.Start.LinePosition;
+            return result;
         }
     }
 }
