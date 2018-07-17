@@ -35,11 +35,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return new CharacterPositionFinder(map);
         }
 
-        public int GetCharacterPosition(LineInfo lineInfo)
-        {
-            var pair = _map[lineInfo.LineNumber - 1]; // get previous line and then add the line position
+        public int GetCharacterPosition(LineInfo lineInfo) => GetCharacterPosition(lineInfo.LineNumber, lineInfo.LinePosition);
 
-            return pair.Value + lineInfo.LinePosition;
+        public int GetCharacterPosition(int lineNumber, int linePosition)
+        {
+            var pair = _map[lineNumber - 1]; // get previous line and then add the line position
+
+            return pair.Value + linePosition;
         }
 
         public int GetLineLength(LineInfo lineInfo) => GetLineLength(lineInfo.LineNumber);
