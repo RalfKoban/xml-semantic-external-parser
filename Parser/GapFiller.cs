@@ -46,11 +46,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 if (siblingBeforeEndLineNumber != node.LocationSpan.Start.LineNumber)
                 {
                     newStartPos = finder.GetCharacterPosition(new LineInfo(siblingBeforeEndLineNumber + 1, 1));
-
-                    // TODO: get new char pos at begin of line
-                    //                    var lineLength = finder.GetLineLength(node.LocationSpan.Start);
-                    //                    var lineInfo = new LineInfo(node.LocationSpan.Start.LineNumber, lineLength);
-                    //                    newStartPosition = finder.GetCharacterPosition(lineInfo);
                 }
             }
 
@@ -61,9 +56,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 newEndPos = parent.FooterSpan.Start - 1;
 
                 var parentFooterLocation = finder.GetLineInfo(parent.FooterSpan.Start);
-                if (parentFooterLocation.LineNumber == node.LocationSpan.End.LineNumber)
+                if (parentFooterLocation.LineNumber != node.LocationSpan.End.LineNumber)
                 {
-                    newEndPos = AdjustParentFooterToLineBegin(parent, finder);
+                    var startPosition = new LineInfo(parentFooterLocation.LineNumber, 1);
+                    newEndPos = AdjustParentFooter(parent, finder, startPosition);
                 }
             }
             else
@@ -71,7 +67,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 var siblingAfter = parent.Children.ElementAt(index + 1);
                 newEndPos = siblingAfter.GetTotalSpan().Start - 1;
 
-                if (siblingAfter.LocationSpan.Start.LineNumber != node.LocationSpan.End.LineNumber)
+                var startLine = siblingAfter.LocationSpan.Start.LineNumber;
+                if (startLine != node.LocationSpan.End.LineNumber)
                 {
                     var lineLength = finder.GetLineLength(node.LocationSpan.End);
                     var lineInfo = new LineInfo(node.LocationSpan.End.LineNumber, lineLength);
@@ -80,31 +77,34 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             // somewhere in the middle, so adjust only node span and location, as well as that from the siblings
-            node.LocationSpan = new LocationSpan(finder.GetLineInfo(newStartPos), finder.GetLineInfo(newEndPos));
+            var newStartLine = finder.GetLineInfo(newStartPos);
+            var newEndLine = finder.GetLineInfo(newEndPos);
+            node.LocationSpan = new LocationSpan(newStartLine, newEndLine);
 
             // now adjust terminal node's start position
             if (node is Container c)
             {
-                c.HeaderSpan = new CharacterSpan(newStartPos, c.HeaderSpan.End);
-                c.FooterSpan = new CharacterSpan(c.FooterSpan.Start, newEndPos);
-
                 if (c.Children.Any())
                 {
-                    // TODO: Adjust header and footer span
+                    c.HeaderSpan = new CharacterSpan(newStartPos, c.HeaderSpan.End);
+
                     foreach (var child in c.Children)
                     {
                         AdjustNode(child, c, finder);
                     }
+
+                    c.FooterSpan = new CharacterSpan(c.FooterSpan.Start, newEndPos);
                 }
                 else
                 {
-                    // TODO: Adjust header and footer span
                     var headerEndLine = finder.GetLineInfo(c.HeaderSpan.End).LineNumber;
                     var footerStartLine = finder.GetLineInfo(c.FooterSpan.Start).LineNumber;
+
                     if (headerEndLine != footerStartLine)
                     {
                         var endPos = finder.GetLineLength(headerEndLine);
                         var headerEndPos = finder.GetCharacterPosition(headerEndLine, endPos);
+
                         c.HeaderSpan = new CharacterSpan(newStartPos, headerEndPos);
                         c.FooterSpan = new CharacterSpan(headerEndPos + 1, newEndPos);
                     }
@@ -138,19 +138,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             node.HeaderSpan = new CharacterSpan(node.HeaderSpan.Start, characterPosition);
 
             return characterPosition + 1;
-        }
-
-        private static int AdjustParentFooterToLineBegin(Container parent, CharacterPositionFinder finder)
-        {
-            var startPosition = finder.GetLineInfo(parent.FooterSpan.Start);
-            var startPositionBefore = finder.GetLineInfo(parent.FooterSpan.Start - 1);
-
-            if (startPositionBefore.LineNumber < startPosition.LineNumber)
-            {
-                // before
-            }
-
-            return AdjustParentFooter(parent, finder, startPosition);
         }
 
         private static int AdjustParentFooter(Container parent, CharacterPositionFinder finder, LineInfo position)
