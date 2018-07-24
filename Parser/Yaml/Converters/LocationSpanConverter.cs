@@ -1,4 +1,5 @@
 ﻿using System;
+
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -14,7 +15,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml.Converters
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
             var span = value as LocationSpan;
-            if (span == null) throw new NotImplementedException("wrong type");
+            if (span == null)
+            {
+                throw new NotImplementedException("wrong type");
+            }
 
             emitter.Emit(new MappingStart(null, null, true, MappingStyle.Flow));
 
@@ -34,7 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml.Converters
             emitter.Emit(new Scalar(span.End.LinePosition.ToString()));
             emitter.Emit(new SequenceEnd());
 
-           emitter.Emit(new MappingEnd());
+            emitter.Emit(new MappingEnd());
         }
     }
 }

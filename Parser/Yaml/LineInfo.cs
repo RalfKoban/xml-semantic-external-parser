@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Xml;
+
 using YamlDotNet.Serialization;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml

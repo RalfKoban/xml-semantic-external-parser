@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
+
 using NUnit.Framework;
 
 namespace MiKoSolutions.SemanticParsers.Xml

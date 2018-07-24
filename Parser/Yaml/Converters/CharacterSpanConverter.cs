@@ -1,4 +1,5 @@
 ﻿using System;
+
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -14,7 +15,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml.Converters
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
             var span = value as CharacterSpan;
-            if (span == null) throw new NotImplementedException("wrong type");
+            if (span == null)
+            {
+                throw new NotImplementedException("wrong type");
+            }
 
             emitter.Emit(new SequenceStart(null, null, true, SequenceStyle.Flow));
             emitter.Emit(new Scalar(span.Start.ToString()));
