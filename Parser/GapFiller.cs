@@ -20,65 +20,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static void AdjustNode(ContainerOrTerminalNode node, Container parent, CharacterPositionFinder finder)
         {
-            var newStartPos = -1;
-            var newEndPos = -1;
-
             var index = parent.Children.IndexOf(node);
 
-            var first = node == parent.Children.First();
-            if (first)
-            {
-                // first child, so adjust parent's header span and terminal node's line start and span begin
-                newStartPos = parent.HeaderSpan.End + 1;
-
-                if (parent.LocationSpan.Start.LineNumber < node.LocationSpan.Start.LineNumber)
-                {
-                    // different lines, so adjust line end of parent
-                    newStartPos = AdjustHeaderToLineEnd(parent, finder);
-                }
-            }
-            else
-            {
-                var siblingBefore = parent.Children.ElementAt(index - 1);
-                newStartPos = siblingBefore.GetTotalSpan().End + 1;
-
-                var siblingBeforeEndLineNumber = siblingBefore.LocationSpan.End.LineNumber;
-                if (siblingBeforeEndLineNumber != node.LocationSpan.Start.LineNumber)
-                {
-                    newStartPos = finder.GetCharacterPosition(new LineInfo(siblingBeforeEndLineNumber + 1, 1));
-                }
-            }
-
-            var last = node == parent.Children.Last();
-            if (last)
-            {
-                // last child, so adjust parent's footer span and terminal node's end start and span end
-                newEndPos = parent.FooterSpan.Start - 1;
-
-                var parentFooterLocation = finder.GetLineInfo(parent.FooterSpan.Start);
-                if (parentFooterLocation.LineNumber != node.LocationSpan.End.LineNumber)
-                {
-                    var startPosition = new LineInfo(parentFooterLocation.LineNumber, 1);
-                    newEndPos = AdjustParentFooter(parent, finder, startPosition);
-                }
-            }
-            else
-            {
-                var siblingAfter = parent.Children.ElementAt(index + 1);
-                newEndPos = siblingAfter.GetTotalSpan().Start - 1;
-
-                var startLine = siblingAfter.LocationSpan.Start.LineNumber;
-                if (startLine != node.LocationSpan.End.LineNumber)
-                {
-                    var lineLength = finder.GetLineLength(node.LocationSpan.End);
-                    var lineInfo = new LineInfo(node.LocationSpan.End.LineNumber, lineLength);
-                    newEndPos = finder.GetCharacterPosition(lineInfo);
-                }
-            }
+            var newStartPos = AdjustBegin(node, parent, finder, index);
+            var newEndPos = AdjustEnd(node, parent, finder, index);
 
             // somewhere in the middle, so adjust only node span and location, as well as that from the siblings
             var newStartLine = finder.GetLineInfo(newStartPos);
             var newEndLine = finder.GetLineInfo(newEndPos);
+
             node.LocationSpan = new LocationSpan(newStartLine, newEndLine);
 
             // now adjust terminal node's start position
@@ -119,6 +69,71 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 t.Span = new CharacterSpan(newStartPos, newEndPos);
             }
+        }
+
+        private static int AdjustBegin(ContainerOrTerminalNode node, Container parent, CharacterPositionFinder finder, int index)
+        {
+            int newStartPos;
+
+            var first = node == parent.Children.First();
+            if (first)
+            {
+                // first child, so adjust parent's header span and terminal node's line start and span begin
+                newStartPos = parent.HeaderSpan.End + 1;
+
+                if (parent.LocationSpan.Start.LineNumber < node.LocationSpan.Start.LineNumber)
+                {
+                    // different lines, so adjust line end of parent
+                    newStartPos = AdjustHeaderToLineEnd(parent, finder);
+                }
+            }
+            else
+            {
+                var siblingBefore = parent.Children.ElementAt(index - 1);
+                newStartPos = siblingBefore.GetTotalSpan().End + 1;
+
+                var siblingBeforeEndLineNumber = siblingBefore.LocationSpan.End.LineNumber;
+                if (siblingBeforeEndLineNumber != node.LocationSpan.Start.LineNumber)
+                {
+                    newStartPos = finder.GetCharacterPosition(new LineInfo(siblingBeforeEndLineNumber + 1, 1));
+                }
+            }
+
+            return newStartPos;
+        }
+
+        private static int AdjustEnd(ContainerOrTerminalNode node, Container parent, CharacterPositionFinder finder, int index)
+        {
+            int newEndPos;
+
+            var last = node == parent.Children.Last();
+            if (last)
+            {
+                // last child, so adjust parent's footer span and terminal node's end start and span end
+                newEndPos = parent.FooterSpan.Start - 1;
+
+                var parentFooterLocation = finder.GetLineInfo(parent.FooterSpan.Start);
+                if (parentFooterLocation.LineNumber != node.LocationSpan.End.LineNumber)
+                {
+                    var startPosition = new LineInfo(parentFooterLocation.LineNumber, 1);
+                    newEndPos = AdjustParentFooter(parent, finder, startPosition);
+                }
+            }
+            else
+            {
+                var siblingAfter = parent.Children.ElementAt(index + 1);
+                newEndPos = siblingAfter.GetTotalSpan().Start - 1;
+
+                var startLine = siblingAfter.LocationSpan.Start.LineNumber;
+                if (startLine != node.LocationSpan.End.LineNumber)
+                {
+                    var lineLength = finder.GetLineLength(node.LocationSpan.End);
+                    var lineInfo = new LineInfo(node.LocationSpan.End.LineNumber, lineLength);
+                    newEndPos = finder.GetCharacterPosition(lineInfo);
+                }
+            }
+
+            return newEndPos;
         }
 
         private static int AdjustHeaderToLineEnd(Container node, CharacterPositionFinder finder)
