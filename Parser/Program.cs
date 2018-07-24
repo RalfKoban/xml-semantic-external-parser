@@ -46,7 +46,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         YamlWriter.Write(writer, file);
                     }
 
-                    var result = file.ParsingErrorsDetected ? "KO" : "OK";
+                    var result = file.ParsingErrorsDetected.GetValueOrDefault() ? "KO" : "OK";
 
                     Debug.WriteLine($"Parsed result: {result}", Category);
 

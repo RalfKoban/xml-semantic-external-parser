@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -128,6 +129,64 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
+        [Test]
+        public void All_characters_are_found()
+        {
+            var chars = Enumerable.Range(0, 482).ToHashSet();
+
+            RemoveSpan(chars, _objectUnderTest.FooterSpan);
+
+            foreach (var child in _objectUnderTest.Children)
+            {
+                RemoveChars(chars, child);
+            }
+
+            Assert.That(chars.Count, Is.EqualTo(0));
+        }
+
+        private static void RemoveChars(HashSet<int> chars, Container node)
+        {
+            RemoveSpan(chars, node.HeaderSpan);
+            RemoveSpan(chars, node.FooterSpan);
+
+            foreach (var child in node.Children)
+            {
+                if (child is Container c)
+                {
+                    RemoveChars(chars, c);
+                }
+                else if (child is TerminalNode t)
+                {
+                    RemoveChars(chars, t);
+                }
+            }
+        }
+
+        private static void RemoveChars(HashSet<int> chars, TerminalNode node)
+        {
+            RemoveSpan(chars, node.Span);
+        }
+
+        private static void RemoveSpan(HashSet<int> chars, CharacterSpan span)
+        {
+            for (var i = span.Start; i <= span.End; i++)
+            {
+                chars.Remove(i);
+            }
+        }
+
+        [Test]
+        public void RoundTrip_does_not_report_parsing_errors()
+        {
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
+            {
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
+
+            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected"));
+        }
+
         [Test, Explicit, Ignore("Just for tests")]
         public void RoundTrip()
         {
@@ -136,8 +195,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 YamlWriter.Write(writer, _objectUnderTest);
             }
-
-            Assert.Fail(builder.ToString());
         }
     }
 }

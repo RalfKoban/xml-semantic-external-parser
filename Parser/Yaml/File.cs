@@ -23,7 +23,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public List<Container> Children { get; } = new List<Container>();
 
         [YamlMember(Alias = "parsingErrorsDetected", Order = 5)]
-        public bool ParsingErrorsDetected => ParsingErrors.Any();
+        public bool? ParsingErrorsDetected => ParsingErrors.Any();
 
         [YamlMember(Alias = "parsingError", Order = 7)]
         public List<ParsingError> ParsingErrors { get; } = new List<ParsingError>();
