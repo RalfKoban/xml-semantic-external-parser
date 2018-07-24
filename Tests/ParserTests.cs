@@ -128,7 +128,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
-        [Test, Explicit]
+        [Test, Explicit, Ignore("Just for tests")]
         public void RoundTrip()
         {
             var builder = new StringBuilder();
