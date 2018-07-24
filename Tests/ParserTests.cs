@@ -96,11 +96,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 var node = _root.Children.OfType<Container>().First(_ => _.Name == name);
 
-                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start");
-                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end");
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
 
-                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
-                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
+                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span for {0}", name);
+                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span for {0}", name);
             });
         }
 
@@ -113,17 +113,17 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
 
-                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
-                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
 
                 if (node is Container cNode)
                 {
-                    Assert.That(cNode.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
-                    Assert.That(cNode.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
+                    Assert.That(cNode.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span for {0}", name);
+                    Assert.That(cNode.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span for {0}", name);
                 }
                 else if (node is TerminalNode tNode)
                 {
-                    Assert.That(tNode.Span, Is.EqualTo(new CharacterSpan(headerStartPos, footerEndPos)), "wrong span");
+                    Assert.That(tNode.Span, Is.EqualTo(new CharacterSpan(headerStartPos, footerEndPos)), "wrong span for {0}", name);
                 }
             });
         }
