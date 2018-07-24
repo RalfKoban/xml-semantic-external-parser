@@ -58,7 +58,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resorter.cs" />
-    <Compile Include="Traverser.cs" />
     <Compile Include="Yaml\YamlWriter.cs" />
     <Compile Include="Yaml\CharacterSpan.cs" />
     <Compile Include="Yaml\Converters\CharacterSpanConverter.cs" />

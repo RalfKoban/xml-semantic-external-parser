@@ -4,7 +4,7 @@
   <?some definition ?>
   <first element="true"></first>
   <second element="true"> </second>
-  <third><nested><!-- comment --></nested></third>
+  <third> <nested><!-- comment --></nested> </third>
   <forth>
 
   </forth>

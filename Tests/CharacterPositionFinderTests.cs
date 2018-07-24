@@ -20,11 +20,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         [TestCase(3, 10, ExpectedResult = 63)]
-        [TestCase(18, 12, ExpectedResult = 359)]
+        [TestCase(18, 12, ExpectedResult = 361)]
         public int GetCharacterPosition(int lineNumber, int linePosition) => _objectUnderTest.GetCharacterPosition(new LineInfo(lineNumber, linePosition));
 
         [TestCase(3, 10, ExpectedResult = 63)]
-        [TestCase(18, 12, ExpectedResult = 359)]
+        [TestCase(18, 12, ExpectedResult = 361)]
         public int GetCharacterPosition_raw(int lineNumber, int linePosition) => _objectUnderTest.GetCharacterPosition(lineNumber, linePosition);
 
         [TestCase(3, ExpectedResult = 26)]
@@ -36,7 +36,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public int GetLineLength(int lineNumber, int linePosition) => _objectUnderTest.GetLineLength(new LineInfo(lineNumber, linePosition));
 
         [TestCase(3, 10, 63)]
-        [TestCase(18, 12, 359)]
+        [TestCase(18, 12, 361)]
         public void GetLineInfo(int lineNumber, int linePosition, int characterPosition) => Assert.That(_objectUnderTest.GetLineInfo(characterPosition), Is.EqualTo(new LineInfo(lineNumber, linePosition)));
     }
 }

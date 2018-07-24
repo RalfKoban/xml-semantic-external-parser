@@ -12,12 +12,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
     {
         public static File Parse(string filePath)
         {
-            var map = CharacterPositionFinder.CreateFrom(filePath);
+            var finder = CharacterPositionFinder.CreateFrom(filePath);
 
-            var file = ParseCore(filePath, map);
+            var file = ParseCore(filePath, finder);
 
             Resorter.Resort(file);
-            GapFiller.Fill(file);
+            GapFiller.Fill(file, finder);
 
             return file;
         }

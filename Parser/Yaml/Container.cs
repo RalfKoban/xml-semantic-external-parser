@@ -13,5 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 
         [YamlMember(Alias = "children", Order = 6)]
         public List<ContainerOrTerminalNode> Children { get; } = new List<ContainerOrTerminalNode>();
+
+        public override CharacterSpan GetTotalSpan() => new CharacterSpan(HeaderSpan.Start, FooterSpan.End);
     }
 }
