@@ -168,10 +168,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 var locationSpan = GetLocationSpan(reader);
                 var headerSpan = GetCharacterSpan(locationSpan, finder);
-                var footerSpan = new CharacterSpan(0, -1); // no footer
+
+                // there is no content, so we have to get away of the footer by just using the '/>' characters as footer
+                var headerSpanCorrected = new CharacterSpan(headerSpan.Start, headerSpan.End - 2);
+                var footerSpan = new CharacterSpan(headerSpan.End - 1, headerSpan.End);
 
                 container.LocationSpan = locationSpan;
-                container.HeaderSpan = headerSpan;
+                container.HeaderSpan = headerSpanCorrected;
                 container.FooterSpan = footerSpan;
             }
             else
