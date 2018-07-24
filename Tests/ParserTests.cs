@@ -92,13 +92,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("seventh", 19, 1, 22, 25, 362, 374, 425, 436)]
         public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == name);
+            Assert.Multiple(() =>
+            {
+                var node = _root.Children.OfType<Container>().First(_ => _.Name == name);
 
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start");
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end");
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start");
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end");
 
-            Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
-            Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
+                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
+                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
+            });
         }
 
         [TestCase("third",   "nested",  7, 10,  7, 44, 184, 192, 209, 218)]
@@ -106,20 +109,23 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("seventh", "nested", 20,  1, 22, 13, 375, 388, 412, 424)]
         public void Second_level_element_LocationSpan_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
-            var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
-
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
-
-            if (node is Container cNode)
+            Assert.Multiple(() =>
             {
-                Assert.That(cNode.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
-                Assert.That(cNode.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
-            }
-            else if (node is TerminalNode tNode)
-            {
-                Assert.That(tNode.Span, Is.EqualTo(new CharacterSpan(headerStartPos, footerEndPos)), "wrong span");
-            }
+                var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
+
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)));
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)));
+
+                if (node is Container cNode)
+                {
+                    Assert.That(cNode.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "wrong header span");
+                    Assert.That(cNode.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "wrong footer span");
+                }
+                else if (node is TerminalNode tNode)
+                {
+                    Assert.That(tNode.Span, Is.EqualTo(new CharacterSpan(headerStartPos, footerEndPos)), "wrong span");
+                }
+            });
         }
 
         [Test, Explicit]
