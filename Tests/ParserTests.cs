@@ -74,7 +74,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         [Test]
-        public void ProcessingInstruction_LocationSpan_matches()
+        public void ProcessingInstruction_LocationSpan_and_Span_matches()
         {
             var node = _root.Children.OfType<TerminalNode>().First(_ => _.Type == "ProcessingInstruction");
 
@@ -91,7 +91,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("fifth",   11, 1, 11, 13, 254, 262, 263, 266)]
         [TestCase("sixth",   12, 1, 18, 12, 267, 277, 350, 361)]
         [TestCase("seventh", 19, 1, 22, 25, 362, 374, 425, 436)]
-        public void First_level_element_LocationSpan_matches(string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
+        public void First_level_element_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
             Assert.Multiple(() =>
             {
@@ -108,7 +108,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("third",   "nested",  7, 10,  7, 44, 184, 192, 209, 218)]
         [TestCase("sixth",   "nested", 13,  1, 17, 15, 278, 291, 335, 349)]
         [TestCase("seventh", "nested", 20,  1, 22, 13, 375, 388, 412, 424)]
-        public void Second_level_element_LocationSpan_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
+        public void Second_level_element_LocationSpan_and_Span_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
             Assert.Multiple(() =>
             {
@@ -129,6 +129,20 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
+        [TestCase("first",  "element", 5, 10, 5, 23, 113, 126)]
+        [TestCase("second", "element", 6, 11, 6, 24, 148, 161)]
+        public void First_level_element_attribute_LocationSpan_and_Span_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
+        {
+            Assert.Multiple(() =>
+            {
+                var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.OfType<TerminalNode>().First(_ => _.Name == name);
+
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(spanStartPos, spanEndPos)), "wrong span for {0}", name);
+            });
+        }
+
         [Test]
         public void All_characters_are_found()
         {
@@ -142,6 +156,28 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             Assert.That(chars.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void RoundTrip_does_not_report_parsing_errors()
+        {
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
+            {
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
+
+            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected"));
+        }
+
+        [Test, Explicit, Ignore("Just for tests")]
+        public void RoundTrip()
+        {
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
+            {
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)
@@ -172,28 +208,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             for (var i = span.Start; i <= span.End; i++)
             {
                 chars.Remove(i);
-            }
-        }
-
-        [Test]
-        public void RoundTrip_does_not_report_parsing_errors()
-        {
-            var builder = new StringBuilder();
-            using (var writer = new StringWriter(builder))
-            {
-                YamlWriter.Write(writer, _objectUnderTest);
-            }
-
-            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected"));
-        }
-
-        [Test, Explicit, Ignore("Just for tests")]
-        public void RoundTrip()
-        {
-            var builder = new StringBuilder();
-            using (var writer = new StringWriter(builder))
-            {
-                YamlWriter.Write(writer, _objectUnderTest);
             }
         }
     }
