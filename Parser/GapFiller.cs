@@ -34,11 +34,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
             // now adjust terminal node's start position
             if (node is Container c)
             {
-                if (c.Children.Any())
+                // only adjust child nodes that are no attributes
+                var children = c.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+                if (children.Any())
                 {
                     c.HeaderSpan = new CharacterSpan(newStartPos, c.HeaderSpan.End);
 
-                    foreach (var child in c.Children)
+                    foreach (var child in children)
                     {
                         AdjustNode(child, c, finder);
                     }
