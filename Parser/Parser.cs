@@ -184,9 +184,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             parent.Children.Add(container);
 
-            ParseAttributes(reader, container, finder);
-
             var isEmpty = reader.IsEmptyElement;
+
+            ParseAttributes(reader, container, finder);
 
             if (isEmpty)
             {
