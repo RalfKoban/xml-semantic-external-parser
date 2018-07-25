@@ -20,8 +20,9 @@
     <nested>
 <!-- strange item -->
     </nested></seventh>
-  
-  
+
+  <?last definitionWithTrailingComment ?><!-- COMMENT -->
+
   <!-- that's it -->
 
 </something>

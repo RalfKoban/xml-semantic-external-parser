@@ -36,52 +36,48 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void File_LocationSpan_matches()
         {
             Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(29, 0)));
 
-            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(481, 482)));
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(536, 537)));
         }
 
         [Test]
         public void Root_LocationSpan_matches()
         {
             Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)));
-            Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(27, 12)));
+            Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(28, 12)));
 
             Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 53)));
-            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(469, 480)));
+            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(524, 535)));
         }
 
-        [Test]
-        public void First_Comment_LocationSpan_and_Span_matches()
+        [TestCase(" first comment ",  3,  1,  3, 26,  54,  79)]
+        [TestCase(" COMMENT ",       24, 42, 24, 59, 480, 497)]
+        [TestCase(" that's it ",     25,  1, 27,  2, 498, 523)]
+        public void Comment_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
         {
-            var node = _root.Children.OfType<TerminalNode>().First(_ => _.Type == "Comment");
+            Assert.Multiple(() =>
+            {
+                var node = _root.Children.OfType<TerminalNode>().Where(_ => _.Type == "Comment").First(_ => _.Name == name);
 
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(3, 1)));
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(3, 26)));
-
-            Assert.That(node.Span, Is.EqualTo(new CharacterSpan(54, 79)));
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(spanStartPos, spanEndPos)), "wrong span for {0}", name);
+            });
         }
 
-        [Test]
-        public void Last_Comment_LocationSpan_and_Span_matches()
+        [TestCase("some",  4, 1,  4, 24,  80, 103)]
+        [TestCase("last", 23, 1, 24, 41, 437, 479)]
+        public void ProcessingInstruction_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
         {
-            var node = _root.Children.OfType<TerminalNode>().Last(_ => _.Type == "Comment");
+            Assert.Multiple(() =>
+            {
+                var node = _root.Children.OfType<TerminalNode>().Where(_ => _.Type == "ProcessingInstruction").First(_ => _.Name == name);
 
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(23, 1)));
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(26, 2)));
-
-            Assert.That(node.Span, Is.EqualTo(new CharacterSpan(437, 468)));
-        }
-
-        [Test]
-        public void ProcessingInstruction_LocationSpan_and_Span_matches()
-        {
-            var node = _root.Children.OfType<TerminalNode>().First(_ => _.Type == "ProcessingInstruction");
-
-            Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(4, 1)));
-            Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(4, 24)));
-
-            Assert.That(node.Span, Is.EqualTo(new CharacterSpan(80, 103)));
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(spanStartPos, spanEndPos)), "wrong span for {0}", name);
+            });
         }
 
         [TestCase("first",    5, 1,  5, 34, 104, 127, 128, 137)]
@@ -168,16 +164,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected"));
-        }
-
-        [Test, Explicit, Ignore("Just for tests")]
-        public void RoundTrip()
-        {
-            var builder = new StringBuilder();
-            using (var writer = new StringWriter(builder))
-            {
-                YamlWriter.Write(writer, _objectUnderTest);
-            }
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)
