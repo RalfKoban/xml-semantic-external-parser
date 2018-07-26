@@ -27,5 +27,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.That(_packages.Children, Has.Count.EqualTo(3));
         }
+
+        [Test]
+        public void Packages_have_correct_names()
+        {
+            Assert.That(_packages.Children.Any(_ => _.Name == "NUnit"), Is.True);
+            Assert.That(_packages.Children.Any(_ => _.Name == "StyleCop.Analyzers"), Is.True);
+            Assert.That(_packages.Children.Any(_ => _.Name == "YamlDotNet"), Is.True);
+        }
     }
 }

@@ -59,6 +59,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resorter.cs" />
+    <Compile Include="Strategies\SpecialXmlStrategy.cs" />
+    <Compile Include="Strategies\ISpecialXmlStrategy.cs" />
+    <Compile Include="Strategies\SpecialXmlStrategyForPackagesConfig.cs" />
+    <Compile Include="Strategies\SpecialXmlStrategyForWix.cs" />
     <Compile Include="Yaml\YamlWriter.cs" />
     <Compile Include="Yaml\CharacterSpan.cs" />
     <Compile Include="Yaml\Converters\CharacterSpanConverter.cs" />

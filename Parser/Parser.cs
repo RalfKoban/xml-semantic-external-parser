@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
+using MiKoSolutions.SemanticParsers.Xml.Strategies;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using Container = MiKoSolutions.SemanticParsers.Xml.Yaml.Container;
@@ -64,7 +65,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     if (positionAfterLastElement != fileEnd)
                     {
-                        file.FooterSpan = GetCharacterSpan(new LocationSpan(positionAfterLastElement, fileEnd), finder); // TODO: RKN user FooterSpan (0, -1) if there is no footer
+                        file.FooterSpan = GetCharacterSpan(new LocationSpan(positionAfterLastElement, fileEnd), finder);
                     }
 
                     file.Children.Add(root);
@@ -81,35 +82,41 @@ namespace MiKoSolutions.SemanticParsers.Xml
         private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
         {
             var nodeType = reader.NodeType;
+
+            var strategy = GetStrategy(parent);
+
+            var name = strategy.GetName(reader);
+            var type = strategy.GetType(reader);
+
             switch (nodeType)
             {
                 case XmlNodeType.Element:
                 {
-                    ParseElement(reader, parent, finder);
+                    ParseElement(reader, parent, finder, name, type);
                     break;
                 }
 
                 case XmlNodeType.ProcessingInstruction:
                 {
-                    ParseProcessingInstruction(reader, parent, finder);
+                    ParseProcessingInstruction(reader, parent, finder, name, type);
                     break;
                 }
 
                 case XmlNodeType.Comment:
                 {
-                    ParseComment(reader, parent, finder);
+                    ParseComment(reader, parent, finder, name, type);
                     break;
                 }
 
                 case XmlNodeType.XmlDeclaration:
                 {
-                    ParseXmlDeclaration(reader, parent, finder);
+                    ParseXmlDeclaration(reader, parent, finder, name, type);
                     break;
                 }
 
                 case XmlNodeType.CDATA:
                 {
-                    ParseCData(reader, parent, finder);
+                    ParseCData(reader, parent, finder, name, type);
                     break;
                 }
             }
@@ -117,79 +124,75 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return nodeType;
         }
 
-        private static void ParseCData(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseCData(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
-            var name = reader.Value;
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
             parent.Children.Add(new TerminalNode
                                     {
-                                        Type = NodeType.CDATA,
+                                        Type = type,
                                         Name = name,
                                         LocationSpan = locationSpan,
                                         Span = span,
                                     });
         }
 
-        private static void ParseXmlDeclaration(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseXmlDeclaration(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
-            var name = reader.Value;
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
             parent.Children.Add(new TerminalNode
                                     {
-                                        Type = NodeType.XmlDeclaration,
+                                        Type = type,
                                         Name = name,
                                         LocationSpan = locationSpan,
                                         Span = span,
                                     });
         }
 
-        private static void ParseComment(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseComment(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
-            var name = reader.Value;
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
             parent.Children.Add(new TerminalNode
                                     {
-                                        Type = NodeType.Comment,
+                                        Type = type,
                                         Name = name,
                                         LocationSpan = locationSpan,
                                         Span = span,
                                     });
         }
 
-        private static void ParseProcessingInstruction(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseProcessingInstruction(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
-            var name = reader.Name;
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
             parent.Children.Add(new TerminalNode
                                     {
-                                        Type = NodeType.ProcessingInstruction,
+                                        Type = type,
                                         Name = name,
                                         LocationSpan = locationSpan,
                                         Span = span,
                                     });
         }
 
-        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
             var container = new Container
                                 {
-                                    Type = NodeType.Element,
-                                    Name = reader.Name,
+                                    Type = type,
+                                    Name = name,
                                 };
 
             parent.Children.Add(container);
 
             var isEmpty = reader.IsEmptyElement;
 
-            ParseAttributes(reader, container, finder);
+            ParseAttributes(reader, container, finder, name, type);
 
             if (isEmpty)
             {
@@ -237,7 +240,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
         {
             if (!reader.HasAttributes)
             {
@@ -252,7 +255,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 var attributeStartPos = new LineInfo(reader.LineNumber, reader.LinePosition);
 
-                var name = reader.Name;
+                var attributeName = reader.Name;
 
                 reader.ReadAttributeValue();
                 var value = reader.Value;
@@ -265,7 +268,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 attributes.Add(new TerminalNode
                                    {
                                        Type = NodeType.Attribute,
-                                       Name = name,
+                                       Name = attributeName,
                                        LocationSpan = new LocationSpan(attributeStartPos, attributeEndPos),
                                        Span = new CharacterSpan(startPos, endPos),
                                    });
@@ -314,6 +317,23 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var startPos = finder.GetCharacterPosition(locationSpan.Start);
             var endPos = finder.GetCharacterPosition(locationSpan.End);
             return new CharacterSpan(startPos, endPos);
+        }
+
+        private static ISpecialXmlStrategy GetStrategy(Container container)
+        {
+            var name = container?.Name;
+
+            if (string.Equals(name, "packages", StringComparison.OrdinalIgnoreCase))
+            {
+                return new SpecialXmlStrategyForPackagesConfig();
+            }
+
+            if (string.Equals(name, "Wix", StringComparison.OrdinalIgnoreCase))
+            {
+                return new SpecialXmlStrategyForWix();
+            }
+
+            return new SpecialXmlStrategy();
         }
     }
 }
