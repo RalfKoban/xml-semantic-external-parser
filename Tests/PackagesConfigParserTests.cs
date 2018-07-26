@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -36,18 +37,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var names = _packages.Children.Select(_ => _.Name).ToList();
             var foundNames = string.Join(",", names);
 
-            Assert.That(names.Contains("NUnit"), foundNames);
-            Assert.That(names.Contains("StyleCop.Analyzers"), foundNames);
-            Assert.That(names.Contains("YamlDotNet"), foundNames);
+            Assert.That(names.Contains("package \"NUnit\""), foundNames);
+            Assert.That(names.Contains("package \"StyleCop.Analyzers\""), foundNames);
+            Assert.That(names.Contains("package \"YamlDotNet\""), foundNames);
         }
 
-        [TestCase("NUnit", "id=\"NUnit\"")]
-        public void Packages_IDs_have_correct_names(string elementName, string idName)
+        [Test]
+        public void RoundTrip_does_not_report_parsing_errors()
         {
-            var element = _packages.Children.OfType<Container>().First(_ => _.Name == elementName);
-            var id = element.Children.First(_ => _.Type == NodeType.Attribute);
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
+            {
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
 
-            Assert.That(id.Name, Is.EqualTo(idName));
+            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected: false"));
         }
     }
 }

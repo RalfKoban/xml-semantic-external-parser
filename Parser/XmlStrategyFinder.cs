@@ -26,16 +26,23 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static string GetDocumentName(string filePath)
         {
-            using (var reader = new XmlTextReader(filePath))
+            try
             {
-                while (reader.Read())
+                using (var reader = new XmlTextReader(filePath))
                 {
-                    // get first element
-                    if (reader.NodeType == XmlNodeType.Element)
+                    while (reader.Read())
                     {
-                        return reader.Name;
+                        // get first element
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            return reader.Name;
+                        }
                     }
                 }
+            }
+            catch (XmlException)
+            {
+                // root element not contained, so ignore
             }
 
             return null;

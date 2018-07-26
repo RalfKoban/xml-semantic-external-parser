@@ -163,7 +163,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 YamlWriter.Write(writer, _objectUnderTest);
             }
 
-            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected"));
+            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected: false"));
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)

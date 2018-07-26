@@ -10,19 +10,33 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
             switch (reader.NodeType)
             {
                 case XmlNodeType.Element:
-                    return reader.GetAttribute("id");
+                {
+                    var value = reader.GetAttribute("id");
+                    if (value is null)
+                    {
+                        return reader.Name;
+                    }
+
+                    return $"{reader.Name} \"{TrimLength(value, 20)}\"";
+                }
 
                 case XmlNodeType.Attribute:
+                {
                     var readerName = reader.Name;
-                    var readerValue = reader.Value;
+                    var value = reader.Value;
 
-                    return $"{readerName}=\"{readerValue.Substring(0, Math.Min(readerValue.Length, 20))}\"";
+                    return $"{readerName}=\"{TrimLength(value, 20)}\"";
+                }
 
                 default:
+                {
                     return base.GetName(reader);
+                }
             }
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+
+        private static string TrimLength(string value, int maxLength) => value.Substring(0, Math.Min(value.Length, maxLength));
     }
 }
