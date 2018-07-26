@@ -2,7 +2,7 @@
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
-    public interface ISpecialXmlStrategy
+    public interface IXmlStrategy
     {
         string GetName(XmlTextReader reader);
 

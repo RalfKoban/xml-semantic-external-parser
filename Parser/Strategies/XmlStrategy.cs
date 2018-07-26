@@ -2,7 +2,7 @@
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
-    public class SpecialXmlStrategy : ISpecialXmlStrategy
+    public class XmlStrategy : IXmlStrategy
     {
         public virtual string GetName(XmlTextReader reader)
         {
@@ -10,6 +10,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
             {
                 case XmlNodeType.Element:
                 case XmlNodeType.ProcessingInstruction:
+                case XmlNodeType.Attribute:
                 {
                     return reader.Name;
                 }
@@ -32,6 +33,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
         {
             switch (reader.NodeType)
             {
+                case XmlNodeType.Attribute: return NodeType.Attribute;
                 case XmlNodeType.Element: return NodeType.Element;
                 case XmlNodeType.ProcessingInstruction: return NodeType.ProcessingInstruction;
                 case XmlNodeType.Comment: return NodeType.Comment;

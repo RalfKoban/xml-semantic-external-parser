@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
@@ -15,8 +14,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public static File Parse(string filePath)
         {
             var finder = CharacterPositionFinder.CreateFrom(filePath);
-
-            var file = ParseCore(filePath, finder);
+            var strategy = XmlStrategyFinder.Find(filePath);
+            var file = ParseCore(filePath, finder, strategy);
 
             Resorter.Resort(file);
             GapFiller.Fill(file, finder);
@@ -24,7 +23,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return file;
         }
 
-        public static File ParseCore(string filePath, CharacterPositionFinder finder)
+        public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
             using (var reader = new XmlTextReader(filePath))
             {
@@ -43,7 +42,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     // Parse the XML and display the text content of each of the elements.
                     while (reader.Read())
                     {
-                        Parse(reader, dummyRoot, finder);
+                        Parse(reader, dummyRoot, finder, strategy);
                     }
 
                     var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().First();
@@ -79,44 +78,38 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder)
+        private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
             var nodeType = reader.NodeType;
-
-            var strategy = GetStrategy(parent);
-
-            var name = strategy.GetName(reader);
-            var type = strategy.GetType(reader);
-
             switch (nodeType)
             {
                 case XmlNodeType.Element:
                 {
-                    ParseElement(reader, parent, finder, name, type);
+                    ParseElement(reader, parent, finder, strategy);
                     break;
                 }
 
                 case XmlNodeType.ProcessingInstruction:
                 {
-                    ParseProcessingInstruction(reader, parent, finder, name, type);
+                    ParseTerminalNode(reader, parent, finder, strategy);
                     break;
                 }
 
                 case XmlNodeType.Comment:
                 {
-                    ParseComment(reader, parent, finder, name, type);
+                    ParseTerminalNode(reader, parent, finder, strategy);
                     break;
                 }
 
                 case XmlNodeType.XmlDeclaration:
                 {
-                    ParseXmlDeclaration(reader, parent, finder, name, type);
+                    ParseTerminalNode(reader, parent, finder, strategy);
                     break;
                 }
 
                 case XmlNodeType.CDATA:
                 {
-                    ParseCData(reader, parent, finder, name, type);
+                    ParseTerminalNode(reader, parent, finder, strategy);
                     break;
                 }
             }
@@ -124,64 +117,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return nodeType;
         }
 
-        private static void ParseCData(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
+        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
-            var locationSpan = GetLocationSpan(reader);
-            var span = GetCharacterSpan(locationSpan, finder);
+            var name = strategy.GetName(reader);
+            var type = strategy.GetType(reader);
 
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
-        }
-
-        private static void ParseXmlDeclaration(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
-        {
-            var locationSpan = GetLocationSpan(reader);
-            var span = GetCharacterSpan(locationSpan, finder);
-
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
-        }
-
-        private static void ParseComment(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
-        {
-            var locationSpan = GetLocationSpan(reader);
-            var span = GetCharacterSpan(locationSpan, finder);
-
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
-        }
-
-        private static void ParseProcessingInstruction(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
-        {
-            var locationSpan = GetLocationSpan(reader);
-            var span = GetCharacterSpan(locationSpan, finder);
-
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
-        }
-
-        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
-        {
             var container = new Container
                                 {
                                     Type = type,
@@ -192,7 +132,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             var isEmpty = reader.IsEmptyElement;
 
-            ParseAttributes(reader, container, finder, name, type);
+            ParseAttributes(reader, container, finder, strategy);
 
             if (isEmpty)
             {
@@ -213,7 +153,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    var nodeType = Parse(reader, container, finder);
+                    var nodeType = Parse(reader, container, finder, strategy);
 
                     // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an end element
                     if (reader.NodeType == XmlNodeType.EndElement)
@@ -240,42 +180,63 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, string name, string type)
+        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
-            if (!reader.HasAttributes)
+            if (reader.HasAttributes)
             {
-                return;
+                reader.MoveToFirstAttribute();
+
+                // read all attributes
+                do
+                {
+                    ParseAttribute(reader, parent, finder, strategy);
+                }
+                while (reader.MoveToNextAttribute());
             }
+        }
 
-            var attributes = new List<TerminalNode>();
-            reader.MoveToFirstAttribute();
+        private static void ParseAttribute(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        {
+            var attributeStartPos = new LineInfo(reader.LineNumber, reader.LinePosition);
 
-            // read all attributes
-            do
-            {
-                var attributeStartPos = new LineInfo(reader.LineNumber, reader.LinePosition);
+            var name = strategy.GetName(reader);
+            var type = strategy.GetType(reader);
 
-                var attributeName = reader.Name;
+            reader.ReadAttributeValue();
+            var value = reader.Value;
 
-                reader.ReadAttributeValue();
-                var value = reader.Value;
+            var attributeEndPos = new LineInfo(reader.LineNumber, reader.LinePosition + value.Length);
 
-                var attributeEndPos = new LineInfo(reader.LineNumber, reader.LinePosition + value.Length);
+            var startPos = finder.GetCharacterPosition(attributeStartPos);
+            var endPos = finder.GetCharacterPosition(attributeEndPos);
 
-                var startPos = finder.GetCharacterPosition(attributeStartPos);
-                var endPos = finder.GetCharacterPosition(attributeEndPos);
+            var locationSpan = new LocationSpan(attributeStartPos, attributeEndPos);
+            var span = new CharacterSpan(startPos, endPos);
 
-                attributes.Add(new TerminalNode
-                                   {
-                                       Type = NodeType.Attribute,
-                                       Name = attributeName,
-                                       LocationSpan = new LocationSpan(attributeStartPos, attributeEndPos),
-                                       Span = new CharacterSpan(startPos, endPos),
-                                   });
-            }
-            while (reader.MoveToNextAttribute());
+            parent.Children.Add(new TerminalNode
+                                    {
+                                        Type = type,
+                                        Name = name,
+                                        LocationSpan = locationSpan,
+                                        Span = span,
+                                    });
+        }
 
-            parent.Children.AddRange(attributes);
+        private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        {
+            var name = strategy.GetName(reader);
+            var type = strategy.GetType(reader);
+
+            var locationSpan = GetLocationSpan(reader);
+            var span = GetCharacterSpan(locationSpan, finder);
+
+            parent.Children.Add(new TerminalNode
+                                    {
+                                        Type = type,
+                                        Name = name,
+                                        LocationSpan = locationSpan,
+                                        Span = span,
+                                    });
         }
 
         private static int GetPositionCorrectionByReader(XmlReader reader) => GetPositionCorrectionByXmlNodeType(reader.NodeType);
@@ -317,23 +278,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var startPos = finder.GetCharacterPosition(locationSpan.Start);
             var endPos = finder.GetCharacterPosition(locationSpan.End);
             return new CharacterSpan(startPos, endPos);
-        }
-
-        private static ISpecialXmlStrategy GetStrategy(Container container)
-        {
-            var name = container?.Name;
-
-            if (string.Equals(name, "packages", StringComparison.OrdinalIgnoreCase))
-            {
-                return new SpecialXmlStrategyForPackagesConfig();
-            }
-
-            if (string.Equals(name, "Wix", StringComparison.OrdinalIgnoreCase))
-            {
-                return new SpecialXmlStrategyForWix();
-            }
-
-            return new SpecialXmlStrategy();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
-    public sealed class SpecialXmlStrategyForWix : SpecialXmlStrategy
+    public sealed class XmlStrategyForWix : XmlStrategy
     {
         public override string GetName(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.GetAttribute("Id") ?? reader.Name : base.GetName(reader);
 
