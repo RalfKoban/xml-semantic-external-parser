@@ -64,6 +64,7 @@
     <Compile Include="Strategies\XmlStrategyForPackagesConfig.cs" />
     <Compile Include="Strategies\XmlStrategyForProject.cs" />
     <Compile Include="Strategies\XmlStrategyForWix.cs" />
+    <Compile Include="Strategies\XmlStrategyForXaml.cs" />
     <Compile Include="XmlStrategyFinder.cs" />
     <Compile Include="Yaml\Converters\ParsingErrorConverter.cs" />
     <Compile Include="Yaml\YamlWriter.cs" />

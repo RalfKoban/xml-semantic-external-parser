@@ -7,21 +7,41 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class XmlStrategyFinder
     {
-        public static IXmlStrategy Find(string filePath)
+        public static IXmlStrategy Find(string filePath, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            var name = GetDocumentName(filePath);
-
-            if (string.Equals(name, "packages", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith("packages.config"))
             {
                 return new XmlStrategyForPackagesConfig();
             }
 
-            if (string.Equals(name, "Wix", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".csproj", comparison))
+            {
+                return new XmlStrategyForProject();
+            }
+
+            if (filePath.EndsWith(".wxi", comparison) || filePath.EndsWith(".wxs", comparison))
             {
                 return new XmlStrategyForWix();
             }
 
-            if (string.Equals(name, "Project", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".xaml", comparison))
+            {
+                return new XmlStrategyForXaml();
+            }
+
+            var name = GetDocumentName(filePath);
+
+            if (string.Equals(name, "packages", comparison))
+            {
+                return new XmlStrategyForPackagesConfig();
+            }
+
+            if (string.Equals(name, "Wix", comparison))
+            {
+                return new XmlStrategyForWix();
+            }
+
+            if (string.Equals(name, "Project", comparison))
             {
                 return new XmlStrategyForProject();
             }
