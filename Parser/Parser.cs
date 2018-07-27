@@ -44,16 +44,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         Parse(reader, dummyRoot, finder, strategy);
                     }
 
-                    var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().First();
                     var root = dummyRoot.Children.OfType<Container>().Last();
-
-                    // let root include the XML declaration
-                    var rootStart = xmlDeclaration.LocationSpan.Start;
-                    var rootEnd = root.LocationSpan.End;
-
-                    // adjust positions
-                    root.LocationSpan = new LocationSpan(rootStart, rootEnd);
-                    root.HeaderSpan = new CharacterSpan(xmlDeclaration.Span.Start, root.HeaderSpan.End);
+                    var rootEnd = IncludeXmlDeclarationInRoot(root, dummyRoot);
 
                     var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
 
@@ -288,6 +280,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var startPos = finder.GetCharacterPosition(locationSpan.Start);
             var endPos = finder.GetCharacterPosition(locationSpan.End);
             return new CharacterSpan(startPos, endPos);
+        }
+
+        private static LineInfo IncludeXmlDeclarationInRoot(Container root, Container dummyRoot)
+        {
+            var rootEnd = root.LocationSpan.End;
+
+            // there might be no declaration, such as when trying to parse XAML files
+            var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault();
+            if (xmlDeclaration != null)
+            {
+                // let root include the XML declaration
+                var rootStart = xmlDeclaration.LocationSpan.Start;
+
+                // adjust positions
+                root.LocationSpan = new LocationSpan(rootStart, rootEnd);
+                root.HeaderSpan = new CharacterSpan(xmlDeclaration.Span.Start, root.HeaderSpan.End);
+            }
+
+            return rootEnd;
         }
     }
 }

@@ -74,6 +74,9 @@
     <Content Include="packages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="test_without_declaration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="test.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

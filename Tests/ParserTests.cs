@@ -166,6 +166,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected: false"));
         }
 
+        [Test]
+        public void Xml_without_declaration_can_be_read()
+        {
+            var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
+            var fileName = Path.Combine(parentDirectory, "test_without_declaration.xml");
+
+            _objectUnderTest = Parser.Parse(fileName);
+            _root = _objectUnderTest.Children.Single();
+
+            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)));
+
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(495, 496)));
+        }
+
         private static void RemoveChars(HashSet<int> chars, Container node)
         {
             RemoveSpan(chars, node.HeaderSpan);

@@ -1,0 +1,27 @@
+﻿<something>
+  <!-- first comment -->
+  <?some definition ?>
+  <first element="true"></first>
+  <second element="true"> </second>
+  <third> <nested><!-- comment --></nested> </third>
+  <forth>
+
+  </forth>
+  <fifth />
+  <sixth>
+    <nested>
+      <!--
+      Some comment
+      -->
+    </nested>
+  </sixth>
+  <seventh>
+    <nested>
+<!-- strange item -->
+    </nested></seventh>
+
+  <?last definitionWithTrailingComment ?><!-- COMMENT -->
+
+  <!-- that's it -->
+
+</something>
