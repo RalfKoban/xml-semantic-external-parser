@@ -1,7 +1,5 @@
 ﻿using System;
 
-using YamlDotNet.Serialization;
-
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     public sealed class CharacterSpan : IEquatable<CharacterSpan>
@@ -12,10 +10,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
             End = end;
         }
 
-        [YamlMember(Alias = "start")]
         public int Start { get; }
 
-        [YamlMember(Alias = "end")]
         public int End { get; }
 
         public static bool operator ==(CharacterSpan left, CharacterSpan right) => Equals(left, right);

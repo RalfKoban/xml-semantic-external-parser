@@ -13,6 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
             var serializer = new SerializerBuilder()
                 .WithTypeConverter(new CharacterSpanConverter())
                 .WithTypeConverter(new LocationSpanConverter())
+                .WithTypeConverter(new ParsingErrorConverter())
                 .Build();
             serializer.Serialize(writer, graph);
         }

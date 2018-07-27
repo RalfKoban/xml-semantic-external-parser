@@ -21,6 +21,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 return new XmlStrategyForWix();
             }
 
+            if (string.Equals(name, "Project", StringComparison.OrdinalIgnoreCase))
+            {
+                return new XmlStrategyForProject();
+            }
+
             return new XmlStrategy();
         }
 

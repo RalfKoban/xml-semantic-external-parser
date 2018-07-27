@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 
-using YamlDotNet.Serialization;
-
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     [DebuggerDisplay("Start: {Start}, End: {End}")]
@@ -14,10 +12,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
             End = end;
         }
 
-        [YamlMember(Alias = "start")]
         public LineInfo Start { get; }
 
-        [YamlMember(Alias = "end")]
         public LineInfo End { get; }
 
         public static bool operator ==(LocationSpan left, LocationSpan right) => Equals(left, right);

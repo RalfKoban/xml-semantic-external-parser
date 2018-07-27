@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Strategies;
@@ -69,9 +68,20 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     file.Children.Add(root);
                 }
-                catch (Exception ex)
+                catch (XmlException ex)
                 {
-                    file.ParsingErrors.Add(new ParsingError { ErrorMessage = ex.Message });
+                    file.ParsingErrors.Add(new ParsingError
+                                               {
+                                                   ErrorMessage = ex.Message,
+                                                   Location = new LineInfo(ex.LineNumber, ex.LinePosition),
+                                               });
+
+                    var lines = System.IO.File.ReadLines(filePath).Count();
+
+                    // try to adjust location span to include full file content
+                    file.LocationSpan = lines == 0
+                                        ? new LocationSpan(new LineInfo(0, -1), new LineInfo(0, -1))
+                                        : new LocationSpan(new LineInfo(1, 0), new LineInfo(lines + 1, 0));
                 }
 
                 return file;
