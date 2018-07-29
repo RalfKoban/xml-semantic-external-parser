@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Strategies;
@@ -14,6 +15,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var finder = CharacterPositionFinder.CreateFrom(filePath);
             var strategy = XmlStrategyFinder.Find(filePath);
+
+            Trace.WriteLine($"Using {strategy.GetType().Name} Strategy for '{filePath}'.", "RKN Semantic");
+
             var file = ParseCore(filePath, finder, strategy);
 
             Resorter.Resort(file);

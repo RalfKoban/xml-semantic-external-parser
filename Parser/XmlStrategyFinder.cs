@@ -29,8 +29,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 return new XmlStrategyForXaml();
             }
 
-            var name = GetDocumentName(filePath);
+            var tuple = GetDocumentInfo(filePath);
 
+            var name = tuple?.Item1;
+            var ns = tuple?.Item2;
             if (string.Equals(name, "packages", comparison))
             {
                 return new XmlStrategyForPackagesConfig();
@@ -46,10 +48,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 return new XmlStrategyForProject();
             }
 
+            if (string.Equals(ns, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", comparison))
+            {
+                return new XmlStrategyForXaml();
+            }
+
             return new XmlStrategy();
         }
 
-        private static string GetDocumentName(string filePath)
+        private static Tuple<string, string> GetDocumentInfo(string filePath)
         {
             try
             {
@@ -60,7 +67,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         // get first element
                         if (reader.NodeType == XmlNodeType.Element)
                         {
-                            return reader.Name;
+                            return new Tuple<string, string>(reader.Name, reader.GetAttribute("xmlns"));
                         }
                     }
                 }
