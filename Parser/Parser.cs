@@ -136,21 +136,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 container.LocationSpan = locationSpan;
                 container.HeaderSpan = headerSpanCorrected;
                 container.FooterSpan = footerSpan;
-
-                // check whether we can use a terminal node instead
-                if (strategy.ShallBeTerminalNode(container))
-                {
-                    AddTerminalNode(parent, container.Type, container.Name, container.LocationSpan, container.GetTotalSpan());
-                }
-                else
-                {
-                    parent.Children.Add(container);
-                }
             }
             else
             {
-                parent.Children.Add(container);
-
                 var startingSpan = GetLocationSpan(reader);
 
                 while (reader.NodeType != XmlNodeType.EndElement)
@@ -179,6 +167,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 container.LocationSpan = new LocationSpan(startingSpan.Start, endingSpan.End);
                 container.HeaderSpan = GetCharacterSpan(startingSpan, finder);
                 container.FooterSpan = GetCharacterSpan(endingSpan, finder);
+            }
+
+            // check whether we can use a terminal node instead
+            if (strategy.ShallBeTerminalNode(container))
+            {
+                AddTerminalNode(parent, container.Type, container.Name, container.LocationSpan, container.GetTotalSpan());
+            }
+            else
+            {
+                parent.Children.Add(container);
             }
         }
 
