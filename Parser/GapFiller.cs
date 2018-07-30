@@ -10,8 +10,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             foreach (var rootChild in file.Children)
             {
-                // adjust based on gaps
-                foreach (var child in rootChild.Children)
+                // adjust based on gaps, but only adjust child nodes that are no attributes
+                foreach (var child in rootChild.Children.Where(_ => _.Type != NodeType.Attribute))
                 {
                     AdjustNode(child, rootChild, finder);
                 }
