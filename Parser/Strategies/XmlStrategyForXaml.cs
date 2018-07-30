@@ -4,6 +4,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
     public sealed class XmlStrategyForXaml : XmlStrategy
     {
+        public override bool ParseAttributesEnabled => false;
+
         public override string GetName(XmlTextReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)

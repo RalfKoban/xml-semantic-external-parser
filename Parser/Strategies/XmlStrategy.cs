@@ -1,9 +1,12 @@
-﻿using System.Xml;
+﻿using System.Runtime.Remoting.Messaging;
+using System.Xml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
     public class XmlStrategy : IXmlStrategy
     {
+        public virtual bool ParseAttributesEnabled => true;
+
         public virtual string GetName(XmlTextReader reader)
         {
             switch (reader.NodeType)

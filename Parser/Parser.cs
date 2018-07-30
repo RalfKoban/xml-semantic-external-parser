@@ -96,23 +96,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
 
                 case XmlNodeType.ProcessingInstruction:
-                {
-                    ParseTerminalNode(reader, parent, finder, strategy);
-                    break;
-                }
-
                 case XmlNodeType.Comment:
-                {
-                    ParseTerminalNode(reader, parent, finder, strategy);
-                    break;
-                }
-
                 case XmlNodeType.XmlDeclaration:
-                {
-                    ParseTerminalNode(reader, parent, finder, strategy);
-                    break;
-                }
-
                 case XmlNodeType.CDATA:
                 {
                     ParseTerminalNode(reader, parent, finder, strategy);
@@ -188,16 +173,18 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
-            if (reader.HasAttributes)
+            if (strategy.ParseAttributesEnabled)
             {
-                reader.MoveToFirstAttribute();
-
-                // read all attributes
-                do
+                if (reader.HasAttributes)
                 {
-                    ParseAttribute(reader, parent, finder, strategy);
+                    reader.MoveToFirstAttribute();
+
+                    // read all attributes
+                    do
+                    {
+                        ParseAttribute(reader, parent, finder, strategy);
+                    } while (reader.MoveToNextAttribute());
                 }
-                while (reader.MoveToNextAttribute());
             }
         }
 
