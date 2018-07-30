@@ -6,6 +6,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
     {
         public CharacterSpan(int start, int end)
         {
+            if (start > end && (start != 0 || end != -1))
+            {
+                throw new ArgumentException($"{nameof(start)} should be less than {nameof(end)} but {start} is greater than {end}!");
+            }
+
             Start = start;
             End = end;
         }
