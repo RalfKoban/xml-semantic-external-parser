@@ -50,9 +50,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
                 catch (Exception ex)
                 {
+                    Trace.WriteLine($"Exception: {ex}", Category);
+
                     Console.WriteLine("KO");
 
-                    Debug.WriteLine($"Exception: {ex}", Category);
                     throw;
                 }
             }
