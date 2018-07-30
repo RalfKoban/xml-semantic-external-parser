@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
-    public sealed class LineInfo : IEquatable<LineInfo>
+    public sealed class LineInfo : IEquatable<LineInfo>, IComparable<LineInfo>
     {
         public LineInfo(int lineNumber, int linePosition)
         {
@@ -21,6 +21,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public static bool operator ==(LineInfo left, LineInfo right) => Equals(left, right);
 
         public static bool operator !=(LineInfo left, LineInfo right) => !Equals(left, right);
+
+        public static bool operator <(LineInfo left, LineInfo right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator >(LineInfo left, LineInfo right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) > 0;
+        }
 
         public bool Equals(LineInfo other)
         {
@@ -45,6 +55,26 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
             {
                 return (LineNumber * 397) ^ LinePosition;
             }
+        }
+
+        public int CompareTo(LineInfo other)
+        {
+            if (other is null)
+            {
+                return -1;
+            }
+
+            if (LineNumber < other.LineNumber)
+            {
+                return -1;
+            }
+
+            if (LineNumber > other.LineNumber)
+            {
+                return 1;
+            }
+
+            return LinePosition - other.LinePosition;
         }
 
         public override string ToString() => $"Line: {LineNumber}, Position: {LinePosition}";

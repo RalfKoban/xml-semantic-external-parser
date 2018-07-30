@@ -22,6 +22,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Resorter.Resort(file);
             GapFiller.Fill(file, finder);
+            CommentCleaner.Clean(file);
 
             return file;
         }
@@ -183,7 +184,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     do
                     {
                         ParseAttribute(reader, parent, finder, strategy);
-                    } while (reader.MoveToNextAttribute());
+                    }
+                    while (reader.MoveToNextAttribute());
                 }
             }
         }

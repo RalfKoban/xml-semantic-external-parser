@@ -51,23 +51,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(524, 535)));
         }
 
-        [TestCase(" first comment ",  3,  1,  3, 26,  54,  79)]
-        [TestCase(" COMMENT ",       24, 42, 24, 59, 480, 497)]
-        [TestCase(" that's it ",     25,  1, 27,  2, 498, 523)]
-        public void Comment_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
-        {
-            Assert.Multiple(() =>
-            {
-                var node = _root.Children.OfType<TerminalNode>().Where(_ => _.Type == "Comment").First(_ => _.Name == name);
-
-                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
-                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
-                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(spanStartPos, spanEndPos)), "wrong span for {0}", name);
-            });
-        }
-
-        [TestCase("some",  4, 1,  4, 24,  80, 103)]
-        [TestCase("last", 23, 1, 24, 41, 437, 479)]
+        [TestCase("some", 3, 1, 4, 24, 54, 103)]
+        [TestCase("last", 23, 1, 27, 2, 437, 523)]
         public void ProcessingInstruction_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
         {
             Assert.Multiple(() =>
@@ -101,9 +86,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
-        [TestCase("third",   "nested",  7, 10,  7, 44, 184, 192, 209, 218)]
-        [TestCase("sixth",   "nested", 13,  1, 17, 15, 278, 291, 335, 349)]
-        [TestCase("seventh", "nested", 20,  1, 22, 13, 375, 388, 412, 424)]
+        [TestCase("third",   "nested",  7, 10,  7, 44, 184, 208, 209, 218)]
+        [TestCase("sixth",   "nested", 13,  1, 17, 15, 278, 334, 335, 349)]
+        [TestCase("seventh", "nested", 20,  1, 22, 13, 375, 411, 412, 424)]
         public void Second_level_element_LocationSpan_and_Span_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
             Assert.Multiple(() =>
@@ -151,7 +136,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 RemoveChars(chars, child);
             }
 
-            Assert.That(chars.Count, Is.EqualTo(0));
+            Assert.That(chars.Count, Is.EqualTo(0), "Still left are: " + string.Join(",", chars));
         }
 
         [Test]
