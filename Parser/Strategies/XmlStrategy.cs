@@ -1,5 +1,6 @@
-﻿using System.Runtime.Remoting.Messaging;
-using System.Xml;
+﻿using System.Xml;
+
+using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
@@ -45,5 +46,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                 default: return string.Empty;
             }
         }
+
+        public virtual bool ShallBeTerminalNode(Container container) => false;
     }
 }

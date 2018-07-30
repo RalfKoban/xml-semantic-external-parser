@@ -120,8 +120,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                     Name = name,
                                 };
 
-            parent.Children.Add(container);
-
             var isEmpty = reader.IsEmptyElement;
 
             ParseAttributes(reader, container, finder, strategy);
@@ -138,9 +136,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 container.LocationSpan = locationSpan;
                 container.HeaderSpan = headerSpanCorrected;
                 container.FooterSpan = footerSpan;
+
+                // check whether we can use a terminal node instead
+                if (strategy.ShallBeTerminalNode(container))
+                {
+                    AddTerminalNode(parent, container.Type, container.Name, container.LocationSpan, container.GetTotalSpan());
+                }
+                else
+                {
+                    parent.Children.Add(container);
+                }
             }
             else
             {
+                parent.Children.Add(container);
+
                 var startingSpan = GetLocationSpan(reader);
 
                 while (reader.NodeType != XmlNodeType.EndElement)
@@ -208,13 +218,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var locationSpan = new LocationSpan(attributeStartPos, attributeEndPos);
             var span = new CharacterSpan(startPos, endPos);
 
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
+            AddTerminalNode(parent, type, name, locationSpan, span);
         }
 
         private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
@@ -225,6 +229,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
+            AddTerminalNode(parent, type, name, locationSpan, span);
+        }
+
+        private static void AddTerminalNode(Container parent, string type, string name, LocationSpan locationSpan, CharacterSpan span)
+        {
             parent.Children.Add(new TerminalNode
                                     {
                                         Type = type,
