@@ -1,30 +1,25 @@
 ﻿using System.Xml;
 
+using MiKoSolutions.SemanticParsers.Xml.Yaml;
+
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
     public sealed class XmlStrategyForPackagesConfig : XmlStrategy
     {
+        public override bool ParseAttributesEnabled => false;
+
         public override string GetName(XmlTextReader reader)
         {
             switch (reader.NodeType)
             {
                 case XmlNodeType.Element:
                 {
-                    var value = reader.GetAttribute("id");
-                    if (value is null)
-                    {
-                        return reader.Name;
-                    }
-
-                    return $"{reader.Name} '{value}'";
+                    return reader.GetAttribute("id") ?? reader.Name;
                 }
 
                 case XmlNodeType.Attribute:
                 {
-                    var readerName = reader.Name;
-                    var value = reader.Value;
-
-                    return $"{readerName} '{value}'";
+                    return $"{reader.Name} '{reader.Value}'";
                 }
 
                 default:
@@ -35,5 +30,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+
+        public override bool ShallBeTerminalNode(Container container) => container?.Type == "package";
     }
 }

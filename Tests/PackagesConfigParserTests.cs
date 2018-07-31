@@ -37,9 +37,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var names = _packages.Children.Select(_ => _.Name).ToList();
             var foundNames = string.Join(",", names);
 
-            Assert.That(names.Contains("package 'NUnit'"), foundNames);
-            Assert.That(names.Contains("package 'StyleCop.Analyzers'"), foundNames);
-            Assert.That(names.Contains("package 'YamlDotNet'"), foundNames);
+            Assert.That(names.Contains("NUnit"), foundNames);
+            Assert.That(names.Contains("StyleCop.Analyzers"), foundNames);
+            Assert.That(names.Contains("YamlDotNet"), foundNames);
         }
 
         [Test]
