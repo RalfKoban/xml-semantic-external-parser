@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
@@ -17,7 +16,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                         return reader.Name;
                     }
 
-                    return $"{reader.Name} '{TrimLength(value, 20)}'";
+                    return $"{reader.Name} '{value}'";
                 }
 
                 case XmlNodeType.Attribute:
@@ -25,7 +24,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                     var readerName = reader.Name;
                     var value = reader.Value;
 
-                    return $"{readerName} '{TrimLength(value, 20)}'";
+                    return $"{readerName} '{value}'";
                 }
 
                 default:
@@ -36,15 +35,5 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
-
-        private static string TrimLength(string value, int maxLength, string suffix = "...")
-        {
-            if (value.Length > maxLength)
-            {
-                return value.Substring(0, maxLength) + suffix;
-            }
-
-            return value;
-        }
     }
 }
