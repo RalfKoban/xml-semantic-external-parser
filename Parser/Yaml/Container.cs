@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using YamlDotNet.Serialization;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
@@ -15,5 +16,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public List<ContainerOrTerminalNode> Children { get; } = new List<ContainerOrTerminalNode>();
 
         public override CharacterSpan GetTotalSpan() => new CharacterSpan(HeaderSpan.Start, FooterSpan.End);
+
+        public TerminalNode ToTerminalNode() => new TerminalNode
+                                                    {
+                                                        Type = Type,
+                                                        Name = Name,
+                                                        LocationSpan = LocationSpan,
+                                                        Span = GetTotalSpan(),
+                                                    };
     }
 }

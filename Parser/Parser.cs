@@ -170,14 +170,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             // check whether we can use a terminal node instead
-            if (strategy.ShallBeTerminalNode(container))
-            {
-                AddTerminalNode(parent, container.Type, container.Name, container.LocationSpan, container.GetTotalSpan());
-            }
-            else
-            {
-                parent.Children.Add(container);
-            }
+            var nodeToAdd = strategy.ShallBeTerminalNode(container)
+                            ? (ContainerOrTerminalNode)container.ToTerminalNode()
+                            : container;
+            parent.Children.Add(nodeToAdd);
         }
 
         private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
