@@ -93,7 +93,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.Multiple(() =>
             {
-                var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.First(_ => _.Name == name);
+                var parent = _root.Children.OfType<Container>().First(_ => _.Name == parentName);
+                var node = parent.Children.First(_ => _.Name == name);
 
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);
@@ -116,7 +117,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.Multiple(() =>
             {
-                var node = _root.Children.OfType<Container>().First(_ => _.Name == parentName).Children.OfType<TerminalNode>().First(_ => _.Name == name);
+                var parent = _root.Children.OfType<Container>().First(_ => _.Name == parentName);
+                var node = parent.Children.OfType<TerminalNode>().First(_ => _.Name == name);
 
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLine, startPos)), "Wrong start for {0}", name);
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLine, endPos)), "Wrong end for {0}", name);

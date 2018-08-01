@@ -122,25 +122,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             var isEmpty = reader.IsEmptyElement;
 
-            ParseAttributes(reader, container, finder, strategy);
+            var startingSpan = GetLocationSpanWithParseAttributes(reader, container, finder, strategy);
+            var headerSpan = GetCharacterSpan(startingSpan, finder);
 
             if (isEmpty)
             {
-                var locationSpan = GetLocationSpan(reader);
-                var headerSpan = GetCharacterSpan(locationSpan, finder);
-
                 // there is no content, so we have to get away of the footer by just using the '/>' characters as footer
                 var headerSpanCorrected = new CharacterSpan(headerSpan.Start, headerSpan.End - 2);
-                var footerSpan = new CharacterSpan(headerSpan.End - 1, headerSpan.End);
+                var footerSpanCorrected = new CharacterSpan(headerSpan.End - 1, headerSpan.End);
 
-                container.LocationSpan = locationSpan;
+                container.LocationSpan = startingSpan;
                 container.HeaderSpan = headerSpanCorrected;
-                container.FooterSpan = footerSpan;
+                container.FooterSpan = footerSpanCorrected;
             }
             else
             {
-                var startingSpan = GetLocationSpan(reader);
-
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
                     var nodeType = Parse(reader, container, finder, strategy);
@@ -163,10 +159,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
 
                 var endingSpan = GetLocationSpan(reader);
+                var footerSpan = GetCharacterSpan(endingSpan, finder);
 
                 container.LocationSpan = new LocationSpan(startingSpan.Start, endingSpan.End);
-                container.HeaderSpan = GetCharacterSpan(startingSpan, finder);
-                container.FooterSpan = GetCharacterSpan(endingSpan, finder);
+                container.HeaderSpan = headerSpan;
+                container.FooterSpan = footerSpan;
             }
 
             // check whether we can use a terminal node instead
@@ -180,17 +177,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             if (strategy.ParseAttributesEnabled)
             {
-                if (reader.HasAttributes)
-                {
-                    reader.MoveToFirstAttribute();
+                reader.MoveToFirstAttribute();
 
-                    // read all attributes
-                    do
-                    {
-                        ParseAttribute(reader, parent, finder, strategy);
-                    }
-                    while (reader.MoveToNextAttribute());
+                // read all attributes
+                do
+                {
+                    ParseAttribute(reader, parent, finder, strategy);
                 }
+                while (reader.MoveToNextAttribute());
             }
         }
 
@@ -252,23 +246,45 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
+        private static LineInfo GetStartLine(XmlTextReader reader)
+        {
+            var startCorrection = GetPositionCorrectionByReader(reader);
+            return new LineInfo(reader.LineNumber, reader.LinePosition - startCorrection);
+        }
+
+        private static LineInfo GetEndLine(XmlTextReader reader)
+        {
+            var endCorrection = GetPositionCorrectionByReader(reader);
+            return new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // previous character needed
+        }
+
         //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
         private static LocationSpan GetLocationSpan(XmlTextReader reader)
         {
-            var startCorrection = GetPositionCorrectionByReader(reader);
-            var start = new LineInfo(reader.LineNumber, reader.LinePosition - startCorrection);
+            var start = GetStartLine(reader);
+            var end = reader.Read()
+                      ? GetEndLine(reader)
+                      : start;
 
-            if (reader.Read())
-            {
-                var endCorrection = GetPositionCorrectionByReader(reader);
-                var end = new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // previous character needed
+            return new LocationSpan(start, end);
+        }
 
-                return new LocationSpan(start, end);
-            }
-            else
+        //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
+        private static LocationSpan GetLocationSpanWithParseAttributes(XmlTextReader reader, Container container, CharacterPositionFinder finder, IXmlStrategy strategy)
+        {
+            var start = GetStartLine(reader);
+
+            if (reader.HasAttributes)
             {
-                return new LocationSpan(start, start);
+                // we have to read the attributes
+                ParseAttributes(reader, container, finder, strategy);
             }
+
+            var end = reader.Read()
+                      ? GetEndLine(reader)
+                      : start;
+
+            return new LocationSpan(start, end);
         }
 
         private static CharacterSpan GetCharacterSpan(LocationSpan locationSpan, CharacterPositionFinder finder)

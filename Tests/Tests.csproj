@@ -54,6 +54,7 @@
     <Compile Include="CharacterPositionFinderTests.cs" />
     <Compile Include="PackagesConfigParserTests.cs" />
     <Compile Include="ParserTests.cs" />
+    <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="single_line_description.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test_without_declaration.xml">

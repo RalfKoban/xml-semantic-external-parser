@@ -1,0 +1,1 @@
+        <Description xml:space="preserve">A diagnostic extension for the .NET Compiler Platform ("Roslyn") that checks for different metrics such as Lines of Code or Cyclomatic Complexity; in addition to several maintainability, naming and documentation rules.</Description>
