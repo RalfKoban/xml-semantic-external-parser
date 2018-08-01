@@ -34,8 +34,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     return 0;
                 }
 
-                var encodingToUse = Console.In.ReadLine();
-                var outputFileToWrite = Console.In.ReadLine();
+                var encodingToUse = await Console.In.ReadLineAsync();
+                var outputFileToWrite = await Console.In.ReadLineAsync();
 
                 try
                 {
