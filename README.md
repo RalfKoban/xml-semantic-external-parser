@@ -8,3 +8,12 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 [![codecov](https://codecov.io/gh/RalfKoban/xml-semantic-external-parser/branch/master/graph/badge.svg)](https://codecov.io/gh/RalfKoban/xml-semantic-external-parser)
 
 [![Build history](https://buildstats.info/appveyor/chart/RalfKoban/xml-semantic-external-parser)](https://ci.appveyor.com/project/RalfKoban/xml-semantic-external-parser/history)
+
+## Supported formats
+Following file formats are supported:
+- Configuration files (.config)
+- C# Project files (.csproj)
+- C# Rule sets (.ruleset)
+- Wix Toolkit (.wxi, .wxi)
+- WPF (.xaml)
+- XML (.xml)
