@@ -190,7 +190,17 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 
         public override bool ParseAttributesEnabled => false;
 
-        public override string GetName(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.GetAttribute("Id") ?? reader.Name : base.GetName(reader);
+        public override string GetName(XmlTextReader reader)
+        {
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                var name = reader.Name;
+                var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id") ?? reader.GetAttribute("Action");
+                return identifier is null ? name : $"{name} '{identifier}'";
+            }
+
+            return base.GetName(reader);
+        }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
