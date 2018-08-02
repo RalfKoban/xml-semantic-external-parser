@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
@@ -58,7 +59,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     file.LocationSpan = new LocationSpan(fileBegin, fileEnd);
 
-                    if (positionAfterLastElement != fileEnd)
+                    if (positionAfterLastElement < fileEnd)
                     {
                         file.FooterSpan = GetCharacterSpan(new LocationSpan(positionAfterLastElement, fileEnd), finder);
                     }
@@ -129,8 +130,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
             if (isEmpty)
             {
                 // there is no content, so we have to get away of the footer by just using the '/>' characters as footer
-                var headerSpanCorrected = new CharacterSpan(headerSpan.Start, headerSpan.End - 2);
-                var footerSpanCorrected = new CharacterSpan(headerSpan.End - 1, headerSpan.End);
+                var headerSpanCorrected = new CharacterSpan(headerSpan.Start, Math.Max(headerSpan.Start, headerSpan.End - 2));
+                var footerSpanCorrected = new CharacterSpan(Math.Max(0, headerSpan.End - 1), headerSpan.End);
 
                 container.LocationSpan = startingSpan;
                 container.HeaderSpan = headerSpanCorrected;
@@ -281,9 +282,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 ParseAttributes(reader, container, finder, strategy);
             }
 
-            var end = reader.Read()
-                      ? GetEndLine(reader)
-                      : start;
+            // read to end of character
+            reader.Read();
+
+            var end = GetEndLine(reader);
 
             return new LocationSpan(start, end);
         }
@@ -292,6 +294,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var startPos = finder.GetCharacterPosition(locationSpan.Start);
             var endPos = finder.GetCharacterPosition(locationSpan.End);
+
             return new CharacterSpan(startPos, endPos);
         }
 

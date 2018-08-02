@@ -23,6 +23,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         continue;
                     }
 
+                    // TODO: there is still an issue with:
+                    // <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
+                    // <RegistryValue Key="Software\[Manufacturer]\[ProductName]" KeyPath="yes" Root="HKCU" Type="string" Value="" />
                     AdjustNode(child, rootChild, finder);
                 }
             }
