@@ -232,9 +232,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                     });
         }
 
-        private static int GetPositionCorrectionByReader(XmlReader reader) => GetPositionCorrectionByXmlNodeType(reader.NodeType);
+        private static int GetPositionCorrection(XmlReader reader) => GetPositionCorrection(reader.NodeType);
 
-        private static int GetPositionCorrectionByXmlNodeType(XmlNodeType type)
+        private static int GetPositionCorrection(XmlNodeType type)
         {
             switch (type)
             {
@@ -249,14 +249,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static LineInfo GetStartLine(XmlTextReader reader)
         {
-            var startCorrection = GetPositionCorrectionByReader(reader);
+            var startCorrection = GetPositionCorrection(reader);
             return new LineInfo(reader.LineNumber, reader.LinePosition - startCorrection);
         }
 
         private static LineInfo GetEndLine(XmlTextReader reader)
         {
-            var endCorrection = GetPositionCorrectionByReader(reader);
-            return new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // next character needed
+            var endCorrection = GetPositionCorrection(reader);
+            return new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // previous character needed
         }
 
         //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
