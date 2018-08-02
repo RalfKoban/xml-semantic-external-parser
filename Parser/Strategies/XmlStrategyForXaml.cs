@@ -1,9 +1,26 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Xml;
+
+using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
     public sealed class XmlStrategyForXaml : XmlStrategy
     {
+        private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
+                                                                        {
+                                                                            "Button",
+                                                                            "Binding",
+                                                                            "ColumnDefinition",
+                                                                            "CheckBox",
+                                                                            "Image",
+                                                                            "Label",
+                                                                            "RowDefinition",
+                                                                            "Setter",
+                                                                            "TextBlock",
+                                                                            "TextBox",
+                                                                        };
+
         public override bool ParseAttributesEnabled => false;
 
         public override string GetName(XmlTextReader reader)
@@ -21,5 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+
+        public override bool ShallBeTerminalNode(Container container) => TerminalNodeNames.Contains(container?.Type);
     }
 }
