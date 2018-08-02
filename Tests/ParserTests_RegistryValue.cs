@@ -8,27 +8,28 @@ using NUnit.Framework;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    [TestFixture]
+    [TestFixture("registry_value.xml")]
+    [TestFixture("registry_value_resorted.xml")]
     public class ParserTests_RegistryValue
     {
+        private readonly string _fileName;
         private Yaml.File _objectUnderTest;
         private Yaml.Container _root;
+
+        public ParserTests_RegistryValue(string fileName) => _fileName = fileName;
 
         [SetUp]
         public void PrepareTest()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
-            var fileName = Path.Combine(parentDirectory, "registry_value.xml");
+            var fileName = Path.Combine(parentDirectory, _fileName);
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();
         }
 
         [Test]
-        public void File_Name_matches()
-        {
-            Assert.That(_objectUnderTest.Name, Does.EndWith(Path.DirectorySeparatorChar + "registry_value.xml"));
-        }
+        public void File_Name_matches() => Assert.That(_objectUnderTest.Name, Does.EndWith(Path.DirectorySeparatorChar + _fileName));
 
         [Test]
         public void File_LocationSpan_matches()
