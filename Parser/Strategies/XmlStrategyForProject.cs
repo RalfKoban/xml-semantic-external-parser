@@ -33,6 +33,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "Import",
                                                                             "LangVersion",
                                                                             "None",
+                                                                            "NuGetPackageImportStamp",
                                                                             "Optimize",
                                                                             "OutputPath",
                                                                             "OutputType",
