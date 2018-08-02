@@ -11,6 +11,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                         {
                                                                             "ItemGroup",
                                                                             "ItemDefinitionGroup",
+                                                                            "ImportGroup",
                                                                             "Project",
                                                                             "ProjectConfiguration",
                                                                             "PropertyGroup",
