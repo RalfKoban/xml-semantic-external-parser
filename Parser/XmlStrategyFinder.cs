@@ -43,7 +43,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 return new XmlStrategyForWix();
             }
 
-            if (string.Equals(name, "Project", comparison))
+            if (string.Equals(name, "Project", comparison) && string.Equals(ns, "http://schemas.microsoft.com/developer/msbuild/2003", comparison))
             {
                 return new XmlStrategyForProject();
             }
