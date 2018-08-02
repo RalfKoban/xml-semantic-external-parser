@@ -100,6 +100,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 case XmlNodeType.Comment:
                 case XmlNodeType.XmlDeclaration:
                 case XmlNodeType.CDATA:
+                case XmlNodeType.Text:
                 {
                     ParseTerminalNode(reader, parent, finder, strategy);
                     break;
@@ -255,7 +256,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         private static LineInfo GetEndLine(XmlTextReader reader)
         {
             var endCorrection = GetPositionCorrectionByReader(reader);
-            return new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // previous character needed
+            return new LineInfo(reader.LineNumber, reader.LinePosition - endCorrection - 1); // next character needed
         }
 
         //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!

@@ -10,5 +10,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public const string XmlDeclaration = nameof(XmlNodeType.XmlDeclaration);
         public const string Comment = nameof(XmlNodeType.Comment);
         public const string ProcessingInstruction = nameof(XmlNodeType.ProcessingInstruction);
+        public const string Text = nameof(XmlNodeType.Text);
     }
 }

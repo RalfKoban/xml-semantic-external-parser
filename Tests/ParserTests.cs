@@ -35,20 +35,20 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void File_LocationSpan_matches()
         {
-            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(29, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(29, 0)), "Wrong end");
 
-            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(536, 537)));
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(536, 537)), "Wrong footer");
         }
 
         [Test]
         public void Root_LocationSpan_matches()
         {
-            Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)));
-            Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(28, 12)));
+            Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)), "Wrong start");
+            Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(28, 12)), "Wrong end");
 
-            Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 53)));
-            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(524, 535)));
+            Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 53)), "Wrong header");
+            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(524, 535)), "Wrong footer");
         }
 
         [TestCase("some", 3, 1, 4, 24, 54, 103)]
@@ -162,10 +162,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();
 
-            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)));
+            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)), "Wrong end");
 
-            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(495, 496)));
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(495, 496)), "Wrong footer");
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)

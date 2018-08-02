@@ -38,11 +38,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
             switch (reader.NodeType)
             {
                 case XmlNodeType.Attribute: return NodeType.Attribute;
+                case XmlNodeType.CDATA: return NodeType.CDATA;
+                case XmlNodeType.Comment: return NodeType.Comment;
                 case XmlNodeType.Element: return NodeType.Element;
                 case XmlNodeType.ProcessingInstruction: return NodeType.ProcessingInstruction;
-                case XmlNodeType.Comment: return NodeType.Comment;
+                case XmlNodeType.Text: return NodeType.Text;
                 case XmlNodeType.XmlDeclaration: return NodeType.XmlDeclaration;
-                case XmlNodeType.CDATA: return NodeType.CDATA;
+
                 default: return string.Empty;
             }
         }

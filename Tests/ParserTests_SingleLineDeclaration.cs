@@ -35,10 +35,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)));
-                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(2, 0)));
+                Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
+                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(2, 0)), "Wrong end");
 
-                Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(274, 275)));
+                Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(274, 275)), "Wrong footer");
             });
         }
 
@@ -47,11 +47,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 9)));
-                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(1, 274)));
+                Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 9)), "Wrong start");
+                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(1, 274)), "Wrong end");
 
-                Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(8, 41)));
-                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(260, 273)));
+                Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(8, 41)), "Wrong header");
+                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(260, 273)), "Wrong footer");
+            });
+        }
+
+        [Test]
+        public void Text_matches()
+        {
+            var text = _root.Children.First(_ => _.Type == NodeType.Text) as TerminalNode;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(text.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 43)), "Wrong start");
+                Assert.That(text.LocationSpan.End, Is.EqualTo(new LineInfo(1, 260)), "Wrong end");
+
+                Assert.That(text.Span, Is.EqualTo(new CharacterSpan(42, 259)), "Wrong span");
             });
         }
     }
