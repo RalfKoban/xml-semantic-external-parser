@@ -13,6 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "Binding",
                                                                             "ColumnDefinition",
                                                                             "CheckBox",
+                                                                            "DataGridTemplateColumn",
                                                                             "Image",
                                                                             "KeyBinding",
                                                                             "Label",
