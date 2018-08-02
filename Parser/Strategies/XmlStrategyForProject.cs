@@ -7,8 +7,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 {
     public sealed class XmlStrategyForProject : XmlStrategy
     {
+        private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
+                                                                        {
+                                                                            "ItemGroup",
+                                                                            "ItemDefinitionGroup",
+                                                                            "Project",
+                                                                            "ProjectConfiguration",
+                                                                            "PropertyGroup",
+                                                                        };
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
+                                                                            "AdditionalFiles",
                                                                             "AdditionalIncludeDirectories",
                                                                             "Analyzer",
                                                                             "AppDesignerFolder",
@@ -63,6 +73,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "OutputPath",
                                                                             "OutputType",
                                                                             "Platform",
+                                                                            "PlatformTarget",
                                                                             "PlatformToolset",
                                                                             "PostBuildEvent",
                                                                             "PostSharpObfuscationAwarenessEnabled",
@@ -89,6 +100,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "StyleCopTreatErrorsAsWarnings",
                                                                             "TargetFrameworkProfile",
                                                                             "TargetFrameworkVersion",
+                                                                            "TargetName",
                                                                             "TreatWarningsAsErrors",
                                                                             "UniqueIdentifier",
                                                                             "UpdateEnabled",
@@ -124,6 +136,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
-        public override bool ShallBeTerminalNode(Container container) => TerminalNodeNames.Contains(container?.Type);
+        public override bool ShallBeTerminalNode(Container container) => !NonTerminalNodeNames.Contains(container?.Type);
     }
 }
