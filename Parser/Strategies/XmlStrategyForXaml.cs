@@ -14,6 +14,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "ColumnDefinition",
                                                                             "CheckBox",
                                                                             "Image",
+                                                                            "KeyBinding",
                                                                             "Label",
                                                                             "RowDefinition",
                                                                             "Setter",
