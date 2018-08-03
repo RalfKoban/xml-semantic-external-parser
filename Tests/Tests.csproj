@@ -58,6 +58,7 @@
     <Compile Include="ParserTests_CData.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
+    <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\test_with_Macintosh_LineEnd.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\test_with_umlaut_and_wrong_encoding.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\test_with_Unix_LineEnd.xml">

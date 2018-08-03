@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Strategies;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using Container = MiKoSolutions.SemanticParsers.Xml.Yaml.Container;
+using File = MiKoSolutions.SemanticParsers.Xml.Yaml.File;
+
+using StreamReader = System.IO.StreamReader;
+using SystemFile = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
@@ -30,7 +35,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlStrategy strategy)
         {
-            using (var reader = new XmlTextReader(filePath))
+            // we have issues with UTF-8 encodings in files that should have an encoding='iso-8859-1'
+            using (var reader = new XmlTextReader(new StreamReader(SystemFile.OpenRead(filePath), Encoding.GetEncoding("iso-8859-1"))))
             {
                 var file = new File
                                {
