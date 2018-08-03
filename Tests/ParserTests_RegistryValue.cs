@@ -22,7 +22,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void PrepareTest()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
-            var fileName = Path.Combine(parentDirectory, _fileName);
+            var fileName = Path.Combine(parentDirectory, "Resources", _fileName);
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();

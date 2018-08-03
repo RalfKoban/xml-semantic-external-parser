@@ -20,7 +20,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void PrepareTest()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
-            var fileName = Path.Combine(parentDirectory, "test.xml");
+            var fileName = Path.Combine(parentDirectory, "Resources", "test.xml");
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();
@@ -157,7 +157,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void Xml_without_declaration_can_be_read()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
-            var fileName = Path.Combine(parentDirectory, "test_without_declaration.xml");
+            var fileName = Path.Combine(parentDirectory, "Resources", "test_without_declaration.xml");
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();

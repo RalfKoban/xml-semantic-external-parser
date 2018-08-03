@@ -19,7 +19,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         public void PrepareTest()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
-            var fileName = Path.Combine(parentDirectory, "packages.xml");
+            var fileName = Path.Combine(parentDirectory, "Resources", "packages.xml");
 
             _objectUnderTest = Parser.Parse(fileName);
             _packages = _objectUnderTest.Children.Single();

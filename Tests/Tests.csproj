@@ -75,31 +75,31 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta008\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.xml">
+    <Content Include="Resources\packages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="registry_value.xml">
+    <Content Include="Resources\registry_value.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="registry_value_resorted.xml">
+    <Content Include="Resources\registry_value_resorted.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="single_line_description.xml">
+    <Content Include="Resources\single_line_description.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test_with_CDATA.xml">
+    <Content Include="Resources\test_with_CDATA.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test_without_declaration.xml">
+    <Content Include="Resources\test_without_declaration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test.xml">
+    <Content Include="Resources\test.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test_with_Macintosh_LineEnd.xml">
+    <Content Include="Resources\test_with_Macintosh_LineEnd.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test_with_Unix_LineEnd.xml">
+    <Content Include="Resources\test_with_Unix_LineEnd.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
