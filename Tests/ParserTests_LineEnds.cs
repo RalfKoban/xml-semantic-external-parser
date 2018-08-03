@@ -8,8 +8,8 @@ using NUnit.Framework;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    [TestFixture("test_with_Unix_LineEnd.xml")]
-    [TestFixture("test_with_Macintosh_LineEnd.xml")]
+    [TestFixture("test_with_Unix_LineEnd.dat")]
+    [TestFixture("test_with_Macintosh_LineEnd.dat")]
     public class ParserTests_LineEnds
     {
         private readonly string _fileName;

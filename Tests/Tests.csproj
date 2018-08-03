@@ -97,15 +97,15 @@
     <Content Include="Resources\test.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\test_with_Macintosh_LineEnd.xml">
+    <None Include="Resources\test_with_Macintosh_LineEnd.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Content Include="Resources\test_with_umlaut_and_wrong_encoding.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\test_with_Unix_LineEnd.xml">
+    <None Include="Resources\test_with_Unix_LineEnd.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
