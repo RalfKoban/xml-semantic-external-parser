@@ -12,8 +12,11 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 ## Supported formats
 Following file formats are supported:
 - Configuration files (.config)
+- C++ Project files (.vcxproj)
 - C# Project files (.csproj)
 - C# Rule sets (.ruleset)
 - Wix Toolkit (.wxi, .wxi)
+- Visual Studio Installer XML (.vsixmanifest)
 - WPF (.xaml)
 - XML (.xml)
+- XSD (.xsd)
