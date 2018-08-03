@@ -54,6 +54,7 @@
     <Compile Include="CharacterPositionFinderTests.cs" />
     <Compile Include="PackagesConfigParserTests.cs" />
     <Compile Include="ParserTests.cs" />
+    <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_CData.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
@@ -93,6 +94,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test_with_Macintosh_LineEnd.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test_with_Unix_LineEnd.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

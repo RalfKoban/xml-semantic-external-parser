@@ -8,10 +8,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
     {
         public static void Fill(File file, CharacterPositionFinder finder)
         {
-            foreach (var rootChild in file.Children)
+            foreach (var root in file.Children)
             {
                 // adjust based on gaps, but only adjust child nodes that are no attributes and no text
-                foreach (var child in rootChild.Children)
+                foreach (var child in root.Children)
                 {
                     if (child.Type == NodeType.Attribute)
                     {
@@ -23,10 +23,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         continue;
                     }
 
-                    // TODO: there is still an issue with:
-                    // <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
-                    // <RegistryValue Key="Software\[Manufacturer]\[ProductName]" KeyPath="yes" Root="HKCU" Type="string" Value="" />
-                    AdjustNode(child, rootChild, finder);
+                    AdjustNode(child, root, finder);
                 }
             }
         }
