@@ -21,11 +21,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
 
                 case XmlNodeType.Comment:
                 case XmlNodeType.XmlDeclaration:
-                case XmlNodeType.CDATA:
                 {
                     return reader.Value;
                 }
 
+                case XmlNodeType.CDATA:
+                case XmlNodeType.Text:
                 default:
                 {
                     return string.Empty;
