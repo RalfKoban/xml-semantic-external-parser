@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <level1>
+    <![CDATA[Some data comes here]]>
+  </level1>
+  <level1>
+    <level2><![CDATA[more data
+    even on multiple lines
+    ]]></level2>
+  </level1>
+</root>

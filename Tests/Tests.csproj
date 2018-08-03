@@ -54,6 +54,7 @@
     <Compile Include="CharacterPositionFinderTests.cs" />
     <Compile Include="PackagesConfigParserTests.cs" />
     <Compile Include="ParserTests.cs" />
+    <Compile Include="ParserTests_CData.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +84,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="single_line_description.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test_with_CDATA.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test_without_declaration.xml">

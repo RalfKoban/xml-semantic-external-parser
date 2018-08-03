@@ -244,6 +244,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 case XmlNodeType.Element: return 1;               // 1 is length of <
                 case XmlNodeType.EndElement: return 2;            // 2 is length of </
                 case XmlNodeType.XmlDeclaration: return 2;        // 2 is length of <?
+                case XmlNodeType.CDATA: return 9;                 // 9 is length of <![CDATA[
                 default: return 0;
             }
         }
@@ -261,26 +262,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
-        private static LocationSpan GetLocationSpan(XmlTextReader reader)
-        {
-            var start = GetStartLine(reader);
-            var end = reader.Read()
-                      ? GetEndLine(reader)
-                      : start;
-
-            return new LocationSpan(start, end);
-        }
-
-        //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
-        private static LocationSpan GetLocationSpanWithParseAttributes(XmlTextReader reader, Container container, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static LocationSpan GetLocationSpan(XmlTextReader reader, Action<XmlTextReader> callback = null)
         {
             var start = GetStartLine(reader);
 
-            if (reader.HasAttributes)
-            {
-                // we have to read the attributes
-                ParseAttributes(reader, container, finder, strategy);
-            }
+            callback?.Invoke(reader);
 
             // read to end of character
             reader.Read();
@@ -288,6 +274,19 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var end = GetEndLine(reader);
 
             return new LocationSpan(start, end);
+        }
+
+        //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
+        private static LocationSpan GetLocationSpanWithParseAttributes(XmlTextReader reader, Container container, CharacterPositionFinder finder, IXmlStrategy strategy)
+        {
+            return GetLocationSpan(reader, _ =>
+                                                {
+                                                    if (_.HasAttributes)
+                                                    {
+                                                        // we have to read the attributes
+                                                        ParseAttributes(_, container, finder, strategy);
+                                                    }
+                                                });
         }
 
         private static CharacterSpan GetCharacterSpan(LocationSpan locationSpan, CharacterPositionFinder finder)
