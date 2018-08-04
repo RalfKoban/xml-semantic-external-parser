@@ -51,5 +51,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         public virtual bool ShallBeTerminalNode(Container container) => false;
+
+        public virtual void FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
+        {
+        }
     }
 }

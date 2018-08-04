@@ -13,5 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         string GetType(XmlTextReader reader);
 
         bool ShallBeTerminalNode(Container container);
+
+        void FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node);
     }
 }

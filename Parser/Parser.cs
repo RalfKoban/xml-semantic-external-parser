@@ -123,11 +123,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var name = flavor.GetName(reader);
             var type = flavor.GetType(reader);
+            var content = reader.Value;
 
             var container = new Container
                                 {
                                     Type = type,
                                     Name = name,
+                                    Content = content,
                                 };
 
             var isEmpty = reader.IsEmptyElement;
@@ -177,10 +179,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             // check whether we can use a terminal node instead
-            var nodeToAdd = flavor.ShallBeTerminalNode(container)
+            flavor.FinalAdjustAfterParsingComplete(container);
+
+            var child = flavor.ShallBeTerminalNode(container)
                             ? (ContainerOrTerminalNode)container.ToTerminalNode()
                             : container;
-            parent.Children.Add(nodeToAdd);
+
+            parent.Children.Add(child);
         }
 
         private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
@@ -216,29 +221,38 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var locationSpan = new LocationSpan(attributeStartPos, attributeEndPos);
             var span = new CharacterSpan(startPos, endPos);
 
-            AddTerminalNode(parent, type, name, locationSpan, span);
+            var child = AddTerminalNode(parent, type, name, value, locationSpan, span);
+
+            flavor.FinalAdjustAfterParsingComplete(child);
         }
 
         private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             var name = flavor.GetName(reader);
             var type = flavor.GetType(reader);
+            var value = reader.Value;
 
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
-            AddTerminalNode(parent, type, name, locationSpan, span);
+            var child = AddTerminalNode(parent, type, name, value, locationSpan, span);
+
+            flavor.FinalAdjustAfterParsingComplete(child);
         }
 
-        private static void AddTerminalNode(Container parent, string type, string name, LocationSpan locationSpan, CharacterSpan span)
+        private static TerminalNode AddTerminalNode(Container parent, string type, string name, string content, LocationSpan locationSpan, CharacterSpan span)
         {
-            parent.Children.Add(new TerminalNode
-                                    {
-                                        Type = type,
-                                        Name = name,
-                                        LocationSpan = locationSpan,
-                                        Span = span,
-                                    });
+            var child = new TerminalNode
+                           {
+                               Type = type,
+                               Name = name,
+                               Content = content,
+                               LocationSpan = locationSpan,
+                               Span = span,
+                           };
+            parent.Children.Add(child);
+
+            return child;
         }
 
         private static int GetPositionCorrection(XmlReader reader) => GetPositionCorrection(reader.NodeType);
