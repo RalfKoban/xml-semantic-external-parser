@@ -12,8 +12,7 @@ branches:
     - master
 
 init:
-# do not convert CR or LF automatically to CRLF (to avoid tests from failing that check for those specific line ends)
-- git config --global core.autocrlf false
+- git config --global core.autocrlf true
 
 # environment:
 
