@@ -6,24 +6,33 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
 
+using File = System.IO.File;
+
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    [Ignore("Currently not working on build server as the line ends get adjusted which breaks the tests (that test different line ends)")]
-    [TestFixture("test_with_Unix_LineEnd.xml")]
-    [TestFixture("test_with_Macintosh_LineEnd.xml")]
+    [TestFixture("test_with_Unix_LineEnd.xml", "\n")]
+    [TestFixture("test_with_Macintosh_LineEnd.xml", "\r")]
     public class ParserTests_LineEnds
     {
         private readonly string _fileName;
+        private readonly string _lineBreak;
         private Yaml.File _objectUnderTest;
         private Yaml.Container _root;
 
-        public ParserTests_LineEnds(string fileName) => _fileName = fileName;
+        public ParserTests_LineEnds(string fileName, string lineBreak)
+        {
+            _fileName = fileName;
+            _lineBreak = lineBreak;
+        }
 
         [SetUp]
         public void PrepareTest()
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
             var fileName = Path.Combine(parentDirectory, "Resources", _fileName);
+
+            var originalContent = File.ReadAllText(fileName);
+            File.WriteAllText(fileName, originalContent.Replace(Environment.NewLine, _lineBreak));
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();

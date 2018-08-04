@@ -35,6 +35,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         [TestCase(3, 10, ExpectedResult = 26)]
         [TestCase(18, 12, ExpectedResult = 12)]
+        [TestCase(28, 5, ExpectedResult = 14)]
+        [TestCase(29, 1, ExpectedResult = 0)]
         public int GetLineLength(int lineNumber, int linePosition) => _objectUnderTest.GetLineLength(new LineInfo(lineNumber, linePosition));
 
         [TestCase(3, 10, 63)]

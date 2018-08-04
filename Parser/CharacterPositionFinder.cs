@@ -15,8 +15,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         public static CharacterPositionFinder CreateFrom(string filePath)
         {
-            var lineEndingLength = -1;
-
             var i = 1;
             var count = -1;
 
@@ -25,19 +23,38 @@ namespace MiKoSolutions.SemanticParsers.Xml
                               { 0, new KeyValuePair<int, int>(0, count) },
                           };
 
-            foreach (var line in SystemFile.ReadLines(filePath))
+            var lineLength = 0;
+            using (var reader = SystemFile.OpenText(filePath))
             {
-                if (lineEndingLength == -1)
+                while (!reader.EndOfStream)
                 {
-                    lineEndingLength = GetLineEndingLength(filePath, line.Length);
-                }
+                    var index = reader.Read();
+                    switch (index)
+                    {
+                        case 10: // '\n'
+                        case 13: // '\r'
+                        {
+                            var lineBreaks = ReadLineBreaks(reader);
+                            lineLength += lineBreaks;
 
-                var lineLength = line.Length + lineEndingLength;
-                count += lineLength;
-                map[i++] = new KeyValuePair<int, int>(lineLength, count);
+                            count += lineBreaks;
+                            map[i++] = new KeyValuePair<int, int>(lineLength, count);
+
+                            lineLength = 0;
+                            break;
+                        }
+
+                        default:
+                        {
+                            count++;
+                            lineLength++;
+                            break;
+                        }
+                    }
+                }
             }
 
-            map[i] = new KeyValuePair<int, int>(0, count);
+            map[i] = new KeyValuePair<int, int>(lineLength, count);
 
             return new CharacterPositionFinder(map);
         }
@@ -75,34 +92,18 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return null;
         }
 
-        private static int GetLineEndingLength(string filePath, int startPosition)
+        private static int ReadLineBreaks(StreamReader reader)
         {
-            // try to figure out the line endings length (as they might differ because they could be '\n', '\r' or '\r\n'
-            using (var fileStream = SystemFile.OpenRead(filePath))
+            var next = reader.Peek();
+            switch (next)
             {
-                var characters = new byte[10];
-                fileStream.Seek(startPosition, SeekOrigin.Begin);
-                var charactersRead = fileStream.Read(characters, 0, characters.Length);
+                case 10: // '\n'
+                case 13: // '\r'
+                    reader.Read(); // read over the character
+                    return 2;
 
-                for (var i = 0; i < charactersRead; i++)
-                {
-                    var c = (char)characters[i];
-                    switch (c)
-                    {
-                        case '\n':
-                        {
-                            return 1;
-                        }
-
-                        case '\r':
-                        {
-                            var next = i + 1;
-                            return next < charactersRead && characters[next] == '\n' ? 2 : 1;
-                        }
-                    }
-                }
-
-                return 0;
+                default:
+                    return 1;
             }
         }
     }
