@@ -23,7 +23,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Strategies
                                                                             "TextBox",
                                                                         };
 
-        public override bool ParseAttributesEnabled => false;
+        public override bool ParseAttributesEnabled => true;
 
         public override string GetName(XmlTextReader reader)
         {
