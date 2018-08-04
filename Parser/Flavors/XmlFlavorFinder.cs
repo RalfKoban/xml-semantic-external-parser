@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Xml;
 
-using MiKoSolutions.SemanticParsers.Xml.Flavors;
-
-namespace MiKoSolutions.SemanticParsers.Xml
+namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public static class XmlFlavorFinder
     {
@@ -17,6 +15,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             if (filePath.EndsWith(".csproj", comparison))
             {
                 return new XmlFlavorForProject();
+            }
+
+            if (filePath.EndsWith(".ndproj", comparison) || filePath.EndsWith(".ndrules", comparison))
+            {
+                return new XmlFlavorForNDepend();
             }
 
             if (filePath.EndsWith(".wxi", comparison) || filePath.EndsWith(".wxs", comparison))
@@ -38,14 +41,19 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 return new XmlFlavorForPackagesConfig();
             }
 
-            if (string.Equals(name, "Wix", comparison))
+            if (string.Equals(name, "NDepend", comparison) || string.Equals(name, "Queries", comparison))
             {
-                return new XmlFlavorForWix();
+                return new XmlFlavorForNDepend();
             }
 
             if (string.Equals(name, "Project", comparison) && string.Equals(ns, "http://schemas.microsoft.com/developer/msbuild/2003", comparison))
             {
                 return new XmlFlavorForProject();
+            }
+
+            if (string.Equals(name, "Wix", comparison))
+            {
+                return new XmlFlavorForWix();
             }
 
             if (string.Equals(ns, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", comparison))

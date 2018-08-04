@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CharacterPositionFinder.cs" />
     <Compile Include="CommentCleaner.cs" />
+    <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
     <Compile Include="GapFiller.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="Parser.cs" />
@@ -66,7 +67,7 @@
     <Compile Include="Flavors\XmlFlavorForProject.cs" />
     <Compile Include="Flavors\XmlFlavorForWix.cs" />
     <Compile Include="Flavors\XmlFlavorForXaml.cs" />
-    <Compile Include="XmlFlavorFinder.cs" />
+    <Compile Include="Flavors\XmlFlavorFinder.cs" />
     <Compile Include="Yaml\Converters\ParsingErrorConverter.cs" />
     <Compile Include="Yaml\YamlWriter.cs" />
     <Compile Include="Yaml\CharacterSpan.cs" />
