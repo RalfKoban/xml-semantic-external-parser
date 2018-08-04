@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-using MiKoSolutions.SemanticParsers.Xml.Strategies;
+using MiKoSolutions.SemanticParsers.Xml.Flavors;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using Container = MiKoSolutions.SemanticParsers.Xml.Yaml.Container;
@@ -17,14 +17,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Parser
     {
+        private const string Category = "RKN Semantic";
+
         public static File Parse(string filePath)
         {
             var finder = CharacterPositionFinder.CreateFrom(filePath);
-            var strategy = XmlStrategyFinder.Find(filePath);
+            var flavor = XmlFlavorFinder.Find(filePath);
 
-            Trace.WriteLine($"Using {strategy.GetType().Name} Strategy for '{filePath}'.", "RKN Semantic");
+            Trace.WriteLine($"Using {flavor.GetType().Name} flavor for '{filePath}'.", Category);
 
-            var file = ParseCore(filePath, finder, strategy);
+            var file = ParseCore(filePath, finder, flavor);
 
             Resorter.Resort(file);
             GapFiller.Fill(file, finder);
@@ -33,7 +35,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return file;
         }
 
-        public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlStrategy strategy)
+        public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             // we have issues with UTF-8 encodings in files that should have an encoding='iso-8859-1'
             using (var reader = new XmlTextReader(new StreamReader(SystemFile.OpenRead(filePath), Encoding.GetEncoding("iso-8859-1"))))
@@ -53,7 +55,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     // Parse the XML and display the text content of each of the elements.
                     while (reader.Read())
                     {
-                        Parse(reader, dummyRoot, finder, strategy);
+                        Parse(reader, dummyRoot, finder, flavor);
                     }
 
                     var root = dummyRoot.Children.OfType<Container>().Last();
@@ -92,14 +94,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             var nodeType = reader.NodeType;
             switch (nodeType)
             {
                 case XmlNodeType.Element:
                 {
-                    ParseElement(reader, parent, finder, strategy);
+                    ParseElement(reader, parent, finder, flavor);
                     break;
                 }
 
@@ -109,7 +111,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 case XmlNodeType.CDATA:
                 case XmlNodeType.Text:
                 {
-                    ParseTerminalNode(reader, parent, finder, strategy);
+                    ParseTerminalNode(reader, parent, finder, flavor);
                     break;
                 }
             }
@@ -117,10 +119,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return nodeType;
         }
 
-        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
-            var name = strategy.GetName(reader);
-            var type = strategy.GetType(reader);
+            var name = flavor.GetName(reader);
+            var type = flavor.GetType(reader);
 
             var container = new Container
                                 {
@@ -130,7 +132,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             var isEmpty = reader.IsEmptyElement;
 
-            var startingSpan = GetLocationSpanWithParseAttributes(reader, container, finder, strategy);
+            var startingSpan = GetLocationSpanWithParseAttributes(reader, container, finder, flavor);
             var headerSpan = GetCharacterSpan(startingSpan, finder);
 
             if (isEmpty)
@@ -147,7 +149,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    var nodeType = Parse(reader, container, finder, strategy);
+                    var nodeType = Parse(reader, container, finder, flavor);
 
                     // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an end element
                     if (reader.NodeType == XmlNodeType.EndElement)
@@ -175,33 +177,33 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             // check whether we can use a terminal node instead
-            var nodeToAdd = strategy.ShallBeTerminalNode(container)
+            var nodeToAdd = flavor.ShallBeTerminalNode(container)
                             ? (ContainerOrTerminalNode)container.ToTerminalNode()
                             : container;
             parent.Children.Add(nodeToAdd);
         }
 
-        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static void ParseAttributes(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
-            if (strategy.ParseAttributesEnabled)
+            if (flavor.ParseAttributesEnabled)
             {
                 reader.MoveToFirstAttribute();
 
                 // read all attributes
                 do
                 {
-                    ParseAttribute(reader, parent, finder, strategy);
+                    ParseAttribute(reader, parent, finder, flavor);
                 }
                 while (reader.MoveToNextAttribute());
             }
         }
 
-        private static void ParseAttribute(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static void ParseAttribute(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             var attributeStartPos = new LineInfo(reader.LineNumber, reader.LinePosition);
 
-            var name = strategy.GetName(reader);
-            var type = strategy.GetType(reader);
+            var name = flavor.GetName(reader);
+            var type = flavor.GetType(reader);
 
             reader.ReadAttributeValue();
             var value = reader.Value;
@@ -217,10 +219,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
             AddTerminalNode(parent, type, name, locationSpan, span);
         }
 
-        private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
-            var name = strategy.GetName(reader);
-            var type = strategy.GetType(reader);
+            var name = flavor.GetName(reader);
+            var type = flavor.GetType(reader);
 
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
@@ -283,14 +285,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         //// ATTENTION !!!! SIDE EFFECT AS WE READ FURTHER !!!!
-        private static LocationSpan GetLocationSpanWithParseAttributes(XmlTextReader reader, Container container, CharacterPositionFinder finder, IXmlStrategy strategy)
+        private static LocationSpan GetLocationSpanWithParseAttributes(XmlTextReader reader, Container container, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             return GetLocationSpan(reader, _ =>
                                                 {
                                                     if (_.HasAttributes)
                                                     {
                                                         // we have to read the attributes
-                                                        ParseAttributes(_, container, finder, strategy);
+                                                        ParseAttributes(_, container, finder, flavor);
                                                     }
                                                 });
         }

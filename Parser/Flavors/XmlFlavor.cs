@@ -2,9 +2,9 @@
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
-namespace MiKoSolutions.SemanticParsers.Xml.Strategies
+namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public class XmlStrategy : IXmlStrategy
+    public class XmlFlavor : IXmlFlavor
     {
         public virtual bool ParseAttributesEnabled => true;
 

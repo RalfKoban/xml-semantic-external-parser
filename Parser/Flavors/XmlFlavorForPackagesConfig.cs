@@ -2,9 +2,9 @@
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
-namespace MiKoSolutions.SemanticParsers.Xml.Strategies
+namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlStrategyForPackagesConfig : XmlStrategy
+    public sealed class XmlFlavorForPackagesConfig : XmlFlavor
     {
         public override bool ParseAttributesEnabled => false;
 

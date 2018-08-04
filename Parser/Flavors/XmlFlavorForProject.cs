@@ -3,9 +3,9 @@ using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
-namespace MiKoSolutions.SemanticParsers.Xml.Strategies
+namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlStrategyForProject : XmlStrategy
+    public sealed class XmlFlavorForProject : XmlFlavor
     {
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                         {

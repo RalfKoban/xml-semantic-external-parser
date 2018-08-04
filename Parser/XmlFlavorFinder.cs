@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Xml;
 
-using MiKoSolutions.SemanticParsers.Xml.Strategies;
+using MiKoSolutions.SemanticParsers.Xml.Flavors;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    public static class XmlStrategyFinder
+    public static class XmlFlavorFinder
     {
-        public static IXmlStrategy Find(string filePath, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+        public static IXmlFlavor Find(string filePath, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
             if (filePath.EndsWith("packages.config"))
             {
-                return new XmlStrategyForPackagesConfig();
+                return new XmlFlavorForPackagesConfig();
             }
 
             if (filePath.EndsWith(".csproj", comparison))
             {
-                return new XmlStrategyForProject();
+                return new XmlFlavorForProject();
             }
 
             if (filePath.EndsWith(".wxi", comparison) || filePath.EndsWith(".wxs", comparison))
             {
-                return new XmlStrategyForWix();
+                return new XmlFlavorForWix();
             }
 
             if (filePath.EndsWith(".xaml", comparison))
             {
-                return new XmlStrategyForXaml();
+                return new XmlFlavorForXaml();
             }
 
             var tuple = GetDocumentInfo(filePath);
@@ -35,25 +35,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var ns = tuple?.Item2;
             if (string.Equals(name, "packages", comparison))
             {
-                return new XmlStrategyForPackagesConfig();
+                return new XmlFlavorForPackagesConfig();
             }
 
             if (string.Equals(name, "Wix", comparison))
             {
-                return new XmlStrategyForWix();
+                return new XmlFlavorForWix();
             }
 
             if (string.Equals(name, "Project", comparison) && string.Equals(ns, "http://schemas.microsoft.com/developer/msbuild/2003", comparison))
             {
-                return new XmlStrategyForProject();
+                return new XmlFlavorForProject();
             }
 
             if (string.Equals(ns, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", comparison))
             {
-                return new XmlStrategyForXaml();
+                return new XmlFlavorForXaml();
             }
 
-            return new XmlStrategy();
+            return new XmlFlavor();
         }
 
         private static Tuple<string, string> GetDocumentInfo(string filePath)
