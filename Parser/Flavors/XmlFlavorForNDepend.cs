@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -10,6 +11,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     public sealed class XmlFlavorForNDepend : XmlFlavor
     {
         private const StringComparison Comparison = StringComparison.OrdinalIgnoreCase;
+
+        private const string QualityGate = "QualityGate";
+        private const string Query = "Query";
+        private const string TrendMetric = "TrendMetric";
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                         {
@@ -45,7 +50,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override void FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
-            if (node.Type != "Query")
+            if (node.Type != Query)
             {
                 return;
             }
@@ -54,27 +59,75 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 // try to find out CDATA section to get the name
                 var cdata = c.Children.FirstOrDefault(_ => _.Type == NodeType.CDATA)?.Content;
-                if (string.IsNullOrWhiteSpace(cdata))
+                if (!string.IsNullOrWhiteSpace(cdata))
                 {
-                    return;
+                    // we might have a normal query
+                    if (TryGetQueryNameFromCData(cdata, out var queryName))
+                    {
+                        node.Name = queryName;
+                    }
+
+                    // we might have a trend metric
+                    if (TryGetNameFromCData(cdata, TrendMetric, out var trendMetricName))
+                    {
+                        node.Name = trendMetricName;
+                        node.Type = TrendMetric;
+                    }
+
+                    // we might have a quality gate
+                    if (TryGetNameFromCData(cdata, QualityGate, out var qualityGateName))
+                    {
+                        node.Name = qualityGateName;
+                        node.Type = QualityGate;
+                    }
                 }
-
-                var start = cdata.IndexOf("<Name>", Comparison);
-                if (start < 0)
-                {
-                    return;
-                }
-
-                start += 6;
-
-                var end = cdata.IndexOf("</Name>", start, Comparison);
-                if (end < 0)
-                {
-                    return;
-                }
-
-                node.Name = cdata.Substring(start, end - start);
             }
+        }
+
+        private static bool TryGetQueryNameFromCData(string cdata, out string name)
+        {
+            name = null;
+
+            var start = cdata.IndexOf("<Name>", Comparison);
+            if (start < 0)
+            {
+                return false;
+            }
+
+            var end = cdata.IndexOf("</Name>", start, Comparison);
+            if (end < 0)
+            {
+                return false;
+            }
+
+            start += 6;
+            name = cdata.Substring(start, end - start);
+            return true;
+        }
+
+        private static bool TryGetNameFromCData(string cdata, string queryType, out string name)
+        {
+            name = null;
+
+            var start = cdata.IndexOf("<" + queryType + " ", Comparison);
+            if (start < 0)
+            {
+                return false;
+            }
+
+            var end = cdata.IndexOf("/>", Comparison);
+            if (end < 0)
+            {
+                return false;
+            }
+
+            end += 2;
+
+            var xml = cdata.Substring(start, end - start);
+
+            // parse
+            name = XDocument.Parse(xml).Root?.Attributes("Name").Select(_ => _.Value).FirstOrDefault();
+            return name != null;
         }
     }
 }
