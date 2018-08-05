@@ -8,5 +8,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public CharacterSpan Span { get; set; }
 
         public override CharacterSpan GetTotalSpan() => Span;
+
+        public override TerminalNode ToTerminalNode() => this;
     }
 }

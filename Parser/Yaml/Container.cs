@@ -17,12 +17,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 
         public override CharacterSpan GetTotalSpan() => new CharacterSpan(HeaderSpan.Start, FooterSpan.End);
 
-        public TerminalNode ToTerminalNode() => new TerminalNode
-                                                    {
-                                                        Type = Type,
-                                                        Name = Name,
-                                                        LocationSpan = LocationSpan,
-                                                        Span = GetTotalSpan(),
-                                                    };
+        public override TerminalNode ToTerminalNode() => new TerminalNode
+                                                             {
+                                                                 Type = Type,
+                                                                 Name = Name,
+                                                                 LocationSpan = LocationSpan,
+                                                                 Span = GetTotalSpan(),
+                                                             };
     }
 }

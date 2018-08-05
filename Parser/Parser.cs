@@ -179,11 +179,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             // check whether we can use a terminal node instead
-            flavor.FinalAdjustAfterParsingComplete(container);
-
-            var child = flavor.ShallBeTerminalNode(container)
-                            ? (ContainerOrTerminalNode)container.ToTerminalNode()
-                            : container;
+            var child = flavor.FinalAdjustAfterParsingComplete(container);
 
             parent.Children.Add(child);
         }

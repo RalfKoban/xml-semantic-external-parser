@@ -20,5 +20,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public string Content { get; set; }
 
         public abstract CharacterSpan GetTotalSpan();
+
+        public abstract TerminalNode ToTerminalNode();
     }
 }

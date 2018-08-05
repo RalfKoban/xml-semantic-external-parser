@@ -41,6 +41,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
-        public override bool ShallBeTerminalNode(Container container) => TerminalNodeNames.Contains(container?.Type);
+        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
     }
 }

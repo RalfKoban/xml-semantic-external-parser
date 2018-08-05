@@ -46,16 +46,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
-        public override bool ShallBeTerminalNode(Container container) => !NonTerminalNodeNames.Contains(container?.Type);
-
-        public override void FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
+        public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
-            if (node.Type != Query)
-            {
-                return;
-            }
-
-            if (node is Container c)
+            if (node.Type == Query && node is Container c)
             {
                 // try to find out CDATA section to get the name
                 var cdata = c.Children.FirstOrDefault(_ => _.Type == NodeType.CDATA)?.Content;
@@ -82,7 +75,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     }
                 }
             }
+
+            return base.FinalAdjustAfterParsingComplete(node);
         }
+
+        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
 
         private static bool TryGetQueryNameFromCData(string cdata, out string name)
         {
