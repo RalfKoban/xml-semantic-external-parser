@@ -38,7 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (reader.NodeType == XmlNodeType.Element)
             {
                 var name = reader.Name;
-                return reader.GetAttribute("Name") ?? name;
+                return reader.GetAttribute("Name") ?? reader.GetAttribute("MetricName") ?? reader.GetAttribute("Path") ?? name;
             }
 
             return base.GetName(reader);
@@ -48,31 +48,24 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
-            if (node.Type == Query && node is Container c)
+            if (node is Container c)
             {
-                // try to find out CDATA section to get the name
-                var cdata = c.Children.FirstOrDefault(_ => _.Type == NodeType.CDATA)?.Content;
-                if (!string.IsNullOrWhiteSpace(cdata))
+                switch (node.Type)
                 {
-                    // we might have a normal query
-                    if (TryGetQueryNameFromCData(cdata, out var queryName))
-                    {
-                        node.Name = queryName;
-                    }
+                    case Query:
+                        AdjustQuery(node, c);
+                        break;
 
-                    // we might have a trend metric
-                    if (TryGetNameFromCData(cdata, TrendMetric, out var trendMetricName))
-                    {
-                        node.Name = trendMetricName;
-                        node.Type = TrendMetric;
-                    }
+                    default:
+                        {
+                            var textNode = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
+                            if (textNode != null)
+                            {
+                                c.Name = $"{c.Name}=\"{textNode.Content}\"";
+                            }
 
-                    // we might have a quality gate
-                    if (TryGetNameFromCData(cdata, QualityGate, out var qualityGateName))
-                    {
-                        node.Name = qualityGateName;
-                        node.Type = QualityGate;
-                    }
+                            break;
+                        }
                 }
             }
 
@@ -80,6 +73,34 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
+
+        private static void AdjustQuery(ContainerOrTerminalNode node, Container container)
+        {
+            // try to find out CDATA section to get the name
+            var cdata = container.Children.FirstOrDefault(_ => _.Type == NodeType.CDATA)?.Content;
+            if (!string.IsNullOrWhiteSpace(cdata))
+            {
+                // we might have a normal query
+                if (TryGetQueryNameFromCData(cdata, out var queryName))
+                {
+                    node.Name = queryName;
+                }
+
+                // we might have a trend metric
+                if (TryGetNameFromCData(cdata, TrendMetric, out var trendMetricName))
+                {
+                    node.Name = trendMetricName;
+                    node.Type = TrendMetric;
+                }
+
+                // we might have a quality gate
+                if (TryGetNameFromCData(cdata, QualityGate, out var qualityGateName))
+                {
+                    node.Name = qualityGateName;
+                    node.Type = QualityGate;
+                }
+            }
+        }
 
         private static bool TryGetQueryNameFromCData(string cdata, out string name)
         {
