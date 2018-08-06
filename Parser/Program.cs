@@ -38,23 +38,31 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                 try
                 {
-                    var file = Parser.Parse(inputFile);
-
-                    using (var writer = SystemFile.CreateText(outputFileToWrite))
+                    var watch = Stopwatch.StartNew();
+                    try
                     {
-                        YamlWriter.Write(writer, file);
+                        var file = Parser.Parse(inputFile);
+
+                        using (var writer = SystemFile.CreateText(outputFileToWrite))
+                        {
+                            YamlWriter.Write(writer, file);
+                        }
+
+                        var parseErrors = file.ParsingErrorsDetected == true;
+
+                        if (parseErrors)
+                        {
+                            var parsingError = file.ParsingErrors[0];
+                            Trace.WriteLine(parsingError.ErrorMessage, Category);
+                            Trace.WriteLine(parsingError.Location, Category);
+                        }
+
+                        Console.WriteLine(parseErrors ? "KO" : "OK");
                     }
-
-                    var parseErrors = file.ParsingErrorsDetected == true;
-
-                    if (parseErrors)
+                    finally
                     {
-                        var parsingError = file.ParsingErrors[0];
-                        Trace.WriteLine(parsingError.ErrorMessage, Category);
-                        Trace.WriteLine(parsingError.Location, Category);
+                        Trace.WriteLine($"Parsing took {watch.Elapsed:s\\.fff} ms", Category);
                     }
-
-                    Console.WriteLine(parseErrors ? "KO" : "OK");
                 }
                 catch (Exception ex)
                 {
