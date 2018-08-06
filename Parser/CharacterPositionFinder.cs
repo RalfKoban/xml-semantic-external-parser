@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -9,6 +8,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public class CharacterPositionFinder
     {
+        private const int NewLine = 10; // '\n'
+        private const int CariageReturn = 13; // '\r'
+
         private readonly IReadOnlyDictionary<int, KeyValuePair<int, int>> _map;
 
         private CharacterPositionFinder(IReadOnlyDictionary<int, KeyValuePair<int, int>> map) => _map = map;
@@ -28,26 +30,34 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 while (!reader.EndOfStream)
                 {
+                    lineLength++;
+                    count++;
+
                     var index = reader.Read();
                     switch (index)
                     {
-                        case 10: // '\n'
-                        case 13: // '\r'
+                        case NewLine:
                         {
-                            var lineBreaks = ReadLineBreaks(reader);
-                            lineLength += lineBreaks;
-
-                            count += lineBreaks;
                             map[i++] = new KeyValuePair<int, int>(lineLength, count);
-
                             lineLength = 0;
                             break;
                         }
 
-                        default:
+                        case CariageReturn:
                         {
-                            count++;
-                            lineLength++;
+                            // additional line break character ?
+                            var next = reader.Peek();
+                            if (next == NewLine)
+                            {
+                                // read over the character
+                                reader.Read();
+
+                                lineLength++;
+                                count++;
+                            }
+
+                            map[i++] = new KeyValuePair<int, int>(lineLength, count);
+                            lineLength = 0;
                             break;
                         }
                     }
@@ -90,21 +100,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             return null;
-        }
-
-        private static int ReadLineBreaks(StreamReader reader)
-        {
-            var next = reader.Peek();
-            switch (next)
-            {
-                case 10: // '\n'
-                case 13: // '\r'
-                    reader.Read(); // read over the character
-                    return 2;
-
-                default:
-                    return 1;
-            }
         }
     }
 }
