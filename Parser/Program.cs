@@ -26,9 +26,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             while (true)
             {
-                var fileToParse = await Console.In.ReadLineAsync();
-
-                if ("end".Equals(fileToParse, StringComparison.OrdinalIgnoreCase) || fileToParse == null)
+                var inputFile = await Console.In.ReadLineAsync();
+                if (inputFile == null || "end".Equals(inputFile, StringComparison.OrdinalIgnoreCase))
                 {
                     // session is done
                     return 0;
@@ -39,7 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                 try
                 {
-                    var file = Parser.Parse(fileToParse);
+                    var file = Parser.Parse(inputFile);
 
                     using (var writer = SystemFile.CreateText(outputFileToWrite))
                     {
