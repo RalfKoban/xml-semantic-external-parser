@@ -56,6 +56,7 @@
     <Compile Include="ParserTests.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_CData.cs" />
+    <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
@@ -69,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="Resources\NDepend_project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Tests.ruleset" />
   </ItemGroup>
   <ItemGroup>

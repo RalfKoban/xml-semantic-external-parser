@@ -153,15 +153,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 {
                     var nodeType = Parse(reader, container, finder, flavor);
 
-                    // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an end element
+                    // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an element or end element
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        continue;
+                    }
+
                     if (reader.NodeType == XmlNodeType.EndElement)
                     {
                         break;
-                    }
-
-                    if (reader.NodeType != nodeType)
-                    {
-                        continue;
                     }
 
                     if (!reader.Read())

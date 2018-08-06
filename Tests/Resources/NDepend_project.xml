@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<NDepend AppName="MiKo Aspects" Platform="DotNet" FileWrittenByProductVersion="2017.2.2.8962">
+  <OutputDir KeepXmlFiles="True">.\NDependOut</OutputDir>
+  <Assemblies>
+    <Name>MiKoSolutions.Aspects</Name>
+  </Assemblies>
+  <FrameworkAssemblies>
+    <Name>mscorlib</Name>
+    <Name>System.Core</Name>
+  </FrameworkAssemblies>
+  <Dirs>
+    <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319</Dir>
+    <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319\WPF</Dir>
+  </Dirs>
+  <MergeCodeGeneratedByCompiler>True</MergeCodeGeneratedByCompiler>
+  <Report Kind="0" SectionsEnabled="131071" XslPath="" Flags="64512" />
+  <BuildComparisonSetting ProjectMode="CurrentProject" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith=".\MiKo Aspects.ndproj" BuildFileToCompareWith=".\NDependOut\VisualNDepend.bin" NDaysAgo="1" />
+  <BaselineInUISetting ProjectMode="CurrentProject" BuildMode="NDaysAgoAnalysisResult" ProjectFileToCompareWith=".\MiKo Aspects.ndproj" BuildFileToCompareWith=".\NDependOut\VisualNDepend.bin" NDaysAgo="7" />
+  <CoverageFiles CoverageDir=".\CodeCoverage" UncoverableAttribute="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+  <TrendMetrics UseCustomLog="True" LogRecurrence="1" LogLabel="4" UseCustomDir="False" CustomDir="">
+    <Chart Name="Lines of Code" ShowInReport="True">
+      <Serie MetricName="# Lines of Code" MetricUnit="Loc" Color="#FF00BFFF" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Lines of Code Covered" MetricUnit="Loc" Color="#FF32CD32" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="# Lines of Code (NotMyCode)" MetricUnit="Loc" Color="#FFA9A9A9" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="# Lines of Comments" MetricUnit="Lines" Color="#FF008000" ChartType="Line" ScaleExp="0" />
+    </Chart>
+  </TrendMetrics>
+  <HistoricAnalysisResult PersistRecurrence="3" UseCustomDir="False" CustomDir="" />
+  <SourceFileRebasing FromPath="" ToPath="" />
+  <PathVariables />
+  <RuleFiles>
+    <RuleFile Active="True" Path=".\NDepend_DefaultRules.ndrules" />
+    <RuleFile Active="True" Path=".\MiKo Aspects.ndrules" />
+  </RuleFiles>
+  <ProjectRules AreActive="True" />
+  <ProjectDebtSettings DebtSettingsStorage="0" SettingsFilePath="">
+    <DebtSettings>
+      <DebtFactor>1</DebtFactor>
+      <AnnualInterestFactor>1</AnnualInterestFactor>
+      <DebtDefault>0</DebtDefault>
+      <AnnualInterestDefault>0</AnnualInterestDefault>
+      <DebtStringFormat>$ManDay$</DebtStringFormat>
+      <MoneyPerManHour>50</MoneyPerManHour>
+      <Currency>EUR</Currency>
+      <CurrencyLocation>After</CurrencyLocation>
+      <EstimatedNumberOfManDayToDevelop1000LogicalLinesOfCode>18</EstimatedNumberOfManDayToDevelop1000LogicalLinesOfCode>
+      <NumberOfWorkDayPerYear>240</NumberOfWorkDayPerYear>
+      <NumberOfWorkHourPerDay>8</NumberOfWorkHourPerDay>
+      <A2B_RatingThreshold>5</A2B_RatingThreshold>
+      <B2C_RatingThreshold>10</B2C_RatingThreshold>
+      <C2D_RatingThreshold>20</C2D_RatingThreshold>
+      <D2E_RatingThreshold>50</D2E_RatingThreshold>
+      <Low2Medium_SeverityThreshold>1200000000</Low2Medium_SeverityThreshold>
+      <Medium2High_SeverityThreshold>12000000000</Medium2High_SeverityThreshold>
+      <High2Critical_SeverityThreshold>72000000000</High2Critical_SeverityThreshold>
+      <Critical2Blocker_SeverityThreshold>360000000000</Critical2Blocker_SeverityThreshold>
+    </DebtSettings>
+  </ProjectDebtSettings><Queries>
+  </Queries><WarnFilter>
+    <DontWarn>The assembly {MiKoSolutions.Aspects} is not in sync with corresponding coverage data.
+The analysis found  methods in the assembly that have no associated coverage data.
+For example, one of this method is {MiKoSolutions.Aspects.Contracts.ValidateArgumentsAttribute.PushAnnotation(MethodBase,Int)}</DontWarn>
+  </WarnFilter></NDepend>
