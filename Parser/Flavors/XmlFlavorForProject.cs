@@ -126,10 +126,32 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (reader.NodeType == XmlNodeType.Element)
             {
                 var name = reader.Name;
+                switch (name)
+                {
+                    case "Analyzer":
+                    case "Compile":
+                    case "Content":
+                    case "EmbeddedResource":
+                    case "None":
+                    case "ProjectReference":
+                    case "Reference":
+                    {
+                        return GetName(reader, name, "Include");
+                    }
 
-                // var identifier = reader.GetAttribute("Include");
-                // return identifier is null ? name : $"{name} '{identifier}'";
-                return name;
+                    case "Import":
+                    {
+                        return GetName(reader, name, "Project");
+                    }
+
+                    case "Target":
+                    {
+                        return GetName(reader, name, "Name");
+                    }
+
+                    default:
+                        return name;
+                }
             }
 
             return base.GetName(reader);
@@ -138,5 +160,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
+
+        private static string GetName(XmlTextReader reader, string name, string attributeName)
+        {
+            var identifier = reader.GetAttribute(attributeName)?.Replace("\\", " \\ "); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
+            return $"{name} '{identifier}'";
+        }
     }
 }
