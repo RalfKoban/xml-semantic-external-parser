@@ -1,5 +1,5 @@
 # xml-semantic-external-parser
-A semantic external parser for XML files that can be used together with [GMaster](https://gmaster.io), PlasticSCM or [SemanticMerge](https://semanticmerge.com/).
+A semantic external parser for XML files that can be used together with [GMaster](https://gmaster.io), [PlasticSCM](https://www.plasticscm.com) or [SemanticMerge](https://semanticmerge.com/).
 
 How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/using-external-parsers-with-gmaster.html).
 
@@ -10,12 +10,11 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 [![Build history](https://buildstats.info/appveyor/chart/RalfKoban/xml-semantic-external-parser)](https://ci.appveyor.com/project/RalfKoban/xml-semantic-external-parser/history)
 
 ## Supported formats
-Following file formats are supported:
 - C# Project files (.csproj)
 - C# Rule sets (.ruleset)
 - C++ Project files (.vcxproj)
 - Configuration files (.config)
-- [NDepend](https://www.ndepend.com/) Project files and rule files (.ndproj, .ndrules)
+- [NDepend](https://www.ndepend.com/) (.ndproj, .ndrules)
 - Visual Studio Installer XML (.vsixmanifest)
 - WPF (.xaml)
 - [Wix Toolkit](http://wixtoolset.org/) (.wxi, .wxi)
