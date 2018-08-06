@@ -8,6 +8,8 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
 
+using File = System.IO.File;
+
 namespace MiKoSolutions.SemanticParsers.Xml
 {
     [TestFixture]
@@ -166,6 +168,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(28, 0)), "Wrong end");
 
             Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(495, 496)), "Wrong footer");
+        }
+
+        [Test]
+        public void Empty_file_can_be_read_without_parsing_errors()
+        {
+            var fileName = Path.GetTempFileName();
+            try
+            {
+                _objectUnderTest = Parser.Parse(fileName);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+
+            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(0, -1)), "Wrong start");
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(0, -1)), "Wrong end");
+
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)
