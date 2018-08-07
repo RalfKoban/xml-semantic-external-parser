@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace MiKoSolutions.SemanticParsers.Xml
 {
     [TestFixture]
-    public class PackagesConfigParserTests
+    public class ParserTests_PackagesConfig
     {
         private Yaml.File _objectUnderTest;
         private Yaml.Container _packages;

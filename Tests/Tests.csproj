@@ -52,13 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterPositionFinderTests.cs" />
-    <Compile Include="PackagesConfigParserTests.cs" />
+    <Compile Include="ParserTests_PackagesConfig.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_CData.cs" />
     <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
+    <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -69,6 +70,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\WIX_config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <Content Include="Resources\NDepend_project.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

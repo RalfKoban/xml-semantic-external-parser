@@ -51,7 +51,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return new XmlFlavorForProject();
             }
 
-            if (string.Equals(name, "Wix", comparison))
+            if (string.Equals(name, "Wix", comparison) || string.Equals(name, "Include", comparison))
             {
                 return new XmlFlavorForWix();
             }
