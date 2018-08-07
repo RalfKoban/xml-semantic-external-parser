@@ -5,8 +5,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public static class XmlFlavorFinder
     {
-        public static IXmlFlavor Find(string filePath, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+        public static IXmlFlavor Find(string filePath)
         {
+            StringComparison comparison = StringComparison.OrdinalIgnoreCase;
+
             if (filePath.EndsWith("packages.config"))
             {
                 return new XmlFlavorForPackagesConfig();
@@ -22,9 +24,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return new XmlFlavorForNDepend();
             }
 
-            if (filePath.EndsWith(".wxi", comparison) || filePath.EndsWith(".wxs", comparison))
+            if (filePath.EndsWith(".wxi", comparison))
+            {
+                return new XmlFlavorForWixConfiguration();
+            }
+
+            if (filePath.EndsWith(".wxs", comparison))
             {
                 return new XmlFlavorForWix();
+            }
+
+            if (filePath.EndsWith(".wxl", comparison))
+            {
+                return new XmlFlavorForWixLocation();
             }
 
             if (filePath.EndsWith(".xaml", comparison))
@@ -51,9 +63,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return new XmlFlavorForProject();
             }
 
-            if (string.Equals(name, "Wix", comparison) || string.Equals(name, "Include", comparison))
+            if (string.Equals(name, "Wix", comparison))
             {
                 return new XmlFlavorForWix();
+            }
+
+            if (string.Equals(name, "Include", comparison))
+            {
+                return new XmlFlavorForWixConfiguration();
+            }
+
+            if (string.Equals(name, "WixLocalization", comparison) && string.Equals(ns, "http://schemas.microsoft.com/wix/2006/localization", comparison))
+            {
+                return new XmlFlavorForWixLocation();
             }
 
             if (string.Equals(ns, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", comparison))

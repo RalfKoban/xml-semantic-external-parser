@@ -55,6 +55,8 @@
     <Compile Include="CharacterPositionFinder.cs" />
     <Compile Include="CommentCleaner.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
+    <Compile Include="Flavors\XmlFlavorForWixConfiguration.cs" />
+    <Compile Include="Flavors\XmlFlavorForWixLocation.cs" />
     <Compile Include="GapFiller.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="Parser.cs" />
