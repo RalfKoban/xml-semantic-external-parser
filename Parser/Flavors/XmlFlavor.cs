@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -7,6 +8,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     public class XmlFlavor : IXmlFlavor
     {
         public virtual bool ParseAttributesEnabled => true;
+
+        public virtual bool Supports(string filePath) => filePath.EndsWith(".xml", StringComparison.OrdinalIgnoreCase);
+
+        public virtual bool Supports(DocumentInfo info) => true;
 
         public virtual string GetName(XmlTextReader reader)
         {

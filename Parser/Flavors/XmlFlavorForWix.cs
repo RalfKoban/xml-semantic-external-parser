@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -189,6 +190,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
+
+        public override bool Supports(string filePath) => filePath.EndsWith(".wxs", StringComparison.OrdinalIgnoreCase);
+
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Wix", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
         {

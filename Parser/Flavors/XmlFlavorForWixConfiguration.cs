@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
@@ -6,6 +7,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     public sealed class XmlFlavorForWixConfiguration : XmlFlavor
     {
         public override bool ParseAttributesEnabled => true;
+
+        public override bool Supports(string filePath) => filePath.EndsWith(".wxi", StringComparison.OrdinalIgnoreCase);
+
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Include", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
         {

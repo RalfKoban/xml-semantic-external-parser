@@ -33,6 +33,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
+        public override bool Supports(string filePath) => filePath.EndsWith(".ndproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".ndrules", StringComparison.OrdinalIgnoreCase);
+
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "NDepend", StringComparison.OrdinalIgnoreCase)
+                                                         || string.Equals(info.RootElement, "Queries", StringComparison.OrdinalIgnoreCase);
+
         public override string GetName(XmlTextReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)

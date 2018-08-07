@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -14,6 +15,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
+
+        public override bool Supports(string filePath) => filePath.EndsWith(".wxl", StringComparison.OrdinalIgnoreCase);
+
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "WixLocalization", StringComparison.OrdinalIgnoreCase)
+                                                         && string.Equals(info.Namespace, "http://schemas.microsoft.com/wix/2006/localization", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
         {

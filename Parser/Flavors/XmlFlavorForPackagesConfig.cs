@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -7,6 +8,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     public sealed class XmlFlavorForPackagesConfig : XmlFlavor
     {
         public override bool ParseAttributesEnabled => false;
+
+        public override bool Supports(string filePath) => filePath.EndsWith("packages.config", StringComparison.OrdinalIgnoreCase);
+
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "packages", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
         {
