@@ -56,6 +56,7 @@
     <Compile Include="CommentCleaner.cs" />
     <Compile Include="Flavors\DocumentInfo.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
+    <Compile Include="Flavors\XmlFlavorForVisualBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForWixConfiguration.cs" />
     <Compile Include="Flavors\XmlFlavorForWixLocation.cs" />
     <Compile Include="GapFiller.cs" />

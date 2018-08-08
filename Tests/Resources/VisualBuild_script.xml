@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<project version='9' encrypted='1'>
+  <steps type='0'>
+    <step action='Set Macro'>
+      <MacroName>INSTALLATION_PATH</MacroName>
+      <MacroValue>c:\ProgramData\WAGO Software\e!COCKPIT</MacroValue>
+      <buildfailsteps type='11'>0</buildfailsteps>
+      <name>Path to installation directory</name>
+    </step>
+    <step action='Group'>
+      <buildfailsteps type='11'>0</buildfailsteps>
+      <name>Full</name>
+    </step>
+  </steps>
+</project>

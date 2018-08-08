@@ -59,6 +59,7 @@
     <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
+    <Compile Include="ParserTests_VisualBuild_Script.cs" />
     <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +71,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\VisualBuild_script.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\WIX_config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
