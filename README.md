@@ -15,6 +15,7 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 - C++ Project files (.vcxproj)
 - Configuration files (.config)
 - [NDepend](https://www.ndepend.com/) (.ndproj, .ndrules)
+- [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project files (.shfbproj)
 - Visual Studio Installer XML (.vsixmanifest)
 - WPF (.xaml)
 - [Wix Toolkit](http://wixtoolset.org/) (.wxi, .wxl, .wxs)
