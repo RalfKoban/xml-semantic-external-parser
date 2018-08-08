@@ -8,7 +8,7 @@
       <name>Path to installation directory</name>
     </step>
     <step action='Group'>
-      <buildfailsteps type='11'>0</buildfailsteps>
+      <buildfailsteps type='11'>9</buildfailsteps>
       <name>Full</name>
     </step>
   </steps>

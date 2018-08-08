@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -73,60 +74,41 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void Step_1_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<Container>().First();
+            var node = _root.Children.OfType<Container>().Single().Children.OfType<TerminalNode>().First(_ => _.Type.StartsWith("step "));
 
             Assert.Multiple(() =>
             {
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(4, 1)), "Wrong start");
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(9, 13)), "Wrong end");
 
-                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(97, 127)), "Wrong header");
-                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(350, 362)), "Wrong footer");
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(97, 362)), "Wrong span");
             });
         }
 
         [Test]
         public void Step_2_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<Container>().Last();
+            var node = _root.Children.OfType<Container>().Single().Children.OfType<TerminalNode>().Last(_ => _.Type.StartsWith("step "));
 
             Assert.Multiple(() =>
             {
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(10, 1)), "Wrong start");
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(13, 13)), "Wrong end");
 
-                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(363, 389)), "Wrong header");
-                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(467, 479)), "Wrong footer");
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(363, 479)), "Wrong span");
             });
         }
 
         [Test]
-        public void Step_2_BuildFailSteps_LocationSpan_matches()
+        public void RoundTrip_does_not_report_parsing_errors()
         {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<Container>().Last().Children.OfType<Container>().First();
-
-            Assert.Multiple(() =>
+            var builder = new StringBuilder();
+            using (var writer = new StringWriter(builder))
             {
-                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(11, 1)), "Wrong start");
-                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(11, 52)), "Wrong end");
+                YamlWriter.Write(writer, _objectUnderTest);
+            }
 
-                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(390, 421)), "Wrong header");
-                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(423, 441)), "Wrong footer");
-            });
-        }
-
-        [Test]
-        public void Step_2_BuildFailSteps_Content_LocationSpan_matches()
-        {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<Container>().Last().Children.OfType<Container>().First().Children.OfType<TerminalNode>().Single();
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(11, 33)), "Wrong start");
-                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(11, 33)), "Wrong end");
-
-                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(422, 422)), "Wrong header");
-            });
+            Assert.That(builder.ToString(), Does.Contain("parsingErrorsDetected: false"));
         }
     }
 }
