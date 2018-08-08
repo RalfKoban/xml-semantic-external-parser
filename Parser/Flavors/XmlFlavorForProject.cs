@@ -65,9 +65,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
 
-        private static string GetName(XmlTextReader reader, string name, string attributeName)
+        private string GetName(XmlTextReader reader, string name, string attributeName)
         {
-            var identifier = reader.GetAttribute(attributeName)?.Replace("\\", " \\ "); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
+            var identifier = WorkaroundForRegexIssue(reader.GetAttribute(attributeName));
             return $"{name} '{identifier}'";
         }
     }
