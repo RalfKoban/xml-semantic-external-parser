@@ -10,8 +10,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             foreach (var root in file.Children)
             {
+                var children = root.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+                if (children.Any())
+                {
+                    AdjustBegin(children.First(), root, finder, 0);
+                    AdjustEnd(children.Last(), root, finder, children.Count - 1);
+                }
+
                 // adjust based on gaps, but only adjust child nodes that are no attributes and no text
-                foreach (var child in root.Children)
+                foreach (var child in children)
                 {
                     if (child.Type == NodeType.Attribute)
                     {
@@ -30,7 +37,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static void AdjustNode(ContainerOrTerminalNode node, Container parent, CharacterPositionFinder finder)
         {
-            var index = parent.Children.IndexOf(node);
+            var parentChildren = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var index = parentChildren.IndexOf(node);
 
             var newStartPos = AdjustBegin(node, parent, finder, index);
             var newEndPos = AdjustEnd(node, parent, finder, index);
@@ -87,7 +95,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             int newStartPos;
 
-            var first = node == parent.Children.First();
+            var children = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var first = node == children.First();
             if (first)
             {
                 // first child, so adjust parent's header span and terminal node's line start and span begin
@@ -101,7 +110,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
             else
             {
-                var siblingBefore = parent.Children.ElementAt(index - 1);
+                var siblingBefore = children.ElementAt(index - 1);
                 newStartPos = siblingBefore.GetTotalSpan().End + 1;
 
                 var siblingBeforeEndLineNumber = siblingBefore.LocationSpan.End.LineNumber;
@@ -118,7 +127,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             int newEndPos;
 
-            var last = node == parent.Children.Last();
+            var children = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var last = node == children.Last();
             if (last)
             {
                 // last child, so adjust parent's footer span and terminal node's end start and span end
@@ -133,7 +143,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
             else
             {
-                var siblingAfter = parent.Children.ElementAt(index + 1);
+                var siblingAfter = children.ElementAt(index + 1);
                 newEndPos = siblingAfter.GetTotalSpan().Start - 1;
 
                 var startLine = siblingAfter.LocationSpan.Start.LineNumber;
