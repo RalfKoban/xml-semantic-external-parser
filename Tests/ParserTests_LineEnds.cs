@@ -31,6 +31,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
             var fileName = Path.Combine(parentDirectory, "Resources", _fileName);
 
+            // we need to adjust line breaks because Git checkout on AppVeyor (or elsewhere) will adjust the line breaks
             var originalContent = File.ReadAllText(fileName);
             File.WriteAllText(fileName, originalContent.Replace(Environment.NewLine, _lineBreak));
 

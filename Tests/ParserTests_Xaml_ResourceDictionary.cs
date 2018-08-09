@@ -6,6 +6,8 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
 
+using File = System.IO.File;
+
 namespace MiKoSolutions.SemanticParsers.Xml
 {
     [TestFixture]
@@ -19,6 +21,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
             var fileName = Path.Combine(parentDirectory, "Resources", "Xaml_ResourceDictionary.xml");
+
+            // we need to adjust line breaks because Git checkout on AppVeyor (or elsewhere) will adjust the line breaks
+            var originalContent = File.ReadAllText(fileName);
+            File.WriteAllText(fileName, originalContent.Replace(Environment.NewLine, "\n"));
 
             _objectUnderTest = Parser.Parse(fileName);
             _root = _objectUnderTest.Children.Single();
