@@ -42,7 +42,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                             return new DocumentInfo
                                        {
                                            RootElement = reader.Name,
-                                           Namespace = reader.GetAttribute("xmlns"),
+                                           Namespace = reader.GetAttribute("xmlns") ?? reader.GetAttribute("xmlns:wpf"),
                                        };
                         }
                     }

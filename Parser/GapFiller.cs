@@ -102,7 +102,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 // first child, so adjust parent's header span and terminal node's line start and span begin
                 newStartPos = parent.HeaderSpan.End + 1;
 
-                if (parent.LocationSpan.Start.LineNumber < node.LocationSpan.Start.LineNumber)
+                var parentHeaderSpanEnd = finder.GetLineInfo(parent.HeaderSpan.End);
+                if (parentHeaderSpanEnd.LineNumber < node.LocationSpan.Start.LineNumber)
                 {
                     // different lines, so adjust line end of parent
                     newStartPos = AdjustHeaderToLineEnd(parent, finder);

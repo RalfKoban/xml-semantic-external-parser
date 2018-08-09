@@ -62,6 +62,7 @@
     <Compile Include="ParserTests_VisualBuild_Script.cs" />
     <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
+    <Compile Include="ParserTests_Xaml_ResourceDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +76,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\WIX_config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Xaml_ResourceDictionary.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
