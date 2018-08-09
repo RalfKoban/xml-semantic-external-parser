@@ -201,7 +201,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 var name = reader.Name;
                 var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id") ?? reader.GetAttribute("Action");
-                return identifier is null ? name : $"{name} '{identifier}'";
+                return WorkaroundForRegexIssue(identifier ?? name);
             }
 
             return base.GetName(reader);
