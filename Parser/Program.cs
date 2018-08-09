@@ -12,6 +12,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
     {
         private const string Category = "RKN Semantic";
 
+        private static readonly Guid InstanceId = Guid.NewGuid();
+
         public static async Task<int> Main(string[] args)
         {
             if (args.Length != 2)
@@ -61,12 +63,17 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     }
                     finally
                     {
-                        Trace.WriteLine($"Parsing took {watch.Elapsed:s\\.fff} ms", Category);
+                        Trace.WriteLine($"Parsing took {watch.Elapsed:s\\.fff} ms  (on instance {InstanceId:B})", Category);
                     }
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine($"Exception: {ex}", Category);
+
+                    foreach (var stackTraceLine in ex.StackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        Trace.WriteLine(stackTraceLine, Category);
+                    }
 
                     Console.WriteLine("KO");
 
