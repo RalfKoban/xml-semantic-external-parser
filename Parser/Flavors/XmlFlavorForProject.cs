@@ -40,8 +40,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     case "None":
                     case "ProjectReference":
                     case "Reference":
+                    case "Resource":
                     {
-                        return GetName(reader, name, "Include");
+                            return GetName(reader, name, "Include");
                     }
 
                     case "Import":
