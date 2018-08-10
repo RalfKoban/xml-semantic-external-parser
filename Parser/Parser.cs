@@ -99,7 +99,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
         }
 
-        private static XmlNodeType Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
+        private static void Parse(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
             var nodeType = reader.NodeType;
             switch (nodeType)
@@ -120,8 +120,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     break;
                 }
             }
-
-            return nodeType;
         }
 
         private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
@@ -156,7 +154,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             {
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    var nodeType = Parse(reader, container, finder, flavor);
+                    Parse(reader, container, finder, flavor);
 
                     // we had a side effect (reading further on stream to get the location span), so we have to check whether we found already an element or end element
                     if (reader.NodeType == XmlNodeType.Element)
