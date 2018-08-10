@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -63,12 +64,39 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
+        public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
+        {
+            if (node is Container c)
+            {
+                var content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
+                if (content != null)
+                {
+                    c.Name = WorkaroundForRegexIssue(content);
+                }
+            }
+
+            return base.FinalAdjustAfterParsingComplete(node);
+        }
+
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
 
         private string GetName(XmlTextReader reader, string name, string attributeName)
         {
-            var identifier = WorkaroundForRegexIssue(reader.GetAttribute(attributeName));
-            return $"{name} '{identifier}'";
+            var attribute = reader.GetAttribute(attributeName);
+            if (attribute != null)
+            {
+                // just add 1 and we get rid of situation that index might not be available ;)
+                var commaIndex = attribute.IndexOf(',');
+                if (commaIndex > 0)
+                {
+                    attribute = attribute.Substring(0, commaIndex);
+                }
+
+                // just add 1 and we get rid of situation that index might not be available ;)
+                return WorkaroundForRegexIssue(attribute.Substring(attribute.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1));
+            }
+
+            return name;
         }
     }
 }
