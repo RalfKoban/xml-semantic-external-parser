@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterPositionFinderTests.cs" />
+    <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
@@ -72,6 +73,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\FxCop_CustomDictionary.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\VisualBuild_script.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
