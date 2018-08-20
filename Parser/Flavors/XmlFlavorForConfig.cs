@@ -9,16 +9,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public sealed class XmlFlavorForConfig : XmlFlavor
     {
-        private const string Parameter = "parameter";
-        private const string Add = "add";
-        private const string Remove = "remove";
-        private const string Probing = "probing";
-        private const string Provider = "provider";
-        private const string DependentAssembly = "dependentAssembly";
-        private const string AssemblyIdentity = "assemblyIdentity";
+        private const string SupportedRuntime = "supportedRuntime";
         private const string Section = "section";
         private const string Setting = "setting";
-        private const string SupportedRuntime = "supportedRuntime";
+
+        private const string Add = "add";
+        private const string Remove = "remove";
+        private const string Clear = "clear";
+
+        private const string Parameter = "parameter";
+        private const string Probing = "probing";
+        private const string Provider = "provider";
+
+        private const string DependentAssembly = "dependentAssembly";
+        private const string AssemblyIdentity = "assemblyIdentity";
+
         private const string Binding = "binding";
         private const string Endpoint = "endpoint";
         private const string Behavior = "behavior";
@@ -27,6 +32,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                         {
                                                                             Add,
                                                                             Remove,
+                                                                            Clear,
                                                                             Binding,
                                                                             Endpoint,
                                                                             Behavior,
@@ -94,8 +100,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case Remove:
                     return reader.GetAttribute("name") ?? reader.GetAttribute("invariant");
 
+                case Clear:
+                    return string.Empty;
+
                 case SupportedRuntime:
-                    return reader.GetAttribute("sku");
+                    var identifier = reader.GetAttribute("sku") ?? string.Empty;
+                    var index = identifier.IndexOf(",", StringComparison.OrdinalIgnoreCase);
+
+                    return index > 0
+                        ? identifier.Substring(0, index)
+                        : identifier;
 
                 case Section:
                 case Setting:
