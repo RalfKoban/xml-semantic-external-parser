@@ -26,6 +26,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => true;
 
+        public override string PreferredNamespacePrefix => "xmlns:wpf";
+
         public override bool Supports(string filePath) => filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.Namespace, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.OrdinalIgnoreCase);

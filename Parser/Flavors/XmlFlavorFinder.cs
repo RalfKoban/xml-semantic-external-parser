@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
@@ -27,11 +28,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static IXmlFlavor GetXmlFlavorForDocument(string filePath)
         {
-            var info = GetDocumentInfo(filePath);
+            var info = GetDocumentInfo(filePath, Flavors.Select(_ => _.PreferredNamespacePrefix).ToHashSet());
             return info != null ? Flavors.FirstOrDefault(_ => _.Supports(info)) : null;
         }
 
-        private static DocumentInfo GetDocumentInfo(string filePath)
+        private static DocumentInfo GetDocumentInfo(string filePath, IEnumerable<string> namespaces)
         {
             try
             {
@@ -42,10 +43,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         // get first element
                         if (reader.NodeType == XmlNodeType.Element)
                         {
+                            var name = reader.Name;
+                            var ns = namespaces.Select(reader.GetAttribute).FirstOrDefault(_ => _ != null);
+
                             return new DocumentInfo
                                        {
-                                           RootElement = reader.Name,
-                                           Namespace = reader.GetAttribute("xmlns") ?? reader.GetAttribute("xmlns:wpf"),
+                                           RootElement = name,
+                                           Namespace = ns,
                                        };
                         }
                     }
