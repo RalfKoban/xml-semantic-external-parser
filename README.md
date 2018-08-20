@@ -17,6 +17,7 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 - [NDepend](https://www.ndepend.com/) (.ndproj, .ndrules)
 - NuGet Configuration files (packages.config)
 - [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project files (.shfbproj)
+- Settings files (.settings)
 - Visual Build (.bld)
 - Visual Studio Installer XML (.vsixmanifest)
 - WPF (.xaml)
