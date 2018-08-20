@@ -72,7 +72,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 var content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
                 if (content != null)
                 {
-                    c.Name = WorkaroundForRegexIssue(content);
+                    c.Name = content;
                 }
             }
 
@@ -94,7 +94,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 }
 
                 // just add 1 and we get rid of situation that index might not be available ;)
-                return WorkaroundForRegexIssue(attribute.Substring(attribute.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1));
+                return attribute.Substring(attribute.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
             }
 
             return name;

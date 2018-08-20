@@ -124,8 +124,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static void ParseElement(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
-            var name = flavor.GetName(reader);
-            var type = flavor.GetType(reader);
+            var name = WorkaroundForRegexIssue(flavor.GetName(reader));
+            var type = WorkaroundForRegexIssue(flavor.GetType(reader));
             var content = reader.Value;
 
             var container = new Container
@@ -206,8 +206,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var attributeStartPos = new LineInfo(reader.LineNumber, reader.LinePosition);
 
-            var name = flavor.GetName(reader);
-            var type = flavor.GetType(reader);
+            var name = WorkaroundForRegexIssue(flavor.GetName(reader));
+            var type = WorkaroundForRegexIssue(flavor.GetType(reader));
 
             reader.ReadAttributeValue();
             var value = reader.Value;
@@ -227,8 +227,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static void ParseTerminalNode(XmlTextReader reader, Container parent, CharacterPositionFinder finder, IXmlFlavor flavor)
         {
-            var name = flavor.GetName(reader);
-            var type = flavor.GetType(reader);
+            var name = WorkaroundForRegexIssue(flavor.GetName(reader));
+            var type = WorkaroundForRegexIssue(flavor.GetType(reader));
             var value = reader.Value;
 
             var locationSpan = GetLocationSpan(reader);
@@ -336,5 +336,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             return rootEnd;
         }
+
+        private static string WorkaroundForRegexIssue(string value) => value?.Replace("\\", " \\ "); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
     }
 }

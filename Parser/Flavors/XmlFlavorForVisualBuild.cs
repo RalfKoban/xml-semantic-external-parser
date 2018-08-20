@@ -39,7 +39,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         var text = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
                         if (text != null)
                         {
-                            c.Name = WorkaroundForRegexIssue(text.Content);
+                            c.Name = text.Content;
                         }
 
                         break;

@@ -65,7 +65,5 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         protected virtual bool ShallBeTerminalNode(ContainerOrTerminalNode node) => false;
-
-        protected string WorkaroundForRegexIssue(string value) => value?.Replace("\\", " \\ "); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
     }
 }
