@@ -7,6 +7,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         private static readonly XmlFlavor[] Flavors =
                                                         {
+                                                            new XmlFlavorForConfig(),
                                                             new XmlFlavorForFxCop(),
                                                             new XmlFlavorForPackagesConfig(),
                                                             new XmlFlavorForProject(),

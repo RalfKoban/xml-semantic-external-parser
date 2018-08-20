@@ -58,6 +58,7 @@
     <Compile Include="Flavors\IXmlFlavor.cs" />
     <Compile Include="Flavors\XmlFlavor.cs" />
     <Compile Include="Flavors\XmlFlavorFinder.cs" />
+    <Compile Include="Flavors\XmlFlavorForConfig.cs" />
     <Compile Include="Flavors\XmlFlavorForFxCop.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
     <Compile Include="Flavors\XmlFlavorForPackagesConfig.cs" />

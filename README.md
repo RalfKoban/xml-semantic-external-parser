@@ -10,6 +10,8 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 [![Build history](https://buildstats.info/appveyor/chart/RalfKoban/xml-semantic-external-parser)](https://ci.appveyor.com/project/RalfKoban/xml-semantic-external-parser/history)
 
 ## Supported formats
+- .NET Configuration files (.config)
+- .NET Settings files (.settings)
 - C++ Project files (.vcxproj)
 - C# Project files (.csproj)
 - C# Rule sets (.ruleset)
@@ -17,7 +19,6 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 - [NDepend](https://www.ndepend.com/) (.ndproj, .ndrules)
 - NuGet Configuration files (packages.config)
 - [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project files (.shfbproj)
-- Settings files (.settings)
 - Visual Build (.bld)
 - Visual Studio Installer XML (.vsixmanifest)
 - WPF (.xaml)
