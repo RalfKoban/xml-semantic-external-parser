@@ -21,7 +21,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
-        public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase) || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Project", StringComparison.OrdinalIgnoreCase)
                                                          && string.Equals(info.Namespace, "http://schemas.microsoft.com/developer/msbuild/2003", StringComparison.OrdinalIgnoreCase);
@@ -41,6 +45,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     case "ProjectReference":
                     case "Reference":
                     case "Resource":
+                    case "Validate":
                     {
                             return GetName(reader, name, "Include");
                     }
