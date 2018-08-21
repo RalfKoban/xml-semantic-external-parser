@@ -7,7 +7,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlFlavorForProject : XmlFlavor
+    public sealed class XmlFlavorForMSBuild : XmlFlavor
     {
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                         {
@@ -27,7 +27,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                        || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase);
+                                                       || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Project", StringComparison.OrdinalIgnoreCase)
                                                          && string.Equals(info.Namespace, "http://schemas.microsoft.com/developer/msbuild/2003", StringComparison.OrdinalIgnoreCase);

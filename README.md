@@ -17,6 +17,7 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 | C# Rule sets | .ruleset
 | Entity Framework Database Schema (V3) | .edmx
 | FxCop | _CustomDictionary.xml_
+| Microsoft Build Engine (MSBuild) | .proj, .targets
 | [NDepend](https://www.ndepend.com/) | .ndproj, .ndrules
 | NuGet Configuration | _packages.config_
 | [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project  | .shfbproj

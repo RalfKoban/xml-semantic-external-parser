@@ -12,7 +12,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                             new XmlFlavorForEdmxV3(),
                                                             new XmlFlavorForFxCop(),
                                                             new XmlFlavorForPackagesConfig(),
-                                                            new XmlFlavorForProject(),
+                                                            new XmlFlavorForMSBuild(),
                                                             new XmlFlavorForNDepend(),
                                                             new XmlFlavorForSettings(),
                                                             new XmlFlavorForVisualBuild(),
