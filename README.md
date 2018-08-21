@@ -15,6 +15,7 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 - C++ Project files (.vcxproj)
 - C# Project files (.csproj)
 - C# Rule sets (.ruleset)
+- Entity Framework Database Schema V3 (.edmx)
 - FxCop Custom dictionary
 - [NDepend](https://www.ndepend.com/) (.ndproj, .ndrules)
 - NuGet Configuration files (packages.config)
