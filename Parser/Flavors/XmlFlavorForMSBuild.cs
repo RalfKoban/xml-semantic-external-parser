@@ -17,6 +17,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "Project",
                                                                             "ProjectConfiguration",
                                                                             "PropertyGroup",
+                                                                            "Target",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
