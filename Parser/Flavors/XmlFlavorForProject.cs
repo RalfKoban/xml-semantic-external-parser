@@ -23,6 +23,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase);
