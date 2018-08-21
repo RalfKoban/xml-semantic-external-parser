@@ -21,6 +21,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                             new XmlFlavorForWixConfiguration(),
                                                             new XmlFlavorForWixLocation(),
                                                             new XmlFlavorForXaml(),
+                                                            new XmlFlavorForStylesheets(),
                                                         };
 
         public static IXmlFlavor Find(string filePath)

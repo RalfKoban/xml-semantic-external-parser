@@ -33,3 +33,4 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 | [Wix Toolkit](http://wixtoolset.org/) | .wxi, .wxl, .wxs
 | XML | .xml
 | XSD | .xsd
+| XSL Transformation (XSLT) | .xsl, .xslt
