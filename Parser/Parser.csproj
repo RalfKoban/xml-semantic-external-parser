@@ -66,6 +66,7 @@
     <Compile Include="Flavors\XmlFlavorForProject.cs" />
     <Compile Include="Flavors\XmlFlavorForSettings.cs" />
     <Compile Include="Flavors\XmlFlavorForVisualBuild.cs" />
+    <Compile Include="Flavors\XmlFlavorForVsixManifest.cs" />
     <Compile Include="Flavors\XmlFlavorForWix.cs" />
     <Compile Include="Flavors\XmlFlavorForWixConfiguration.cs" />
     <Compile Include="Flavors\XmlFlavorForWixLocation.cs" />

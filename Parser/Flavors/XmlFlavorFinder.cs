@@ -16,6 +16,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                             new XmlFlavorForNDepend(),
                                                             new XmlFlavorForSettings(),
                                                             new XmlFlavorForVisualBuild(),
+                                                            new XmlFlavorForVsixManifest(),
                                                             new XmlFlavorForWix(),
                                                             new XmlFlavorForWixConfiguration(),
                                                             new XmlFlavorForWixLocation(),
