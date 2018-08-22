@@ -31,9 +31,20 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("Compile", "LocationSpanConverter.cs")]
         [TestCase("Analyzer", "StyleCop.Analyzers.dll")]
         [TestCase("ProjectReference", "Common.csproj")]
-        public void Item_is_found_and_truncated_properly(string type, string name)
+        public void Item_is_found_and_truncated_properly(string groupType, string name)
         {
-            var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == type).Any(_ => _.Name == name);
+            var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == groupType).Any(_ => _.Name == name);
+
+            Assert.That(item, Is.True);
+        }
+
+        [TestCase("ItemGroup", "ItemGroup 'Reference'")]
+        [TestCase("PropertyGroup", "PropertyGroup '(default)'")]
+        [TestCase("PropertyGroup", "PropertyGroup 'Debug|AnyCPU'")]
+        [TestCase("PropertyGroup", "PropertyGroup 'Release|AnyCPU'")]
+        public void Group_is_found_and_truncated_properly(string groupType, string name)
+        {
+            var item = _root.Children.OfType<Container>().Where(_ => _.Type == groupType).Any(_ => _.Name == name);
 
             Assert.That(item, Is.True);
         }

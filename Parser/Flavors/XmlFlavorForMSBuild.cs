@@ -9,6 +9,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public sealed class XmlFlavorForMSBuild : XmlFlavor
     {
+        private static readonly char[] Separator = { '\'' };
+
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             "ItemGroup",
@@ -20,7 +22,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "Target",
                                                                         };
 
-        public override bool ParseAttributesEnabled => false;
+        public override bool ParseAttributesEnabled => true;
 
         public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase)
@@ -84,6 +86,20 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     c.Name = content;
                 }
+                else
+                {
+                    var attributes = c.Children.Where(_ => _.Type == NodeType.Attribute).OfType<TerminalNode>().ToList();
+                    foreach (var attribute in attributes)
+                    {
+                        c.Children.Remove(attribute);
+                    }
+
+                    var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
+                    if (!string.IsNullOrEmpty(suffix))
+                    {
+                        c.Name = string.Concat(c.Name, " '", suffix, "'");
+                    }
+                }
             }
 
             return base.FinalAdjustAfterParsingComplete(node);
@@ -91,7 +107,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
 
-        private string GetName(XmlTextReader reader, string name, string attributeName)
+        private static string GetName(XmlTextReader reader, string name, string attributeName)
         {
             var attribute = reader.GetAttribute(attributeName);
             if (attribute is null)
@@ -111,7 +127,30 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             // just add 1 and we get rid of situation that index might not be available ;)
             resultingName = resultingName.Substring(resultingName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
             resultingName = resultingName.Substring(resultingName.LastIndexOf('/') + 1);
+
             return resultingName;
+        }
+
+        private static string GetNameSuffixForItemGroup(Container container) => container.Name == "ItemGroup" && container.Children.Count > 0 ? container.Children[0].Type : null; // try to find special name for item groups, based on their children
+
+        private static string GetNameSuffixForPropertyGroup(Container container, IEnumerable<TerminalNode> attributes)
+        {
+            if (container.Name == "PropertyGroup" && container.Children.Count > 0)
+            {
+                // try to find 'ProjectGuid' to see if we have default property group
+                if (container.Children.Any(_ => _.Type == "ProjectGuid"))
+                {
+                    return "(default)";
+                }
+
+                var condition = attributes.FirstOrDefault(_ => _.Name == "Condition");
+                if (condition != null)
+                {
+                    return condition.Content.Trim().Split(Separator, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                }
+            }
+
+            return null;
         }
     }
 }
