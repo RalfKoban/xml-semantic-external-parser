@@ -94,13 +94,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         c.Children.Remove(attribute);
                     }
 
-                    /*
                     var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
                     if (!string.IsNullOrEmpty(suffix))
                     {
                         c.Name = string.Concat(c.Name, " '", suffix, "'");
                     }
-                    */
                 }
             }
 
@@ -137,6 +135,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static string GetNameSuffixForPropertyGroup(Container container, IEnumerable<TerminalNode> attributes)
         {
+            return null;
+
             if (container.Name == "PropertyGroup" && container.Children.Count > 0)
             {
                 // try to find 'ProjectGuid' to see if we have default property group
