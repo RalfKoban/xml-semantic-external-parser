@@ -29,7 +29,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                        || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase);
+                                                       || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Project", StringComparison.OrdinalIgnoreCase)
                                                          && string.Equals(info.Namespace, "http://schemas.microsoft.com/developer/msbuild/2003", StringComparison.OrdinalIgnoreCase);
