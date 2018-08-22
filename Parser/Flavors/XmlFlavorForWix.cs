@@ -125,7 +125,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "RegisterProgIdInfo",
                                                                             "RegisterTypeLibraries",
                                                                             "RegisterUser",
+                                                                            "RegistrySearch", // This is not a real terminal node but we consider it to be one as it's about a single search in the registry
                                                                             "RegistrySearchRef",
+                                                                            "RegistryValue", // This is not a real terminal node but we consider it to be one as it's about a single entry in the registry
                                                                             "RelatedBundle",
                                                                             "RemotePayload",
                                                                             "RemoveDuplicateFiles",
@@ -155,6 +157,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "SetODBCFolders",
                                                                             "SetProperty",
                                                                             "SFPFile",
+                                                                            "Shortcut", // This is not a real terminal node but we consider it to be one as it's about a single shortcut
                                                                             "ShortcutProperty",
                                                                             "Show",
                                                                             "SlipstreamMsp",
