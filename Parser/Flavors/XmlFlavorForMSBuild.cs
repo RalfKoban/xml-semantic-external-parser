@@ -134,7 +134,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return resultingName;
         }
 
-        private static string GetNameSuffixForItemGroup(Container container) => container.Name == "ItemGroup" && container.Children.Count > 0 ? container.Children[0].Type : null; // try to find special name for item groups, based on their children
+        private static string GetNameSuffixForItemGroup(Container container)
+        {
+            if (container.Name == "ItemGroup")
+            {
+                // try to find special name for item groups, based on their children
+                return container.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type != NodeType.Comment)?.Type;
+            }
+
+            return null;
+        }
 
         private static string GetNameSuffixForPropertyGroup(Container container, IEnumerable<TerminalNode> attributes)
         {

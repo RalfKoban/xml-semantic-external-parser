@@ -41,6 +41,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <!-- some comment to skip for naming -->
     <Compile Include="CharacterPositionFinder.cs" />
     <Compile Include="CommentCleaner.cs" />
     <Compile Include="Flavors\DocumentInfo.cs" />
