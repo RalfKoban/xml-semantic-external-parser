@@ -54,6 +54,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "ExitCode",
                                                                             "Failure",
                                                                             "FeatureGroupRef",
+                                                                            "File", // This is not a real terminal node but we consider it to be one as it's about a single file
                                                                             "FileCost",
                                                                             "FileSearch",
                                                                             "FileSearchRef",
