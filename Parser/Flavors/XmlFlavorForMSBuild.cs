@@ -46,10 +46,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 switch (name)
                 {
                     case "Analyzer":
+                    case "BootstrapperPackage":
                     case "Compile":
                     case "Content":
                     case "EmbeddedResource":
                     case "None":
+                    case "Page":
                     case "ProjectReference":
                     case "Reference":
                     case "Resource":

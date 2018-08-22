@@ -31,6 +31,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("Compile", "LocationSpanConverter.cs")]
         [TestCase("Analyzer", "StyleCop.Analyzers.dll")]
         [TestCase("ProjectReference", "Common.csproj")]
+        [TestCase("BootstrapperPackage", "Microsoft.Windows.Installer.4.5")]
+        [TestCase("Page", "UserControl.xaml")]
         public void Item_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == groupType).Any(_ => _.Name == name);
