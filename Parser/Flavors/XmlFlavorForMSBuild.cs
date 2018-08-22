@@ -94,20 +94,24 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private string GetName(XmlTextReader reader, string name, string attributeName)
         {
             var attribute = reader.GetAttribute(attributeName);
-            if (attribute != null)
+            if (attribute is null)
             {
-                // just add 1 and we get rid of situation that index might not be available ;)
-                var commaIndex = attribute.IndexOf(',');
-                if (commaIndex > 0)
-                {
-                    attribute = attribute.Substring(0, commaIndex);
-                }
-
-                // just add 1 and we get rid of situation that index might not be available ;)
-                return attribute.Substring(attribute.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
+                return name;
             }
 
-            return name;
+            // if there is a comma, then we want to get the name before the comma
+            var resultingName = attribute;
+            var commaIndex = resultingName.IndexOf(',');
+            if (commaIndex > 0)
+            {
+                resultingName = resultingName.Substring(0, commaIndex);
+            }
+
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // just add 1 and we get rid of situation that index might not be available ;)
+            resultingName = resultingName.Substring(resultingName.LastIndexOf("\\", StringComparison.OrdinalIgnoreCase) + 1);
+            resultingName = resultingName.Substring(resultingName.LastIndexOf('/') + 1);
+            return resultingName;
         }
     }
 }
