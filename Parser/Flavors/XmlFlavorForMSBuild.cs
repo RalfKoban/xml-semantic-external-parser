@@ -54,7 +54,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     case "Resource":
                     case "Validate":
                     {
-                            return GetName(reader, name, "Include");
+                        return GetName(reader, name, "Include");
                     }
 
                     case "Import":
@@ -94,11 +94,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         c.Children.Remove(attribute);
                     }
 
+                    /*
                     var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
                     if (!string.IsNullOrEmpty(suffix))
                     {
                         c.Name = string.Concat(c.Name, " '", suffix, "'");
                     }
+                    */
                 }
             }
 
