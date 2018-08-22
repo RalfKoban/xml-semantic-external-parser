@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
@@ -6,23 +7,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public static class XmlFlavorFinder
     {
-        private static readonly XmlFlavor[] Flavors =
-                                                        {
-                                                            new XmlFlavorForConfig(),
-                                                            new XmlFlavorForEdmxV3(),
-                                                            new XmlFlavorForFxCop(),
-                                                            new XmlFlavorForPackagesConfig(),
-                                                            new XmlFlavorForMSBuild(),
-                                                            new XmlFlavorForNDepend(),
-                                                            new XmlFlavorForSettings(),
-                                                            new XmlFlavorForVisualBuild(),
-                                                            new XmlFlavorForVsixManifest(),
-                                                            new XmlFlavorForWix(),
-                                                            new XmlFlavorForWixConfiguration(),
-                                                            new XmlFlavorForWixLocation(),
-                                                            new XmlFlavorForXaml(),
-                                                            new XmlFlavorForXslTransformations(),
-                                                        };
+        private static readonly Type XmlFlavorType = typeof(XmlFlavor);
+
+        private static readonly XmlFlavor[] Flavors = typeof(XmlFlavorFinder).Assembly
+                                                        .GetTypes()
+                                                        .Where(_ => !_.IsAbstract)
+                                                        .Where(_ => _.IsClass)
+                                                        .Where(_ => _ != XmlFlavorType) // ignore XML flavor here as that is the fall-back type
+                                                        .Where(_ => XmlFlavorType.IsAssignableFrom(_))
+                                                        .Select(_ => _.GetConstructor(Type.EmptyTypes))
+                                                        .Select(_ => _?.Invoke(null))
+                                                        .OfType<XmlFlavor>()
+                                                        .ToArray();
 
         public static IXmlFlavor Find(string filePath)
         {
