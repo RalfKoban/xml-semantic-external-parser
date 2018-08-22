@@ -323,7 +323,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var rootEnd = root.LocationSpan.End;
 
             // there might be no declaration, such as when trying to parse XAML files
-            var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault();
+            var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.XmlDeclaration);
             if (xmlDeclaration != null)
             {
                 // let root include the XML declaration

@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterPositionFinderTests.cs" />
+    <Compile Include="ParserTests_CommentAfterEnd.cs" />
     <Compile Include="ParserTests_CSharp_Project.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
@@ -75,6 +76,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\CommentAfterEnd.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\CSharp_Project.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
