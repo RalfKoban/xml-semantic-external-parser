@@ -11,19 +11,40 @@ namespace MiKoSolutions.SemanticParsers.Xml
         private const int NewLine = 10; // '\n'
         private const int CariageReturn = 13; // '\r'
 
-        private readonly IReadOnlyDictionary<int, KeyValuePair<int, int>> _map;
+        /// <summary>
+        /// Contains the information about the lines in following format:
+        /// <para />
+        /// Line | LineLength | CharacterCount until end of line.
+        /// </summary>
+        private readonly IReadOnlyDictionary<int, KeyValuePair<int, int>> _lineNumberToLengthAndCountMap;
 
-        private CharacterPositionFinder(IReadOnlyDictionary<int, KeyValuePair<int, int>> map) => _map = map;
+        /// <summary>
+        /// Contains the information about the lines (as flat list) in following format:
+        /// <para />
+        /// CharacterCount | LineInfo (number and length till the position)
+        /// </summary>
+        private readonly IReadOnlyDictionary<int, LineInfo> _characterPositionToLineInfoMap;
+
+        private CharacterPositionFinder(IReadOnlyDictionary<int, KeyValuePair<int, int>> lineNumberToLengthAndCountMap, IReadOnlyDictionary<int, LineInfo> characterPositionToLineInfoMap)
+        {
+            _lineNumberToLengthAndCountMap = lineNumberToLengthAndCountMap;
+            _characterPositionToLineInfoMap = characterPositionToLineInfoMap;
+        }
 
         public static CharacterPositionFinder CreateFrom(string filePath)
         {
-            var i = 1;
+            var lineNumber = 1;
             var count = -1;
 
             var map = new Dictionary<int, KeyValuePair<int, int>>
                           {
                               { 0, new KeyValuePair<int, int>(0, count) },
                           };
+
+            var charPosToLineMap = new Dictionary<int, LineInfo>
+                                       {
+                                           { 0, new LineInfo(1, 1) },
+                                       };
 
             var lineLength = 0;
             using (var reader = SystemFile.OpenText(filePath))
@@ -33,12 +54,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     lineLength++;
                     count++;
 
+                    charPosToLineMap[count] = new LineInfo(lineNumber, lineLength);
+
                     var index = reader.Read();
                     switch (index)
                     {
                         case NewLine:
                         {
-                            map[i++] = new KeyValuePair<int, int>(lineLength, count);
+                            map[lineNumber++] = new KeyValuePair<int, int>(lineLength, count);
                             lineLength = 0;
                             break;
                         }
@@ -54,9 +77,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                                 lineLength++;
                                 count++;
+
+                                charPosToLineMap[count] = new LineInfo(lineNumber, lineLength);
                             }
 
-                            map[i++] = new KeyValuePair<int, int>(lineLength, count);
+                            map[lineNumber++] = new KeyValuePair<int, int>(lineLength, count);
                             lineLength = 0;
                             break;
                         }
@@ -64,42 +89,32 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
             }
 
-            map[i] = new KeyValuePair<int, int>(lineLength, count);
+            map[lineNumber] = new KeyValuePair<int, int>(lineLength, count);
 
-            return new CharacterPositionFinder(map);
+            return new CharacterPositionFinder(map, charPosToLineMap);
         }
 
         public int GetCharacterPosition(LineInfo lineInfo) => GetCharacterPosition(lineInfo.LineNumber, lineInfo.LinePosition);
 
         public int GetCharacterPosition(int lineNumber, int linePosition)
         {
-            var pair = _map[lineNumber - 1]; // get previous line and then add the line position
+            var pair = _lineNumberToLengthAndCountMap[lineNumber - 1]; // get previous line and then add the line position
 
-            return pair.Value + linePosition;
+            var characterCount = pair.Value;
+
+            return characterCount + linePosition;
         }
 
         public int GetLineLength(LineInfo lineInfo) => GetLineLength(lineInfo.LineNumber);
 
         public int GetLineLength(int lineNumber)
         {
-            var pair = _map[lineNumber];
-            return pair.Key;
+            var pair = _lineNumberToLengthAndCountMap[lineNumber];
+            var lineLength = pair.Key;
+
+            return lineLength;
         }
 
-        public LineInfo GetLineInfo(int characterPosition)
-        {
-            foreach (var pair in _map)
-            {
-                var difference = pair.Value.Value - characterPosition;
-                if (difference < 0)
-                {
-                    continue;
-                }
-
-                return new LineInfo(pair.Key, pair.Value.Key - difference);
-            }
-
-            return null;
-        }
+        public LineInfo GetLineInfo(int characterPosition) => _characterPositionToLineInfoMap[characterPosition];
     }
 }
