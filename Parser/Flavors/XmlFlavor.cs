@@ -57,6 +57,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
+        public virtual string GetContent(XmlTextReader reader) => reader.Value;
+
         public virtual ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
             return ShallBeTerminalNode(node)

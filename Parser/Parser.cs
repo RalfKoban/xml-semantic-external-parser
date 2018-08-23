@@ -126,7 +126,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var name = flavor.GetName(reader);
             var type = flavor.GetType(reader);
-            var content = reader.Value;
+            var content = flavor.GetContent(reader);
 
             var container = new Container
                                 {
@@ -209,10 +209,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var name = flavor.GetName(reader);
             var type = flavor.GetType(reader);
 
+            // important call to be able to read the attribute value
             reader.ReadAttributeValue();
-            var value = reader.Value;
 
-            var attributeEndPos = new LineInfo(reader.LineNumber, reader.LinePosition + value.Length);
+            var content = flavor.GetContent(reader);
+
+            var attributeEndPos = new LineInfo(reader.LineNumber, reader.LinePosition + content.Length);
 
             var startPos = finder.GetCharacterPosition(attributeStartPos);
             var endPos = finder.GetCharacterPosition(attributeEndPos);
@@ -220,7 +222,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var locationSpan = new LocationSpan(attributeStartPos, attributeEndPos);
             var span = new CharacterSpan(startPos, endPos);
 
-            var child = AddTerminalNode(parent, type, name, value, locationSpan, span);
+            var child = AddTerminalNode(parent, type, name, content, locationSpan, span);
 
             flavor.FinalAdjustAfterParsingComplete(child);
         }
@@ -229,12 +231,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             var name = flavor.GetName(reader);
             var type = flavor.GetType(reader);
-            var value = reader.Value;
+            var content = flavor.GetContent(reader);
 
             var locationSpan = GetLocationSpan(reader);
             var span = GetCharacterSpan(locationSpan, finder);
 
-            var child = AddTerminalNode(parent, type, name, value, locationSpan, span);
+            var child = AddTerminalNode(parent, type, name, content, locationSpan, span);
 
             flavor.FinalAdjustAfterParsingComplete(child);
         }
