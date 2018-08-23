@@ -40,9 +40,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(item, Is.True);
         }
 
-        [TestCase("ItemGroup", "ItemGroup 'Reference'")]
-        [TestCase("PropertyGroup", "PropertyGroup '(default)'")]
-        [TestCase("PropertyGroup", "PropertyGroup 'Debug|AnyCPU'")]
+        [TestCase("ItemGroup 'Reference'", "Reference")]
+        [TestCase("PropertyGroup", "(default)")]
+        [TestCase("PropertyGroup", "Debug|AnyCPU")]
         public void Group_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().Where(_ => _.Type == groupType).Any(_ => _.Name == name);
