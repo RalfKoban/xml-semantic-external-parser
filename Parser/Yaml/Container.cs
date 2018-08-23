@@ -21,6 +21,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                                                              {
                                                                  Type = Type,
                                                                  Name = Name,
+                                                                 Content = Content,
                                                                  LocationSpan = LocationSpan,
                                                                  Span = GetTotalSpan(),
                                                              };
