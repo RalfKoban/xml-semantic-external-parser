@@ -26,9 +26,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 SystemFile.WriteAllBytes(flagFile, new byte[] { 0x42 });
             }
 
+            var watch = Stopwatch.StartNew();
             while (true)
             {
-                Tracer.Trace($"Ready to parse, waiting for input (instance {InstanceId:B})");
+                // TODO: RKN
+                //// Tracer.Trace($"Ready to parse, waiting for input (instance {InstanceId:B})");
 
                 var inputFile = await Console.In.ReadLineAsync();
                 if (inputFile == null || "end".Equals(inputFile, StringComparison.OrdinalIgnoreCase))
@@ -41,15 +43,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 var encodingToUse = await Console.In.ReadLineAsync();
                 var outputFile = await Console.In.ReadLineAsync();
 
-                Tracer.Trace($"Trying to parse '{inputFile}' with encoding '{encodingToUse}', output will be written to '{outputFile}' (instance {InstanceId:B})");
+                // TODO: RKN
+                //// Tracer.Trace($"Trying to parse '{inputFile}' with encoding '{encodingToUse}', output will be written to '{outputFile}' (instance {InstanceId:B})");
 
-                var watch = Stopwatch.StartNew();
                 try
                 {
-                    var fileSize = (int)new FileInfo(inputFile).Length;
-
                     try
                     {
+                        watch.Restart();
+
                         var file = Parser.Parse(inputFile);
 
                         using (var writer = SystemFile.CreateText(outputFile))
@@ -58,7 +60,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         }
 
                         var parseErrors = file.ParsingErrorsDetected == true;
-
                         if (parseErrors)
                         {
                             var parsingError = file.ParsingErrors[0];
@@ -66,21 +67,20 @@ namespace MiKoSolutions.SemanticParsers.Xml
                             Tracer.Trace(parsingError.Location);
                         }
 
+                        // clean-up after big files
+                        if (IsBigFile(inputFile))
+                        {
+                            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false, true);
+
+                            Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
+                        }
+
                         Console.WriteLine(parseErrors ? "KO" : "OK");
                     }
                     finally
                     {
                         Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
-                        watch.Restart();
-                    }
-
-                    // clean-up after big files
-                    if (fileSize > 10_000_000)
-                    {
-                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false, true);
-
-                        Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
                     }
                 }
                 catch (Exception ex)
@@ -97,11 +97,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     throw;
                 }
-                finally
-                {
-                    watch.Stop();
-                }
             }
+        }
+
+        private static bool IsBigFile(string inputFile)
+        {
+            var info = new FileInfo(inputFile);
+
+            return info.Exists && info.Length > 10_000_000;
         }
     }
 }
