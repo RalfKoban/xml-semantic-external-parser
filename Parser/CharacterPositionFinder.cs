@@ -27,14 +27,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var lineNumber = 1;
             var count = -1;
 
-            var fileSize = (int)new FileInfo(filePath).Length;
+            var capacity = (int)new FileInfo(filePath).Length + 1;
 
-            var map = new List<MapInfo>(fileSize / 4)
+            var map = new List<MapInfo>(capacity / 4)
                           {
                               new MapInfo(0, count),
                           };
 
-            var charPosToLineMap = new List<LineInfo>(fileSize)
+            var charPosToLineMap = new List<LineInfo>(capacity)
                                        {
                                            new LineInfo(1, 1),
                                        };
