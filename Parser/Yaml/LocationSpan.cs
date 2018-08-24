@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     [DebuggerDisplay("Start: {Start}, End: {End}")]
-    public sealed class LocationSpan : IEquatable<LocationSpan>
+    public struct LocationSpan : IEquatable<LocationSpan>
     {
         public LocationSpan(LineInfo start, LineInfo end)
         {
@@ -20,28 +20,15 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 
         public static bool operator !=(LocationSpan left, LocationSpan right) => !Equals(left, right);
 
-        public bool Equals(LocationSpan other)
-        {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
+        public bool Equals(LocationSpan other) => Start == other.Start && End == other.End;
 
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Start == other.Start && End == other.End;
-        }
-
-        public override bool Equals(object obj) => Equals(obj as LocationSpan);
+        public override bool Equals(object obj) => obj is LocationSpan other && Equals(other);
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Start != null ? Start.GetHashCode() : 0) * 397) ^ (End != null ? End.GetHashCode() : 0);
+                return (Start.GetHashCode() * 397) ^ End.GetHashCode();
             }
         }
 

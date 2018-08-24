@@ -14,16 +14,17 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml.Converters
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            var span = value as CharacterSpan;
-            if (span == null)
+            if (value is CharacterSpan span)
+            {
+                emitter.Emit(new SequenceStart(null, null, true, SequenceStyle.Flow));
+                emitter.Emit(new Scalar(span.Start.ToString()));
+                emitter.Emit(new Scalar(span.End.ToString()));
+                emitter.Emit(new SequenceEnd());
+            }
+            else
             {
                 throw new NotImplementedException("wrong type");
             }
-
-            emitter.Emit(new SequenceStart(null, null, true, SequenceStyle.Flow));
-            emitter.Emit(new Scalar(span.Start.ToString()));
-            emitter.Emit(new Scalar(span.End.ToString()));
-            emitter.Emit(new SequenceEnd());
         }
     }
 }

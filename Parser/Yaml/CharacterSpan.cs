@@ -2,7 +2,7 @@
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
-    public sealed class CharacterSpan : IEquatable<CharacterSpan>
+    public struct CharacterSpan : IEquatable<CharacterSpan>
     {
         public CharacterSpan(int start, int end)
         {
@@ -23,22 +23,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 
         public static bool operator !=(CharacterSpan left, CharacterSpan right) => !Equals(left, right);
 
-        public bool Equals(CharacterSpan other)
-        {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
+        public bool Equals(CharacterSpan other) => Start == other.Start && End == other.End;
 
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Start == other.Start && End == other.End;
-        }
-
-        public override bool Equals(object obj) => Equals(obj as CharacterSpan);
+        public override bool Equals(object obj) => obj is CharacterSpan other && Equals(other);
 
         public override int GetHashCode()
         {

@@ -10,7 +10,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             foreach (var root in file.Children)
             {
-                var children = root.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+                var children = root.Children.Where(IsNoAttribute).ToList();
                 if (children.Any())
                 {
                     AdjustBegin(children.First(), root, finder, 0);
@@ -20,24 +20,23 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 // adjust based on gaps, but only adjust child nodes that are no attributes and no text
                 foreach (var child in children)
                 {
-                    if (child.Type == NodeType.Attribute)
+                    switch (child.Type)
                     {
-                        continue;
-                    }
+                        case NodeType.Attribute:
+                        case NodeType.Text:
+                            continue;
 
-                    if (child.Type == NodeType.Text)
-                    {
-                        continue;
+                        default:
+                            AdjustNode(child, root, finder);
+                            break;
                     }
-
-                    AdjustNode(child, root, finder);
                 }
             }
         }
 
         private static void AdjustNode(ContainerOrTerminalNode node, Container parent, CharacterPositionFinder finder)
         {
-            var parentChildren = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var parentChildren = parent.Children.Where(IsNoAttribute).ToList();
             var index = parentChildren.IndexOf(node);
 
             var newStartPos = AdjustBegin(node, parent, finder, index);
@@ -53,7 +52,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             if (node is Container c)
             {
                 // only adjust child nodes that are no attributes
-                var children = c.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+                var children = c.Children.Where(IsNoAttribute).ToList();
                 if (children.Any())
                 {
                     c.HeaderSpan = new CharacterSpan(newStartPos, c.HeaderSpan.End);
@@ -95,7 +94,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             int newStartPos;
 
-            var children = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var children = parent.Children.Where(IsNoAttribute).ToList();
             var first = node == children.First();
             if (first)
             {
@@ -128,7 +127,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             int newEndPos;
 
-            var children = parent.Children.Where(_ => _.Type != NodeType.Attribute).ToList();
+            var children = parent.Children.Where(IsNoAttribute).ToList();
             var last = node == children.Last();
             if (last)
             {
@@ -186,5 +185,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             return characterPosition - 1;
         }
+
+        private static bool IsNoAttribute(ContainerOrTerminalNode node) => node.Type != NodeType.Attribute;
     }
 }
