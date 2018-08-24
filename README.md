@@ -10,6 +10,9 @@ How to use it with GMaster is documented [here](http://blog.gmaster.io/2018/03/u
 [![Build history](https://buildstats.info/appveyor/chart/RalfKoban/xml-semantic-external-parser)](https://ci.appveyor.com/project/RalfKoban/xml-semantic-external-parser/history)
 
 ## Supported formats
+_**Note:** A semantic parser for .NET resource files (.resx) can be found [here](https://github.com/RalfKoban/resx-semantic-external-parser)._
+
+
 | Description | File name / extension |
 |-------------|-----------------------|
 | .NET Configuration | .config
