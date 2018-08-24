@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime;
 using System.Threading.Tasks;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -10,8 +12,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Program
     {
-        private const string Category = "RKN Semantic";
-
         private static readonly Guid InstanceId = Guid.NewGuid();
 
         public static async Task<int> Main(string[] args)
@@ -38,9 +38,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 var encodingToUse = await Console.In.ReadLineAsync();
                 var outputFileToWrite = await Console.In.ReadLineAsync();
 
+                var watch = Stopwatch.StartNew();
                 try
                 {
-                    var watch = Stopwatch.StartNew();
+                    var fileSize = (int)new FileInfo(inputFile).Length;
+
                     try
                     {
                         var file = Parser.Parse(inputFile);
@@ -55,29 +57,43 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         if (parseErrors)
                         {
                             var parsingError = file.ParsingErrors[0];
-                            Trace.WriteLine(parsingError.ErrorMessage, Category);
-                            Trace.WriteLine(parsingError.Location, Category);
+                            Tracer.Trace(parsingError.ErrorMessage);
+                            Tracer.Trace(parsingError.Location);
                         }
 
                         Console.WriteLine(parseErrors ? "KO" : "OK");
                     }
                     finally
                     {
-                        Trace.WriteLine($"Parsing took {watch.Elapsed:s\\.fff} ms  (on instance {InstanceId:B})", Category);
+                        Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (on instance {InstanceId:B})");
+                        watch.Restart();
+                    }
+
+                    // clean-up after big files
+                    if (fileSize > 10_000_000)
+                    {
+                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false, true);
+
+                        Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (on instance {InstanceId:B})");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Exception: {ex}", Category);
+                    Tracer.Trace($"Exception: {ex}");
 
                     foreach (var stackTraceLine in ex.StackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        Trace.WriteLine(stackTraceLine, Category);
+                        Tracer.Trace(stackTraceLine);
                     }
 
                     Console.WriteLine("KO");
 
                     throw;
+                }
+                finally
+                {
+                    watch.Stop();
                 }
             }
         }

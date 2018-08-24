@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
@@ -6,26 +8,15 @@ using SystemFile = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
-    public class CharacterPositionFinder
+    public sealed class CharacterPositionFinder : IDisposable
     {
         private const int NewLine = 10; // '\n'
-        private const int CariageReturn = 13; // '\r'
+        private const int CarriageReturn = 13; // '\r'
 
-        /// <summary>
-        /// Contains the information about the lines in following format:
-        /// <para />
-        /// Line | LineLength | CharacterCount until end of line.
-        /// </summary>
-        private readonly IReadOnlyDictionary<int, KeyValuePair<int, int>> _lineNumberToLengthAndCountMap;
+        private readonly List<MapInfo> _lineNumberToLengthAndCountMap;
+        private readonly List<LineInfo> _characterPositionToLineInfoMap;
 
-        /// <summary>
-        /// Contains the information about the lines (as flat list) in following format:
-        /// <para />
-        /// CharacterCount | LineInfo (number and length till the position)
-        /// </summary>
-        private readonly IReadOnlyDictionary<int, LineInfo> _characterPositionToLineInfoMap;
-
-        private CharacterPositionFinder(IReadOnlyDictionary<int, KeyValuePair<int, int>> lineNumberToLengthAndCountMap, IReadOnlyDictionary<int, LineInfo> characterPositionToLineInfoMap)
+        private CharacterPositionFinder(List<MapInfo> lineNumberToLengthAndCountMap, List<LineInfo> characterPositionToLineInfoMap)
         {
             _lineNumberToLengthAndCountMap = lineNumberToLengthAndCountMap;
             _characterPositionToLineInfoMap = characterPositionToLineInfoMap;
@@ -36,14 +27,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var lineNumber = 1;
             var count = -1;
 
-            var map = new Dictionary<int, KeyValuePair<int, int>>
+            var fileSize = (int)new FileInfo(filePath).Length;
+
+            var map = new List<MapInfo>(fileSize / 4)
                           {
-                              { 0, new KeyValuePair<int, int>(0, count) },
+                              new MapInfo(0, count),
                           };
 
-            var charPosToLineMap = new Dictionary<int, LineInfo>
+            var charPosToLineMap = new List<LineInfo>(fileSize)
                                        {
-                                           { 0, new LineInfo(1, 1) },
+                                           new LineInfo(1, 1),
                                        };
 
             var lineLength = 0;
@@ -54,19 +47,19 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     lineLength++;
                     count++;
 
-                    charPosToLineMap[count] = new LineInfo(lineNumber, lineLength);
+                    charPosToLineMap.Insert(count, new LineInfo(lineNumber, lineLength));
 
                     var index = reader.Read();
                     switch (index)
                     {
                         case NewLine:
                         {
-                            map[lineNumber++] = new KeyValuePair<int, int>(lineLength, count);
+                            map.Insert(lineNumber++, new MapInfo(lineLength, count));
                             lineLength = 0;
                             break;
                         }
 
-                        case CariageReturn:
+                        case CarriageReturn:
                         {
                             // additional line break character ?
                             var next = reader.Peek();
@@ -78,10 +71,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                 lineLength++;
                                 count++;
 
-                                charPosToLineMap[count] = new LineInfo(lineNumber, lineLength);
+                                charPosToLineMap.Insert(count, new LineInfo(lineNumber, lineLength));
                             }
 
-                            map[lineNumber++] = new KeyValuePair<int, int>(lineLength, count);
+                            map.Insert(lineNumber++, new MapInfo(lineLength, count));
                             lineLength = 0;
                             break;
                         }
@@ -89,32 +82,65 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
             }
 
-            map[lineNumber] = new KeyValuePair<int, int>(lineLength, count);
+            map.Insert(lineNumber, new MapInfo(lineLength, count));
 
             return new CharacterPositionFinder(map, charPosToLineMap);
+        }
+
+        public void Dispose()
+        {
+            _lineNumberToLengthAndCountMap.Clear();
+            _characterPositionToLineInfoMap.Clear();
         }
 
         public int GetCharacterPosition(LineInfo lineInfo) => GetCharacterPosition(lineInfo.LineNumber, lineInfo.LinePosition);
 
         public int GetCharacterPosition(int lineNumber, int linePosition)
         {
-            var pair = _lineNumberToLengthAndCountMap[lineNumber - 1]; // get previous line and then add the line position
+            var info = _lineNumberToLengthAndCountMap[lineNumber - 1]; // get previous line and then add the line position
 
-            var characterCount = pair.Value;
-
-            return characterCount + linePosition;
+            return info.CharacterCount + linePosition;
         }
 
         public int GetLineLength(LineInfo lineInfo) => GetLineLength(lineInfo.LineNumber);
 
         public int GetLineLength(int lineNumber)
         {
-            var pair = _lineNumberToLengthAndCountMap[lineNumber];
-            var lineLength = pair.Key;
+            var info = _lineNumberToLengthAndCountMap[lineNumber];
 
-            return lineLength;
+            return info.LineLength;
         }
 
         public LineInfo GetLineInfo(int characterPosition) => _characterPositionToLineInfoMap[characterPosition];
+
+        private struct MapInfo : IEquatable<MapInfo>
+        {
+            internal readonly int LineLength;
+            internal readonly int CharacterCount;
+
+            internal MapInfo(int lineLength, int characterCount)
+            {
+                LineLength = lineLength;
+                CharacterCount = characterCount;
+            }
+
+            public static bool operator ==(MapInfo left, MapInfo right) => left.Equals(right);
+
+            public static bool operator !=(MapInfo left, MapInfo right) => !left.Equals(right);
+
+            public bool Equals(MapInfo other) => LineLength == other.LineLength && CharacterCount == other.CharacterCount;
+
+            public override bool Equals(object obj) => !ReferenceEquals(null, obj) && obj is MapInfo other && Equals(other);
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (LineLength * 397) ^ CharacterCount;
+                }
+            }
+
+            public override string ToString() => string.Concat(nameof(LineLength) + "=", LineLength, " " + nameof(CharacterCount) + "=", CharacterCount);
+        }
     }
 }

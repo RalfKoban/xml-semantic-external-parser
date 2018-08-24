@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -17,19 +16,21 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Parser
     {
-        private const string Category = "RKN Semantic";
-
         public static File Parse(string filePath)
         {
-            var finder = CharacterPositionFinder.CreateFrom(filePath);
             var flavor = XmlFlavorFinder.Find(filePath);
 
-            Trace.WriteLine($"Using {flavor.GetType().Name} flavor for '{filePath}'.", Category);
+            Tracer.Trace($"Using {flavor.GetType().Name} flavor for '{filePath}'.");
 
-            var file = ParseCore(filePath, finder, flavor);
+            File file;
+            using (var finder = CharacterPositionFinder.CreateFrom(filePath))
+            {
+                file = ParseCore(filePath, finder, flavor);
 
-            Resorter.Resort(file);
-            GapFiller.Fill(file, finder);
+                Resorter.Resort(file);
+                GapFiller.Fill(file, finder);
+            }
+
             CommentCleaner.Clean(file);
 
             return file;
