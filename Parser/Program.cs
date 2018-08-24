@@ -16,27 +16,31 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         public static async Task<int> Main(string[] args)
         {
-            if (args.Length != 2)
+            // check for GMaster or PlasticSCM or SemanticMerge arguments (to allow debugging without the tools)
+            if (args.Length == 2)
             {
-                return -1;
+                var shell = args[0]; // reserved for future usage
+                var flagFile = args[1];
+
+                SystemFile.WriteAllBytes(flagFile, new byte[] { 0x42 });
             }
-
-            var shell = args[0]; // reserved for future usage
-            var flagFile = args[1];
-
-            SystemFile.WriteAllBytes(flagFile, new byte[] { 0x42 });
 
             while (true)
             {
+                Tracer.Trace($"Ready to parse, waiting for input (instance {InstanceId:B})");
+
                 var inputFile = await Console.In.ReadLineAsync();
                 if (inputFile == null || "end".Equals(inputFile, StringComparison.OrdinalIgnoreCase))
                 {
                     // session is done
+                    Tracer.Trace($"Terminating as session was ended (instance {InstanceId:B})");
                     return 0;
                 }
 
                 var encodingToUse = await Console.In.ReadLineAsync();
-                var outputFileToWrite = await Console.In.ReadLineAsync();
+                var outputFile = await Console.In.ReadLineAsync();
+
+                Tracer.Trace($"Trying to parse '{inputFile}' with encoding '{encodingToUse}', output will be written to '{outputFile}' (instance {InstanceId:B})");
 
                 var watch = Stopwatch.StartNew();
                 try
@@ -47,7 +51,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     {
                         var file = Parser.Parse(inputFile);
 
-                        using (var writer = SystemFile.CreateText(outputFileToWrite))
+                        using (var writer = SystemFile.CreateText(outputFile))
                         {
                             YamlWriter.Write(writer, file);
                         }
@@ -65,7 +69,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     }
                     finally
                     {
-                        Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (on instance {InstanceId:B})");
+                        Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
                         watch.Restart();
                     }
 
@@ -75,7 +79,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                         GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false, true);
 
-                        Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (on instance {InstanceId:B})");
+                        Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
                     }
                 }
                 catch (Exception ex)
