@@ -7,7 +7,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public class XmlFlavorForFxCop : XmlFlavor
+    public sealed class XmlFlavorForFxCop : XmlFlavor
     {
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                            {

@@ -7,7 +7,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public class XmlFlavorForVisualBuild : XmlFlavor
+    public sealed class XmlFlavorForVisualBuild : XmlFlavor
     {
         private const string RootElement = "project";
         private const string StepElement = "step";

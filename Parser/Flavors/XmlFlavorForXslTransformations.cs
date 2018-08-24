@@ -7,7 +7,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public class XmlFlavorForXslTransformations : XmlFlavor
+    public sealed class XmlFlavorForXslTransformations : XmlFlavor
     {
         private const string Namespace = "http://www.w3.org/1999/XSL/Transform";
 
