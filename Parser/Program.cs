@@ -27,6 +27,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             }
 
             var watch = Stopwatch.StartNew();
+            var gcWatch = Stopwatch.StartNew();
             while (true)
             {
                 // TODO: RKN
@@ -70,10 +71,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         // clean-up after big files
                         if (IsBigFile(inputFile))
                         {
+                            gcWatch.Restart();
+
                             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false, true);
 
-                            Tracer.Trace($"Garbage collection took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
+                            Tracer.Trace($"Garbage collection took {gcWatch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
                         }
 
                         Console.WriteLine(parseErrors ? "KO" : "OK");
