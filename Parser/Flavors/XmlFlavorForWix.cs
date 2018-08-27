@@ -19,6 +19,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string CustomAction = "CustomAction";
         private const string SetProperty = "SetProperty";
         private const string Property = "Property";
+        private const string CreateFolder = "CreateFolder";
+
+        private const string Util_RemoveFolderEx = "util:RemoveFolderEx";
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
@@ -203,6 +206,31 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "WriteEnvironmentStrings",
                                                                             "WriteIniValues",
                                                                             "WriteRegistryValues",
+                                                                            "util:CloseApplication",
+                                                                            "util:ComponentSearch",
+                                                                            "util:ComponentSearchRef",
+                                                                            "util:DirectorySearch",
+                                                                            "util:DirectorySearchRef",
+                                                                            "util:EventManifest",
+                                                                            "util:EventSource",
+                                                                            "util:FileSearch",
+                                                                            "util:FileSearchRef",
+                                                                            "util:FileSharePermission",
+                                                                            "util:Group",
+                                                                            "util:GroupRef",
+                                                                            "util:InternetShortcut",
+                                                                            "util:PerfCounter",
+                                                                            "util:PerfCounterManifest",
+                                                                            "util:PerformanceCounter",
+                                                                            "util:PermissionEx",
+                                                                            "util:ProductSearch",
+                                                                            "util:ProductSearchRef",
+                                                                            "util:RegistrySearch",
+                                                                            "util:RegistrySearchRef",
+                                                                            Util_RemoveFolderEx,
+                                                                            "util:RestartResource",
+                                                                            "util:ServiceConfig",
+                                                                            "util:XmlFile",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -235,9 +263,15 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         case SetProperty:
                         case Shortcut:
                             return reader.GetAttribute("Id");
+
+                        case Util_RemoveFolderEx:
+                            return reader.GetAttribute("Id") ?? reader.GetAttribute("Property");
+
+                        case CreateFolder:
+                            return reader.GetAttribute("Directory") ?? name;
                         }
 
-                    var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id") ?? reader.GetAttribute("Action");
+                    var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id");
                     return identifier ?? name;
                 }
 
