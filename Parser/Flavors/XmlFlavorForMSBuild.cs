@@ -194,6 +194,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
 
             var suffix = children[0].Type;
+            var appendix = GetTypeSuffixForItemGroup(suffix, children);
+            return appendix is null ? suffix : suffix + string.Concat(" '", appendix, "'");
+        }
+
+        private static string GetTypeSuffixForItemGroup(string suffix, List<ContainerOrTerminalNode> children)
+        {
             switch (suffix)
             {
                 case ElementNames.Analyzer:
@@ -203,11 +209,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                 .Select(_ => _.Content?.Replace(_.Name, string.Empty))
                                                 .Where(_ => !string.IsNullOrWhiteSpace(_))
                                                 .Select(_ => _.Substring(0, VersionNumberRegex.Match(_).Index))
+                                                .Select(Path.GetFileName)
                                                 .ToHashSet();
 
                     if (distinctContents.Count == 1)
                     {
-                        return string.Concat(suffix, "=", distinctContents.First());
+                        return distinctContents.First();
                     }
 
                     break;
@@ -218,17 +225,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Page:
                 {
                     // try to find children with same path before name
-                    var distinctContents = children.Select(_ => _.Content?.Replace(_.Name, string.Empty)).ToHashSet();
+                    var distinctContents = children
+                                                .Select(_ => _.Content?.Replace(_.Name, string.Empty))
+                                                .ToHashSet();
                     if (distinctContents.Count == 1)
                     {
-                        return string.Concat(suffix, "=", distinctContents.First());
+                        return distinctContents.First();
                     }
 
                     break;
                 }
             }
 
-            return suffix;
+            return null;
         }
 
         private static string GetAttributeName(string name)
