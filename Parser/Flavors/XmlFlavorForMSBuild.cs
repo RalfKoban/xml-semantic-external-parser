@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -142,12 +143,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static string GetFileName(string result)
         {
-            // get rid of backslash or slash as we only are interested in the name, not the path
-            // just add 1 and we get rid of situation that index might not be available ;)
-            result = result.Substring(result.LastIndexOf('\\') + 1);
-            result = result.Substring(result.LastIndexOf('/') + 1);
-
-            return result;
+            try
+            {
+                // get rid of backslash or slash as we only are interested in the name, not the path
+                return Path.GetFileName(result);
+            }
+            catch (ArgumentException)
+            {
+                // path might not be a file name, so simply ignore it
+                return result;
+            }
         }
 
         private static string GetNameSuffixForItemGroup(Container container) => container.Name == ElementNames.ItemGroup
