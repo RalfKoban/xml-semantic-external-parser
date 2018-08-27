@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -8,6 +10,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public sealed class XmlFlavorForWix : XmlFlavor
     {
+        private const string Fragment = "Fragment";
+        private const string ComponentGroup = "ComponentGroup";
+        private const string Component = "Component";
+        private const string File = "File";
+        private const string Shortcut = "Shortcut";
+        private const string Custom = "Custom";
+        private const string CustomAction = "CustomAction";
+        private const string SetProperty = "SetProperty";
+        private const string Property = "Property";
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             "ApprovedExeForElevation",
@@ -31,8 +43,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "CostInitialize",
                                                                             "CreateFolders",
                                                                             "CreateShortcuts",
-                                                                            "Custom",
-                                                                            "CustomAction",
+                                                                            Custom,
+                                                                            CustomAction,
                                                                             "CustomActionRef",
                                                                             "CustomProperty",
                                                                             "Data",
@@ -54,7 +66,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "ExitCode",
                                                                             "Failure",
                                                                             "FeatureGroupRef",
-                                                                            "File", // This is not a real terminal node but we consider it to be one as it's about a single file
+                                                                            File, // This is not a real terminal node but we consider it to be one as it's about a single file
                                                                             "FileCost",
                                                                             "FileSearch",
                                                                             "FileSearchRef",
@@ -156,9 +168,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "ServiceDependency",
                                                                             "SetDirectory",
                                                                             "SetODBCFolders",
-                                                                            "SetProperty",
+                                                                            SetProperty,
                                                                             "SFPFile",
-                                                                            "Shortcut", // This is not a real terminal node but we consider it to be one as it's about a single shortcut
+                                                                            Shortcut, // This is not a real terminal node but we consider it to be one as it's about a single shortcut
                                                                             "ShortcutProperty",
                                                                             "Show",
                                                                             "SlipstreamMsp",
@@ -201,18 +213,104 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetName(XmlTextReader reader)
         {
-            if (reader.NodeType == XmlNodeType.Element)
+            switch (reader.NodeType)
             {
-                var name = reader.Name;
-                var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id") ?? reader.GetAttribute("Action");
-                return identifier ?? name;
-            }
+                case XmlNodeType.Element:
+                {
+                    var name = reader.Name;
+                    switch (name)
+                    {
+                        case File:
+                        {
+                            // try to get source, then get ID
+                            var source = reader.GetAttribute("Source");
+                            return source != null ? GetFileName(source) : reader.GetAttribute("Id");
+                        }
 
-            return base.GetName(reader);
+                        case Custom:
+                            return reader.GetAttribute("Action");
+
+                        case CustomAction:
+                        case Property:
+                        case SetProperty:
+                        case Shortcut:
+                            return reader.GetAttribute("Id");
+                        }
+
+                    var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id") ?? reader.GetAttribute("Action");
+                    return identifier ?? name;
+                }
+
+                case XmlNodeType.ProcessingInstruction:
+                {
+                    // TODO: RKN fix duplicated code (WIX configuration)
+                    var name = reader.Name;
+                    var value = reader.Value;
+                    var index = value.IndexOf('=');
+                    if (index > 0)
+                    {
+                        var identifier = value.Substring(0, index).Trim();
+                        return $"{name} '{identifier}'";
+                    }
+
+                    return name;
+                }
+
+                default:
+                    return base.GetName(reader);
+            }
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
+        public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
+        {
+            if (node is Container c)
+            {
+                switch (node.Type)
+                {
+                    case Component:
+                    {
+                        var child = c.Children.FirstOrDefault(_ => _.Type == File) ?? c.Children.FirstOrDefault(_ => _.Type == Shortcut);
+                        if (child != null)
+                        {
+                            c.Name = child.Name;
+                        }
+
+                        break;
+                    }
+
+                    case Fragment:
+                    {
+                        var child = c.Children.FirstOrDefault(_ => _.Type == ComponentGroup) ?? c.Children.FirstOrDefault(_ => _.Type == Component);
+                        if (child != null)
+                        {
+                            c.Name = Fragment + $" '{child.Name}'";
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return base.FinalAdjustAfterParsingComplete(node);
+        }
+
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
+
+        private static string GetFileName(string result)
+        {
+            // TODO: RKN fix duplicated code
+            try
+            {
+                // get rid of backslash or slash as we only are interested in the name, not the path
+                return Path.GetFileName(result);
+            }
+            catch (ArgumentException)
+            {
+                // path might not be a file name, so simply ignore it
+                return result;
+            }
+        }
     }
 }
