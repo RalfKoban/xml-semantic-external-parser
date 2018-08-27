@@ -137,6 +137,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 result = result.Substring(0, commaIndex);
             }
 
+            return GetFileName(result);
+        }
+
+        private static string GetFileName(string result)
+        {
             // get rid of backslash or slash as we only are interested in the name, not the path
             // just add 1 and we get rid of situation that index might not be available ;)
             result = result.Substring(result.LastIndexOf('\\') + 1);
