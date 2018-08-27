@@ -20,6 +20,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string SetProperty = "SetProperty";
         private const string Property = "Property";
         private const string CreateFolder = "CreateFolder";
+        private const string RegistryKey = "RegistryKey";
+        private const string RegistryValue = "RegistryValue";
 
         private const string Util_RemoveFolderEx = "util:RemoveFolderEx";
 
@@ -141,9 +143,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "RegisterProgIdInfo",
                                                                             "RegisterTypeLibraries",
                                                                             "RegisterUser",
+                                                                            RegistryKey, // This is not a real terminal node but we consider it to be one as it's about a single entry in the registry
                                                                             "RegistrySearch", // This is not a real terminal node but we consider it to be one as it's about a single search in the registry
                                                                             "RegistrySearchRef",
-                                                                            "RegistryValue", // This is not a real terminal node but we consider it to be one as it's about a single entry in the registry
+                                                                            RegistryValue, // This is not a real terminal node but we consider it to be one as it's about a single entry in the registry
                                                                             "RelatedBundle",
                                                                             "RemotePayload",
                                                                             "RemoveDuplicateFiles",
@@ -269,7 +272,20 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
                         case CreateFolder:
                             return reader.GetAttribute("Directory") ?? name;
+
+                        case RegistryKey:
+                        case RegistryValue:
+                        {
+                            var root = reader.GetAttribute("Root");
+                            var key = reader.GetAttribute("Key");
+                            var value = reader.GetAttribute("Name");
+
+                            var regKey = string.Concat("[", string.Join("\\", root, key), "]");
+                            return value is null
+                                    ? regKey
+                                    : string.Join(Environment.NewLine, regKey, string.Concat("\"", value, "\""));
                         }
+                    }
 
                     var identifier = reader.GetAttribute("Name") ?? reader.GetAttribute("Key") ?? reader.GetAttribute("Id");
                     return identifier ?? name;
