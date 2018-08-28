@@ -23,7 +23,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string RegistryKey = "RegistryKey";
         private const string RegistryValue = "RegistryValue";
 
-        private const string Util_RemoveFolderEx = "util:RemoveFolderEx";
+        private const string Util_RemoveFolderEx = "RemoveFolderEx";
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
@@ -46,6 +46,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "CopyFile",
                                                                             "CostFinalize",
                                                                             "CostInitialize",
+                                                                            CreateFolder, // This is not a real terminal node but we consider it to be one as it's about a single folder
                                                                             "CreateFolders",
                                                                             "CreateShortcuts",
                                                                             Custom,
@@ -209,31 +210,35 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "WriteEnvironmentStrings",
                                                                             "WriteIniValues",
                                                                             "WriteRegistryValues",
-                                                                            "util:CloseApplication",
-                                                                            "util:ComponentSearch",
-                                                                            "util:ComponentSearchRef",
-                                                                            "util:DirectorySearch",
-                                                                            "util:DirectorySearchRef",
-                                                                            "util:EventManifest",
-                                                                            "util:EventSource",
-                                                                            "util:FileSearch",
-                                                                            "util:FileSearchRef",
-                                                                            "util:FileSharePermission",
-                                                                            "util:Group",
-                                                                            "util:GroupRef",
-                                                                            "util:InternetShortcut",
-                                                                            "util:PerfCounter",
-                                                                            "util:PerfCounterManifest",
-                                                                            "util:PerformanceCounter",
-                                                                            "util:PermissionEx",
-                                                                            "util:ProductSearch",
-                                                                            "util:ProductSearchRef",
-                                                                            "util:RegistrySearch",
-                                                                            "util:RegistrySearchRef",
+                                                                        };
+
+        private static readonly HashSet<string> UtilTerminalNodeNames = new HashSet<string>
+                                                                        {
+                                                                            "CloseApplication",
+                                                                            "ComponentSearch",
+                                                                            "ComponentSearchRef",
+                                                                            "DirectorySearch",
+                                                                            "DirectorySearchRef",
+                                                                            "EventManifest",
+                                                                            "EventSource",
+                                                                            "FileSearch",
+                                                                            "FileSearchRef",
+                                                                            "FileSharePermission",
+                                                                            "Group",
+                                                                            "GroupRef",
+                                                                            "InternetShortcut",
+                                                                            "PerfCounter",
+                                                                            "PerfCounterManifest",
+                                                                            "PerformanceCounter",
+                                                                            "PermissionEx",
+                                                                            "ProductSearch",
+                                                                            "ProductSearchRef",
+                                                                            "RegistrySearch",
+                                                                            "RegistrySearchRef",
                                                                             Util_RemoveFolderEx,
-                                                                            "util:RestartResource",
-                                                                            "util:ServiceConfig",
-                                                                            "util:XmlFile",
+                                                                            "RestartResource",
+                                                                            "ServiceConfig",
+                                                                            "XmlFile",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -248,7 +253,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 case XmlNodeType.Element:
                 {
-                    var name = reader.Name;
+                    var name = reader.LocalName;
                     switch (name)
                     {
                         case File:
@@ -294,16 +299,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case XmlNodeType.ProcessingInstruction:
                 {
                     // TODO: RKN fix duplicated code (WIX configuration)
-                    var name = reader.Name;
+                    var name = reader.LocalName;
                     var value = reader.Value;
                     var index = value.IndexOf('=');
-                    if (index > 0)
-                    {
-                        var identifier = value.Substring(0, index).Trim();
-                        return $"{name} '{identifier}'";
-                    }
+                    var identifier = index > 0 ? value.Substring(0, index) : value;
 
-                    return name;
+                    return $"{name} '{identifier.Trim()}'";
                 }
 
                 default:
@@ -311,7 +312,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
@@ -346,7 +347,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.FinalAdjustAfterParsingComplete(node);
         }
 
-        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
+        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node)
+        {
+            var nodeType = node?.Type;
+            if (nodeType is null)
+            {
+                return false;
+            }
+
+            return TerminalNodeNames.Contains(nodeType) || UtilTerminalNodeNames.Contains(nodeType);
+        }
 
         private static string GetFileName(string result)
         {
