@@ -13,6 +13,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         private static readonly char[] Separator = { '\'' };
 
+        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             ElementNames.ItemGroup,
@@ -131,9 +133,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return name;
             }
 
-            // if there is a comma, then we want to get the name before the comma
+            // if there is a comma, then we want to get the name before the comma (except that we have a directory at the end)
             var commaIndex = result.IndexOf(',');
-            if (commaIndex > 0)
+            var directorySeparatorIndex = result.LastIndexOfAny(DirectorySeparators);
+            if (commaIndex > 0 && commaIndex > directorySeparatorIndex)
             {
                 result = result.Substring(0, commaIndex);
             }
@@ -143,16 +146,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static string GetFileName(string result)
         {
-            try
-            {
-                // get rid of backslash or slash as we only are interested in the name, not the path
-                return Path.GetFileName(result);
-            }
-            catch (ArgumentException)
-            {
-                // path might not be a file name, so simply ignore it
-                return result;
-            }
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // (and just add 1 and we get rid of situation that index might not be available ;))
+            var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
+            return fileName;
         }
 
         private static string GetNameSuffixForItemGroup(Container container) => container.Name == ElementNames.ItemGroup
@@ -209,7 +206,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                 .Select(_ => _.Content?.Replace(_.Name, string.Empty))
                                                 .Where(_ => !string.IsNullOrWhiteSpace(_))
                                                 .Select(_ => _.Substring(0, VersionNumberRegex.Match(_).Index))
-                                                .Select(Path.GetFileName)
+                                                .Select(GetFileName)
                                                 .ToHashSet();
 
                     if (distinctContents.Count == 1)

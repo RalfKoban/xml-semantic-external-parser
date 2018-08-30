@@ -25,6 +25,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private const string Util_RemoveFolderEx = "RemoveFolderEx";
 
+        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             "ApprovedExeForElevation",
@@ -361,16 +363,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static string GetFileName(string result)
         {
             // TODO: RKN fix duplicated code
-            try
-            {
-                // get rid of backslash or slash as we only are interested in the name, not the path
-                return Path.GetFileName(result);
-            }
-            catch (ArgumentException)
-            {
-                // path might not be a file name, so simply ignore it
-                return result;
-            }
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // (and just add 1 and we get rid of situation that index might not be available ;))
+            return result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
         }
     }
 }

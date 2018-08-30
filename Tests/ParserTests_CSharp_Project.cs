@@ -49,5 +49,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Assert.That(item, Is.True);
         }
+
+        [TestCase("Import", "dir.props")]
+        public void TopLevel_Item_is_found_and_truncated_properly(string itemType, string name)
+        {
+            var item = _root.Children.Where(_ => _.Type == itemType).Any(_ => _.Name == name);
+
+            Assert.That(item, Is.True);
+        }
     }
 }
