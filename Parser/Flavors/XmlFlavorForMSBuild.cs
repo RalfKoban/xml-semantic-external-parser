@@ -82,28 +82,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (node is Container c)
             {
+                // get all attributes here as they get vanished in the next line
                 var attributes = c.Children.Where(_ => _.Type == NodeType.Attribute).OfType<TerminalNode>().ToList();
                 c.Children.RemoveAll(TypeCanBeIgnored);
 
                 var content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
                 if (content != null)
                 {
-                    c.Name = content;
+                    FinalAdjustNodeWithContent(c, content);
                 }
                 else
                 {
-                    var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
-                    var typeSuffix = GetTypeSuffixForItemGroup(c);
-
-                    if (!string.IsNullOrEmpty(suffix))
-                    {
-                        c.Name = typeSuffix ?? suffix;
-                    }
-
-                    if (!string.IsNullOrEmpty(typeSuffix))
-                    {
-                        c.Type = string.Concat(c.Type, " '", typeSuffix, "'");
-                    }
+                    FinalAdjustNodeWithoutContent(c, attributes);
                 }
             }
 
@@ -116,7 +106,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             foreach (var name in NonTerminalNodeNames)
             {
-                if (string.Equals(type, name, StringComparison.Ordinal) || (type.Length > name.Length && type.StartsWith(name + " ", StringComparison.Ordinal)))
+                if (type == name || (type.Length > name.Length && type.StartsWith(name + " ", StringComparison.Ordinal)))
                 {
                     return false;
                 }
@@ -142,6 +132,38 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
 
             return GetFileName(result);
+        }
+
+        private static void FinalAdjustNodeWithContent(Container c, string content)
+        {
+            // filter unwanted content nodes
+            switch (c.Type)
+            {
+                case ElementNames.PreBuildEvent:
+                case ElementNames.PostBuildEvent:
+                    // no adjustments of the name
+                    break;
+
+                default:
+                    c.Name = content;
+                    break;
+            }
+        }
+
+        private static void FinalAdjustNodeWithoutContent(Container c, IEnumerable<TerminalNode> attributes)
+        {
+            var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
+            var typeSuffix = GetTypeSuffixForItemGroup(c);
+
+            if (!string.IsNullOrEmpty(suffix))
+            {
+                c.Name = typeSuffix ?? suffix;
+            }
+
+            if (!string.IsNullOrEmpty(typeSuffix))
+            {
+                c.Type = string.Concat(c.Type, " '", typeSuffix, "'");
+            }
         }
 
         private static string GetFileName(string result)
@@ -293,6 +315,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Resource = "Resource";
             internal const string Target = "Target";
             internal const string Validate = "Validate";
+            internal const string PostBuildEvent = "PostBuildEvent";
+            internal const string PreBuildEvent = "PreBuildEvent";
         }
 
         private static class AttributeNames
