@@ -44,6 +44,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 
         public abstract TerminalNode ToTerminalNode();
 
-        private static string WorkaroundForRegexIssue(string value) => value.Replace("\\", " \\ "); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
+        private static string WorkaroundForRegexIssue(string value) => value.Replace("\\", " \\ ").Replace("++", "+ +"); // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
     }
 }
