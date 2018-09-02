@@ -36,29 +36,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     case NameElement:
                     {
-                        var text = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
-                        if (text != null)
-                        {
-                            c.Name = text.Content;
-                        }
-
+                        FinalAdjustNameElement(c);
                         break;
                     }
 
                     case StepElement:
                     {
-                        var action = c.Children.FirstOrDefault(_ => _.Type == NodeType.Attribute && _.Name == "action");
-                        if (action != null)
-                        {
-                            c.Type = $"{c.Type} '{action.Content}'";
-                        }
-
-                        var name = c.Children.FirstOrDefault(_ => _.Type == NameElement);
-                        if (name != null)
-                        {
-                            c.Name = name.Name;
-                        }
-
+                        FinalAdjustStepElement(c);
                         break;
                     }
                 }
@@ -68,5 +52,29 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
+
+        private static void FinalAdjustStepElement(Container c)
+        {
+            var action = c.Children.FirstOrDefault(_ => _.Type == NodeType.Attribute && _.Name == "action");
+            if (action != null)
+            {
+                c.Type = $"{c.Type} '{action.Content}'";
+            }
+
+            var name = c.Children.FirstOrDefault(_ => _.Type == NameElement);
+            if (name != null)
+            {
+                c.Name = name.Name;
+            }
+        }
+
+        private static void FinalAdjustNameElement(Container c)
+        {
+            var text = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
+            if (text != null)
+            {
+                c.Name = text.Content;
+            }
+        }
     }
 }
