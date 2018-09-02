@@ -12,4 +12,7 @@
       <name>Full</name>
     </step>
   </steps>
+  <macros>
+    <macro name='Some macro'></macro>
+  </macros>
 </project>

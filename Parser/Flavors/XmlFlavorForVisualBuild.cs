@@ -12,10 +12,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string RootElement = "project";
         private const string StepElement = "step";
         private const string NameElement = "name";
+        private const string MacroElement = "macro";
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                            {
                                                                                RootElement,
+                                                                               "macros",
                                                                                "steps",
                                                                            };
 
@@ -34,6 +36,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 switch (node.Type)
                 {
+                    case MacroElement:
+                    {
+                        FinalAdjustMacroElement(c);
+                        break;
+                    }
+
                     case NameElement:
                     {
                         FinalAdjustNameElement(c);
@@ -53,6 +61,24 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
 
+        private static void FinalAdjustMacroElement(Container c)
+        {
+            var name = c.Children.FirstOrDefault(_ => _.Type == NodeType.Attribute && _.Name == "name");
+            if (name != null)
+            {
+                c.Name = name.Content;
+            }
+        }
+
+        private static void FinalAdjustNameElement(Container c)
+        {
+            var text = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
+            if (text != null)
+            {
+                c.Name = text.Content;
+            }
+        }
+
         private static void FinalAdjustStepElement(Container c)
         {
             var action = c.Children.FirstOrDefault(_ => _.Type == NodeType.Attribute && _.Name == "action");
@@ -65,15 +91,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (name != null)
             {
                 c.Name = name.Name;
-            }
-        }
-
-        private static void FinalAdjustNameElement(Container c)
-        {
-            var text = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text);
-            if (text != null)
-            {
-                c.Name = text.Content;
             }
         }
     }

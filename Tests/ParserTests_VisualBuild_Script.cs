@@ -37,7 +37,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.Multiple(() =>
             {
                 Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
-                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(15, 10)), "Wrong end");
+                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(18, 10)), "Wrong end");
 
                 Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
             });
@@ -49,17 +49,17 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.Multiple(() =>
             {
                 Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)), "Wrong start");
-                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(15, 10)), "Wrong end");
+                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(18, 10)), "Wrong end");
 
                 Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 76)), "Wrong header");
-                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(492, 501)), "Wrong footer");
+                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(556, 565)), "Wrong footer");
             });
         }
 
         [Test]
         public void Steps_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().Single();
+            var node = _root.Children.OfType<Container>().First();
 
             Assert.Multiple(() =>
             {
@@ -74,7 +74,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void Step_1_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<TerminalNode>().First(_ => _.Type.StartsWith("step "));
+            var node = _root.Children.OfType<Container>().First().Children.OfType<TerminalNode>().First(_ => _.Type.StartsWith("step "));
 
             Assert.Multiple(() =>
             {
@@ -88,7 +88,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void Step_2_LocationSpan_matches()
         {
-            var node = _root.Children.OfType<Container>().Single().Children.OfType<TerminalNode>().Last(_ => _.Type.StartsWith("step "));
+            var node = _root.Children.OfType<Container>().First().Children.OfType<TerminalNode>().Last(_ => _.Type.StartsWith("step "));
 
             Assert.Multiple(() =>
             {
@@ -96,6 +96,23 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(13, 13)), "Wrong end");
 
                 Assert.That(node.Span, Is.EqualTo(new CharacterSpan(363, 479)), "Wrong span");
+            });
+        }
+
+        [Test]
+        public void Macro_1_LocationSpan_matches()
+        {
+            var container = _root.Children.OfType<Container>().Last();
+            Assert.That(container.Name, Is.EqualTo("macros"));
+
+            var node = container.Children.OfType<TerminalNode>().First(_ => _.Type.StartsWith("macro"));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(16, 1)), "Wrong start");
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(16, 39)), "Wrong end");
+
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(504, 542)), "Wrong span");
             });
         }
 
