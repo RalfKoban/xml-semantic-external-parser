@@ -263,6 +263,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             switch (name)
             {
+                case ElementNames.AdditionalFiles:
                 case ElementNames.Analyzer:
                 case ElementNames.BootstrapperPackage:
                 case ElementNames.Compile:
@@ -295,6 +296,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static class ElementNames
         {
+            internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
             internal const string BootstrapperPackage = "BootstrapperPackage";
             internal const string Compile = "Compile";
