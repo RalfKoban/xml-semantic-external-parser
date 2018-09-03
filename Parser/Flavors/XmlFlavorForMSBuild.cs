@@ -188,6 +188,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     return "(default)";
                 }
 
+                // try to find the special group that has the pre/post build events defined and use that one as a single special group
+                if (container.Children.Any(_ => _.Type == ElementNames.PreBuildEvent || _.Type == ElementNames.PostBuildEvent))
+                {
+                    return "Pre/Post-build events";
+                }
+
                 var condition = attributes.FirstOrDefault(_ => _.Name == AttributeNames.Condition);
                 if (condition != null)
                 {
