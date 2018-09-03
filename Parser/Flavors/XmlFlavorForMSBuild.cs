@@ -275,7 +275,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Compile:
                 case ElementNames.Content:
                 case ElementNames.EmbeddedResource:
+                case ElementNames.ExcludeList:
                 case ElementNames.None:
+                case ElementNames.PackageReference:
                 case ElementNames.Page:
                 case ElementNames.ProjectReference:
                 case ElementNames.Reference:
@@ -308,11 +310,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Compile = "Compile";
             internal const string Content = "Content";
             internal const string EmbeddedResource = "EmbeddedResource";
+            internal const string ExcludeList = "ExcludeList";
             internal const string Import = "Import";
             internal const string ImportGroup = "ImportGroup";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
             internal const string None = "None";
+            internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
             internal const string Project = "Project";
             internal const string ProjectConfiguration = "ProjectConfiguration";
