@@ -31,15 +31,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public override bool ParseAttributesEnabled => true;
 
         public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
-                                                       || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase);
+                                                          || filePath.EndsWith(".ilproj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
+                                                          || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, ElementNames.Project, StringComparison.OrdinalIgnoreCase)
                                                          && string.Equals(info.Namespace, "http://schemas.microsoft.com/developer/msbuild/2003", StringComparison.OrdinalIgnoreCase);
@@ -276,6 +277,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Content:
                 case ElementNames.EmbeddedResource:
                 case ElementNames.ExcludeList:
+                case ElementNames.NativeProjectBinaries:
                 case ElementNames.None:
                 case ElementNames.PackageReference:
                 case ElementNames.Page:
@@ -315,6 +317,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string ImportGroup = "ImportGroup";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
+            internal const string NativeProjectBinaries = "NativeProjectBinaries";
             internal const string None = "None";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
