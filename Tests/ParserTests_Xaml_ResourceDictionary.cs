@@ -74,15 +74,14 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase(10, 15, 1, 15, 183, 2220, 2372, 2391, 2402)]
         public void First_Element_matches(int index, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
-            var node = _root.Children.OfType<Container>().ElementAt(index);
+            var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().ElementAt(index);
 
             Assert.Multiple(() =>
             {
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLineNumber, startLinePos)), "Wrong start");
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLineNumber, endLinePos)), "Wrong end");
 
-                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(headerStartPos, headerEndPos)), "Wrong header");
-                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(footerStartPos, footerEndPos)), "Wrong footer");
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(headerStartPos, footerEndPos)), "Wrong span");
             });
         }
     }
