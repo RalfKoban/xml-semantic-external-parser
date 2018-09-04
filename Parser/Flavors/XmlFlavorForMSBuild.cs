@@ -9,7 +9,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlFlavorForMSBuild : XmlFlavor
+    public class XmlFlavorForMSBuild : XmlFlavor
     {
         private static readonly char[] Separator = { '\'' };
 
@@ -273,10 +273,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.AdditionalFiles:
                 case ElementNames.Analyzer:
                 case ElementNames.BootstrapperPackage:
+                case ElementNames.CodeAnalysisDependentAssemblyPaths:
                 case ElementNames.Compile:
                 case ElementNames.Content:
                 case ElementNames.EmbeddedResource:
                 case ElementNames.ExcludeList:
+                case ElementNames.Folder:
                 case ElementNames.NativeProjectBinaries:
                 case ElementNames.None:
                 case ElementNames.PackageReference:
@@ -304,15 +306,17 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return type == NodeType.Comment || type == NodeType.Attribute;
         }
 
-        private static class ElementNames
+        private protected static class ElementNames
         {
             internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
             internal const string BootstrapperPackage = "BootstrapperPackage";
+            internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
             internal const string EmbeddedResource = "EmbeddedResource";
             internal const string ExcludeList = "ExcludeList";
+            internal const string Folder = "Folder";
             internal const string Import = "Import";
             internal const string ImportGroup = "ImportGroup";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
