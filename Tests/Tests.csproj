@@ -61,6 +61,7 @@
     <Compile Include="ParserTests_CData.cs" />
     <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
+    <Compile Include="ParserTests_RuleSet.cs" />
     <Compile Include="ParserTests_SettingsFile.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="ParserTests_VisualBuild_Script.cs" />
@@ -100,6 +101,10 @@
     <None Include="packages.config" />
     <Content Include="Resources\NDepend_project.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\RuleSet.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="Tests.ruleset" />
   </ItemGroup>
