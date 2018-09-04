@@ -41,7 +41,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         [TestCase("ItemGroup 'Reference'", "Reference")]
-        [TestCase("ItemGroup 'Resources'", "Resources")]
+        [TestCase("ItemGroup 'None 'Resources''", "None 'Resources'")]
         [TestCase("PropertyGroup", "(default)")]
         [TestCase("PropertyGroup", "Debug|AnyCPU")]
         public void Group_is_found_and_truncated_properly(string groupType, string name)

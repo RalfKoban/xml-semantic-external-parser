@@ -261,7 +261,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     // try to find children with same path before name
                     var distinctContents = children
                                                 .Select(_ => _.Content)
-                                                .Where(_ => _ != null)
+                                                .Where(_ => !string.IsNullOrWhiteSpace(_))
                                                 .Select(GetFilePath)
                                                 .ToHashSet();
                     if (distinctContents.Count == 1)
