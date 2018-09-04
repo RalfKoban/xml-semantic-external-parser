@@ -27,6 +27,7 @@ _**Note:** A semantic parser for .NET resource files (.resx) can be found [here]
 | Visual Build | .bld
 | Visual Studio C++ Project | .vcxproj
 | Visual Studio C# Project | .csproj
+| Visual Studio CIL assembler Project | .ilproj
 | Visual Studio Code Sharing App Project | .shproj
 | Visual Studio Modeling Project | .modelproj
 | Visual Studio SQL Server Project | .sqlproj
