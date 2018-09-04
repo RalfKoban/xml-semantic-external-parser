@@ -273,6 +273,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.AdditionalFiles:
                 case ElementNames.Analyzer:
                 case ElementNames.BootstrapperPackage:
+                case ElementNames.CodeAnalysisDictionary:
                 case ElementNames.CodeAnalysisDependentAssemblyPaths:
                 case ElementNames.Compile:
                 case ElementNames.Content:
@@ -311,6 +312,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
             internal const string BootstrapperPackage = "BootstrapperPackage";
+            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
             internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
