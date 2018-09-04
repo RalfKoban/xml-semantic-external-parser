@@ -175,6 +175,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return fileName;
         }
 
+        private static string GetFilePath(string result)
+        {
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // (and just add 1 and we get rid of situation that index might not be available ;))
+            var index = result.LastIndexOfAny(DirectorySeparators);
+            return index > 0 ? result.Substring(0, index) : result;
+        }
+
         private static string GetNameSuffixForItemGroup(Container container) => container.Name == ElementNames.ItemGroup
                                                                                 ? container.Children.FirstOrDefault(_ => !TypeCanBeIgnored(_))?.Type
                                                                                 : null;
@@ -252,7 +260,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     // try to find children with same path before name
                     var distinctContents = children
-                                                .Select(_ => _.Content?.Replace(_.Name, string.Empty))
+                                                .Select(_ => _.Content)
+                                                .Where(_ => _ != null)
+                                                .Select(GetFilePath)
                                                 .ToHashSet();
                     if (distinctContents.Count == 1)
                     {
