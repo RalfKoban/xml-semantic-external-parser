@@ -130,7 +130,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             public bool Equals(MapInfo other) => LineLength == other.LineLength && CharacterCount == other.CharacterCount;
 
-            public override bool Equals(object obj) => !ReferenceEquals(null, obj) && obj is MapInfo other && Equals(other);
+            public override bool Equals(object obj) => obj is MapInfo other && Equals(other);
 
             public override int GetHashCode()
             {
