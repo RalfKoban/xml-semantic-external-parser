@@ -16,7 +16,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
 {
     public static class Parser
     {
-        public static File Parse(string filePath)
+        // we have issues with UTF-8 encodings in files that should have an encoding='iso-8859-1'
+        public static File Parse(string filePath, string encoding = "iso-8859-1")
         {
             var flavor = XmlFlavorFinder.Find(filePath);
 
@@ -25,7 +26,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             File file;
             using (var finder = CharacterPositionFinder.CreateFrom(filePath))
             {
-                file = ParseCore(filePath, finder, flavor);
+                file = ParseCore(filePath, finder, flavor, Encoding.GetEncoding(encoding));
 
                 Resorter.Resort(file);
                 GapFiller.Fill(file, finder);
@@ -36,10 +37,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return file;
         }
 
-        public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlFlavor flavor)
+        public static File ParseCore(string filePath, CharacterPositionFinder finder, IXmlFlavor flavor, Encoding encoding)
         {
-            // we have issues with UTF-8 encodings in files that should have an encoding='iso-8859-1'
-            using (var reader = new XmlTextReader(new StreamReader(SystemFile.OpenRead(filePath), Encoding.GetEncoding("iso-8859-1"))))
+            using (var reader = new XmlTextReader(new StreamReader(SystemFile.OpenRead(filePath), encoding)))
             {
                 var file = new File
                                {
