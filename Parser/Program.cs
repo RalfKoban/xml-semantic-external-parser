@@ -53,7 +53,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     {
                         watch.Restart();
 
-                        var file = Parser.Parse(inputFile);
+                        var file = Parser.Parse(inputFile, encodingToUse);
 
                         using (var writer = SystemFile.CreateText(outputFile))
                         {
