@@ -102,9 +102,9 @@
     <None Include="packages.config" />
     <None Include="Parser.ruleset" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta008\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta008\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  <ItemGroup Condition="'$(NCrunch)' != '1'">
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
