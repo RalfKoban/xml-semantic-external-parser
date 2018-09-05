@@ -42,8 +42,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                           || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
                                                           || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase);
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, ElementNames.Project, StringComparison.OrdinalIgnoreCase)
-                                                         && string.Equals(info.Namespace, "http://schemas.microsoft.com/developer/msbuild/2003", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(DocumentInfo info)
+        {
+            switch (info.Namespace)
+            {
+                case "http://schemas.microsoft.com/developer/msbuild/2003":
+                    return string.Equals(info.RootElement, ElementNames.Project, StringComparison.OrdinalIgnoreCase);
+                case null:
+                    return string.Equals(info.RootElement, ElementNames.Project, StringComparison.Ordinal);
+                default:
+                    return false;
+            }
+        }
 
         public override string GetName(XmlTextReader reader)
         {
