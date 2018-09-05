@@ -18,11 +18,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                         .Select(_ => _.GetConstructor(Type.EmptyTypes))
                                                         .Select(_ => _?.Invoke(null))
                                                         .OfType<XmlFlavor>()
+                                                        .Concat(new[] { new XmlFlavor() }) // add XML flavor here as that is the fall-back type
                                                         .ToArray();
 
         public static IXmlFlavor Find(string filePath)
         {
-            return Flavors.FirstOrDefault(_ => _.Supports(filePath)) ?? GetXmlFlavorForDocument(filePath) ?? new XmlFlavor();
+            var flavors = Flavors.Where(_ => _.Supports(filePath)).ToList();
+            return flavors.Count == 1 ? flavors[0] : GetXmlFlavorForDocument(filePath) ?? new XmlFlavor(); // just in case use XML flavor as fall-back (should never happen)
         }
 
         private static IXmlFlavor GetXmlFlavorForDocument(string filePath)
