@@ -67,7 +67,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 var name = reader.Name;
                 var attributeName = GetAttributeName(name);
-                return attributeName == null ? name : GetName(reader, name, attributeName);
+                var alternativeAttributeName = GetAlternativeAttributeName(name);
+                return GetName(reader, name, attributeName, alternativeAttributeName);
             }
 
             return base.GetName(reader);
@@ -140,9 +141,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static bool IsNonTerminalNodeName(string type, string nonTerminalNodeName) => type == nonTerminalNodeName || (type.Length > nonTerminalNodeName.Length && type.StartsWith(nonTerminalNodeName + " ", StringComparison.Ordinal));
 
-        private static string GetName(XmlTextReader reader, string name, string attributeName)
+        private static string GetName(XmlTextReader reader, string name, string attributeName, string alternativeAttributeName)
         {
-            var result = reader.GetAttribute(attributeName);
+            var result = GetAttribute(reader, attributeName) ?? GetAttribute(reader, alternativeAttributeName);
             if (result is null)
             {
                 return name;
@@ -158,6 +159,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             return GetFileName(result);
         }
+
+        private static string GetAttribute(XmlTextReader reader, string attributeName) => attributeName is null ? null : reader.GetAttribute(attributeName);
 
         private static void FinalAdjustNodeWithContent(Container c, IEnumerable<TerminalNode> attributes, string content)
         {
@@ -389,6 +392,24 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
+        private static string GetAlternativeAttributeName(string name)
+        {
+            switch (name)
+            {
+                case ElementNames.Compile:
+                case ElementNames.Content:
+                case ElementNames.EmbeddedResource:
+                case ElementNames.None:
+                case ElementNames.PackageReference:
+                case ElementNames.Page:
+                case ElementNames.Resource:
+                    return AttributeNames.Update;
+
+                default:
+                    return null;
+            }
+        }
+
         private static bool TypeCanBeIgnored(ContainerOrTerminalNode node)
         {
             var type = node?.Type;
@@ -440,6 +461,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             internal const string Condition = "Condition";
             internal const string Include = "Include";
+            internal const string Update = "Update";
             internal const string Name = "Name";
             internal const string Project = "Project";
         }
