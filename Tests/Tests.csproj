@@ -63,6 +63,7 @@
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_RuleSet.cs" />
     <Compile Include="ParserTests_SettingsFile.cs" />
+    <Compile Include="ParserTests_SHFB_Project.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="ParserTests_VisualBuild_Script.cs" />
     <Compile Include="ParserTests_WIX_Config.cs" />
@@ -87,6 +88,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Settings_file.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SFHB_Project.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\VisualBuild_script.xml">

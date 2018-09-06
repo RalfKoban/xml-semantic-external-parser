@@ -16,15 +16,20 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
-                                                                        {
-                                                                            ElementNames.ItemGroup,
-                                                                            ElementNames.ItemDefinitionGroup,
-                                                                            ElementNames.ImportGroup,
-                                                                            ElementNames.Project,
-                                                                            ElementNames.ProjectConfiguration,
-                                                                            ElementNames.PropertyGroup,
-                                                                            ElementNames.Target,
-                                                                        };
+                                                                           {
+                                                                               ElementNames.ItemGroup,
+                                                                               ElementNames.ItemDefinitionGroup,
+                                                                               ElementNames.ImportGroup,
+                                                                               ElementNames.Project,
+                                                                               ElementNames.ProjectConfiguration,
+                                                                               ElementNames.PropertyGroup,
+                                                                               ElementNames.Target,
+                                                                               SHFB.ElementNames.DocumentationSources,
+                                                                               SHFB.ElementNames.NamespaceSummaries,
+                                                                               SHFB.ElementNames.PlugInConfigurations,
+                                                                               SHFB.ElementNames.ComponentConfigurations,
+                                                                               SHFB.ElementNames.ApiFilter,
+                                                                           };
 
         private static readonly Regex VersionNumberRegex = new Regex("(.{1}([0-9]+.{1})+)+"); // format of version numbers is ".1.2.3.4"
 
@@ -101,7 +106,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 var content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
                 if (content != null)
                 {
-                    FinalAdjustNodeWithContent(c, content);
+                    FinalAdjustNodeWithContent(c, attributes, content);
                 }
                 else
                 {
@@ -118,14 +123,22 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             foreach (var name in NonTerminalNodeNames)
             {
-                if (type == name || (type.Length > name.Length && type.StartsWith(name + " ", StringComparison.Ordinal)))
+                if (IsNonTerminalNodeName(type, name))
                 {
                     return false;
                 }
             }
 
+            // SHFB filters should only be adjusted for namespace
+            if (IsNonTerminalNodeName(type, SHFB.ElementNames.Filter))
+            {
+                return !type.Contains(SHFB.Filter_EntryType_Namespace);
+            }
+
             return true;
         }
+
+        private static bool IsNonTerminalNodeName(string type, string nonTerminalNodeName) => type == nonTerminalNodeName || (type.Length > nonTerminalNodeName.Length && type.StartsWith(nonTerminalNodeName + " ", StringComparison.Ordinal));
 
         private static string GetName(XmlTextReader reader, string name, string attributeName)
         {
@@ -146,7 +159,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return GetFileName(result);
         }
 
-        private static void FinalAdjustNodeWithContent(Container c, string content)
+        private static void FinalAdjustNodeWithContent(Container c, IEnumerable<TerminalNode> attributes, string content)
         {
             // filter unwanted content nodes
             switch (c.Type)
@@ -154,6 +167,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.PreBuildEvent:
                 case ElementNames.PostBuildEvent:
                     // no adjustments of the name
+                    break;
+
+                case SHFB.ElementNames.NamespaceSummaryItem:
+                    c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
                     break;
 
                 default:
@@ -164,8 +181,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static void FinalAdjustNodeWithoutContent(Container c, IEnumerable<TerminalNode> attributes)
         {
-            var suffix = GetNameSuffixForItemGroup(c) ?? GetNameSuffixForPropertyGroup(c, attributes);
-            var typeSuffix = GetTypeSuffixForItemGroup(c);
+            var suffix = GetNameSuffix(c, attributes);
+            var typeSuffix = GetTypeSuffix(c, attributes);
 
             if (!string.IsNullOrEmpty(suffix))
             {
@@ -175,6 +192,36 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (!string.IsNullOrEmpty(typeSuffix))
             {
                 c.Type = string.Concat(c.Type, " '", typeSuffix, "'");
+            }
+        }
+
+        private static string GetNameSuffix(Container c, IEnumerable<TerminalNode> attributes)
+        {
+            switch (c.Name)
+            {
+                case ElementNames.ItemGroup:
+                    return GetNameSuffixForItemGroup(c);
+
+                case ElementNames.PropertyGroup:
+                    return GetNameSuffixForPropertyGroup(c, attributes);
+
+                default:
+                    return null;
+            }
+        }
+
+        private static string GetTypeSuffix(Container c, IEnumerable<TerminalNode> attributes)
+        {
+            switch (c.Type)
+            {
+                case ElementNames.ItemGroup:
+                    return GetTypeSuffixForItemGroup(c);
+
+                case SHFB.ElementNames.Filter:
+                    return attributes?.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.EntryType)?.Content;
+
+                default:
+                    return null;
             }
         }
 
@@ -194,13 +241,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return index > 0 ? result.Substring(0, index) : result;
         }
 
-        private static string GetNameSuffixForItemGroup(Container container) => container.Name == ElementNames.ItemGroup
-                                                                                ? container.Children.FirstOrDefault(_ => !TypeCanBeIgnored(_))?.Type
-                                                                                : null;
+        private static string GetNameSuffixForItemGroup(Container container) => container.Children.FirstOrDefault(_ => !TypeCanBeIgnored(_))?.Type;
 
         private static string GetNameSuffixForPropertyGroup(Container container, IEnumerable<TerminalNode> attributes)
         {
-            if (container.Name == ElementNames.PropertyGroup && container.Children.Count > 0)
+            if (container.Children.Count > 0)
             {
                 // try to find 'ProjectGuid' to see if we have default property group
                 if (container.Children.Any(_ => _.Type == ElementNames.ProjectGuid))
@@ -326,6 +371,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Target:
                     return AttributeNames.Name;
 
+                case SHFB.ElementNames.ComponentConfig:
+                case SHFB.ElementNames.PlugInConfig:
+                    return SHFB.AttributeNames.Id;
+
+                case SHFB.ElementNames.Filter:
+                    return SHFB.AttributeNames.FullName;
+
+                case SHFB.ElementNames.DocumentationSource:
+                    return SHFB.AttributeNames.SourceFile;
+
+                case SHFB.ElementNames.NamespaceSummaryItem:
+                    return SHFB.AttributeNames.Name;
+
                 default:
                     return null;
             }
@@ -384,6 +442,34 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Include = "Include";
             internal const string Name = "Name";
             internal const string Project = "Project";
+        }
+
+        private static class SHFB
+        {
+            internal static class ElementNames
+            {
+                internal const string DocumentationSources = "DocumentationSources";
+                internal const string DocumentationSource = "DocumentationSource";
+                internal const string NamespaceSummaries = "NamespaceSummaries";
+                internal const string NamespaceSummaryItem = "NamespaceSummaryItem";
+                internal const string PlugInConfigurations = "PlugInConfigurations";
+                internal const string PlugInConfig = "PlugInConfig";
+                internal const string ComponentConfigurations = "ComponentConfigurations";
+                internal const string ComponentConfig = "ComponentConfig";
+                internal const string ApiFilter = "ApiFilter";
+                internal const string Filter = "Filter";
+            }
+
+            internal static class AttributeNames
+            {
+                internal const string EntryType = "entryType";
+                internal const string FullName = "fullName";
+                internal const string Id = "id";
+                internal const string Name = "name";
+                internal const string SourceFile = "sourceFile";
+            }
+
+            internal const string Filter_EntryType_Namespace = "Namespace";
         }
     }
 }
