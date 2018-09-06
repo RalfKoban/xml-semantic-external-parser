@@ -30,17 +30,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => true;
 
-        public override bool Supports(string filePath) => filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".ilproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
-                                                          || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(string filePath) => filePath.EndsWith(".builds", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".ilproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".vcxproj", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info)
         {
@@ -297,17 +298,26 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.CodeAnalysisDependentAssemblyPaths:
                 case ElementNames.Compile:
                 case ElementNames.Content:
+                case ElementNames.CoreRootProjectLockJsonFiles:
+                case ElementNames.CrossGenFiles:
                 case ElementNames.EmbeddedResource:
                 case ElementNames.ExcludeList:
+                case ElementNames.ExcludeTraitsItems:
                 case ElementNames.Folder:
+                case ElementNames.IncludeTraitsItems:
                 case ElementNames.NativeProjectBinaries:
                 case ElementNames.None:
                 case ElementNames.PackageReference:
                 case ElementNames.Page:
+                case ElementNames.ProductProjectLockJsonFiles:
+                case ElementNames.Project:
                 case ElementNames.ProjectReference:
                 case ElementNames.Reference:
+                case ElementNames.RefProjectLockJsonFiles:
                 case ElementNames.Resource:
+                case ElementNames.TestTargetFramework:
                 case ElementNames.Validate:
+                case ElementNames.VCRuntimeFiles:
                     return AttributeNames.Include;
 
                 case ElementNames.Import:
@@ -336,6 +346,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
+            internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
+            internal const string CrossGenFiles = "CrossGenFiles";
             internal const string EmbeddedResource = "EmbeddedResource";
             internal const string ExcludeList = "ExcludeList";
             internal const string Folder = "Folder";
@@ -347,17 +359,23 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string None = "None";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
+            internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
             internal const string Project = "Project";
             internal const string ProjectConfiguration = "ProjectConfiguration";
             internal const string ProjectGuid = "ProjectGuid";
             internal const string ProjectReference = "ProjectReference";
             internal const string PropertyGroup = "PropertyGroup";
             internal const string Reference = "Reference";
+            internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
             internal const string Resource = "Resource";
             internal const string Target = "Target";
+            internal const string TestTargetFramework = "TestTargetFramework";
             internal const string Validate = "Validate";
+            internal const string VCRuntimeFiles = "VCRuntimeFiles";
             internal const string PostBuildEvent = "PostBuildEvent";
             internal const string PreBuildEvent = "PreBuildEvent";
+            internal const string IncludeTraitsItems = "IncludeTraitsItems";
+            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
         }
 
         private static class AttributeNames
