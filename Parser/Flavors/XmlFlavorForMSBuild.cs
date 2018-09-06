@@ -446,6 +446,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static class SHFB
         {
+            internal const string Filter_EntryType_Namespace = "Namespace";
+
             internal static class ElementNames
             {
                 internal const string DocumentationSources = "DocumentationSources";
@@ -468,8 +470,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 internal const string Name = "name";
                 internal const string SourceFile = "sourceFile";
             }
-
-            internal const string Filter_EntryType_Namespace = "Namespace";
         }
     }
 }
