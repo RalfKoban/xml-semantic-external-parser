@@ -35,6 +35,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("Page", "UserControl.xaml")]
         [TestCase("PreBuildEvent", "PreBuildEvent")]
         [TestCase("PostBuildEvent", "PostBuildEvent")]
+        [TestCase("DefineConstants", "'$(TargetFramework)' != 'net20'")]
         public void Item_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == groupType).Any(_ => _.Name == name);

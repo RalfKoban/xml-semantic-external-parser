@@ -66,7 +66,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 var name = reader.Name;
                 var attributeName = GetAttributeName(name);
                 var alternativeAttributeName = GetAlternativeAttributeName(name);
-                return GetName(reader, name, attributeName, alternativeAttributeName);
+                return GetName(reader, name, attributeName, alternativeAttributeName).Trim();
             }
 
             return base.GetName(reader);
@@ -348,6 +348,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.TestTargetFramework:
                 case ElementNames.Validate:
                 case ElementNames.VCRuntimeFiles:
+                case ElementNames.OfficialBuildRID:
                     return AttributeNames.Include;
 
                 case ElementNames.Import:
@@ -368,6 +369,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
                 case SHFB.ElementNames.NamespaceSummaryItem:
                     return SHFB.AttributeNames.Name;
+
+                case ElementNames.DefineConstants:
+                    return AttributeNames.Condition;
 
                 default:
                     return null;
@@ -410,6 +414,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Content = "Content";
             internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
             internal const string CrossGenFiles = "CrossGenFiles";
+            internal const string DefineConstants = "DefineConstants";
             internal const string EmbeddedResource = "EmbeddedResource";
             internal const string ExcludeList = "ExcludeList";
             internal const string Folder = "Folder";
@@ -438,6 +443,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string PreBuildEvent = "PreBuildEvent";
             internal const string IncludeTraitsItems = "IncludeTraitsItems";
             internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
+            internal const string OfficialBuildRID = "OfficialBuildRID";
         }
 
         private static class AttributeNames
