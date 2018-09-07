@@ -11,8 +11,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public class XmlFlavorForMSBuild : XmlFlavor
     {
-        private static readonly char[] Separator = { '\'' };
-
         private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
@@ -164,21 +162,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static void FinalAdjustNodeWithContent(Container c, IEnumerable<TerminalNode> attributes, string content)
         {
-            // filter unwanted content nodes
-            switch (c.Type)
+            if (c.Type == SHFB.ElementNames.NamespaceSummaryItem)
             {
-                case ElementNames.PreBuildEvent:
-                case ElementNames.PostBuildEvent:
-                    // no adjustments of the name
-                    break;
-
-                case SHFB.ElementNames.NamespaceSummaryItem:
-                    c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
-                    break;
-
-                default:
-                    c.Name = content;
-                    break;
+                c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
             }
         }
 
@@ -261,15 +247,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     return "Pre/Post-build events";
                 }
-
-                var condition = attributes.FirstOrDefault(_ => _.Name == AttributeNames.Condition);
-                if (condition != null)
-                {
-                    return condition.Content.Trim().Split(Separator, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                }
             }
 
-            return null;
+            var condition = attributes.FirstOrDefault(_ => _.Name == AttributeNames.Condition);
+            return condition?.Content.Trim();
         }
 
         private static string GetTypeSuffixForItemGroup(Container container)

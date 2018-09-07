@@ -33,6 +33,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("ProjectReference", "Common.csproj")]
         [TestCase("BootstrapperPackage", "Microsoft.Windows.Installer.4.5")]
         [TestCase("Page", "UserControl.xaml")]
+        [TestCase("PreBuildEvent", "PreBuildEvent")]
+        [TestCase("PostBuildEvent", "PostBuildEvent")]
         public void Item_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == groupType).Any(_ => _.Name == name);
@@ -43,7 +45,9 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("ItemGroup 'Reference'", "Reference")]
         [TestCase("ItemGroup 'None 'Resources''", "None 'Resources'")]
         [TestCase("PropertyGroup", "(default)")]
-        [TestCase("PropertyGroup", "Debug|AnyCPU")]
+        [TestCase("PropertyGroup", "Pre/Post-build events")]
+        [TestCase("PropertyGroup", "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'")]
+        [TestCase("PropertyGroup", "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'")]
         public void Group_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().Where(_ => _.Type == groupType).Any(_ => _.Name == name);
