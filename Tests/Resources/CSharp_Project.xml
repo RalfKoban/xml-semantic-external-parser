@@ -100,6 +100,12 @@
     <ProjectReference Include="$(SourceDir)Common/Common.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <CppCompile Include="$(SourceDir)Common/Common.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <OfficialBuildRID Include="tizen" />
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
       <Visible>False</Visible>
       <ProductName>Windows Installer 4.5</ProductName>

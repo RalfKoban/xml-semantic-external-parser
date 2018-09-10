@@ -349,6 +349,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Validate:
                 case ElementNames.VCRuntimeFiles:
                 case ElementNames.OfficialBuildRID:
+                case ElementNames.CppCompile:
                     return AttributeNames.Include;
 
                 case ElementNames.Import:
@@ -444,6 +445,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string IncludeTraitsItems = "IncludeTraitsItems";
             internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
             internal const string OfficialBuildRID = "OfficialBuildRID";
+            internal const string CppCompile = "CppCompile";
         }
 
         private static class AttributeNames
