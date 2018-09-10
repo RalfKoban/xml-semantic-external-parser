@@ -323,8 +323,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static LineInfo IncludeXmlDeclarationInRoot(Container root, Container dummyRoot)
         {
-            var rootEnd = root.LocationSpan.End;
-
             // there might be no declaration, such as when trying to parse XAML files
             var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.XmlDeclaration);
             if (xmlDeclaration != null)
@@ -333,11 +331,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 var rootStart = xmlDeclaration.LocationSpan.Start;
 
                 // adjust positions
-                root.LocationSpan = new LocationSpan(rootStart, rootEnd);
+                root.LocationSpan = new LocationSpan(rootStart, root.LocationSpan.End);
                 root.HeaderSpan = new CharacterSpan(xmlDeclaration.Span.Start, root.HeaderSpan.End);
             }
 
-            return rootEnd;
+            return root.LocationSpan.End;
         }
     }
 }
