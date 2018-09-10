@@ -59,6 +59,7 @@
     <Compile Include="ParserTests_CSharp_Project.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
+    <Compile Include="ParserTests_NuSpec.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
@@ -101,6 +102,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ModuleCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NuSpec.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Settings_file.xml">

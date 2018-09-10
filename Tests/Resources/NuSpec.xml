@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- see documentation for creating nuget packages with nuget.exe v3.5 -->
+<!-- https://docs.microsoft.com/de-de/nuget/create-packages/overview-and-workflow -->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>My package</id>
+    <version>1.0.0.0</version>
+    <authors>Ralf Koban</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This contains components that are part of my package.</description>
+    <copyright>© 2018 MiKo Solutions. All rights reserved</copyright>
+  </metadata>
+  <files>
+    <file src="origin\some.dll" target="lib\some.dll" />
+  </files>
+</package>

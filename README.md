@@ -31,6 +31,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Microsoft Prism (Library 5.0 for WPF) Module catalog | .xaml
 | [NDepend](https://www.ndepend.com/) | .ndproj, .ndrules
 | NuGet Configuration | _packages.config_
+| NuGet Manifest | .nuspec
 | [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project  | .shfbproj
 | Visual Build | .bld
 | Visual Studio C++ Project | .vcxproj
