@@ -44,7 +44,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)), "Wrong start"); // TODO: RKN Not sure why it is a 2 (actually, the comment should be considered as well here)
+                Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)), "Wrong start");
                 Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
 
                 Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 395)), "Wrong header");
