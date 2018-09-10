@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>XmlSemanticParser</name>
+  </assembly>
+  <members>
+    <member name="T:MiKoSolutions.SemanticParsers.Xml.Program">
+      <summary>
+        Defines the entry point of the assembly.
+      </summary>
+    </member>
+  </members>
+</doc>
