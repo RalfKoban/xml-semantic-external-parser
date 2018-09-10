@@ -53,21 +53,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        private static string GetAttributeName(string name)
-        {
-            switch (name)
-            {
-                case ElementNames.Group:
-                    return AttributeNames.TargetFramework;
-
-                case ElementNames.File:
-                    return AttributeNames.Src;
-
-                default:
-                    return AttributeNames.Id;
-            }
-        }
-
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
@@ -93,6 +78,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => !NonTerminalNodeNames.Contains(node?.Type);
+
+        private static string GetAttributeName(string name)
+        {
+            switch (name)
+            {
+                case ElementNames.Group:
+                    return AttributeNames.TargetFramework;
+
+                case ElementNames.File:
+                    return AttributeNames.Src;
+
+                default:
+                    return AttributeNames.Id;
+            }
+        }
 
         private static class ElementNames
         {
