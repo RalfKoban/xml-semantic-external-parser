@@ -52,11 +52,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
-        [TestCase(0, 5, 1, 7, 68, 396, 542)]
-        [TestCase(1, 8, 1, 9,  2, 543, 675)]
-        public void Element_matches(int index, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int startPos, int endPos)
+        [TestCase("ModuleOne", 5, 1, 7, 68, 396, 542)]
+        [TestCase("ModuleTwo", 8, 1, 9,  2, 543, 675)]
+        public void Element_matches(string name, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int startPos, int endPos)
         {
-            var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().ElementAt(index);
+            var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().FirstOrDefault(_ => _.Name == name);
 
             Assert.Multiple(() =>
             {

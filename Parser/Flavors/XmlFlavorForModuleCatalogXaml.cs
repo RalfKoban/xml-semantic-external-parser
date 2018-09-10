@@ -10,9 +10,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         private const string PrismNamespace = "clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism";
 
+        private const string ModuleInfo = "ModuleInfo";
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
-                                                                            "ModuleInfo",
+                                                                            ModuleInfo,
                                                                         };
 
         public override bool ParseAttributesEnabled => true;
@@ -30,7 +32,17 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (reader.NodeType == XmlNodeType.Element)
             {
                 var name = reader.LocalName;
-                return reader.GetAttribute("ModuleName", PrismNamespace) ?? name;
+                switch (name)
+                {
+                    case ModuleInfo:
+                    {
+                        var identifier = reader.GetAttribute("ModuleName");
+                        return identifier ?? name;
+                    }
+
+                    default:
+                        return name;
+                }
             }
 
             return base.GetName(reader);
