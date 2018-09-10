@@ -1,0 +1,70 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+
+using MiKoSolutions.SemanticParsers.Xml.Yaml;
+
+using NUnit.Framework;
+
+namespace MiKoSolutions.SemanticParsers.Xml
+{
+    [TestFixture]
+    public class ParserTests_ModuleCatalog_Xaml
+    {
+        private Yaml.File _objectUnderTest;
+        private Yaml.Container _root;
+
+        [SetUp]
+        public void PrepareTest()
+        {
+            var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
+            var fileName = Path.Combine(parentDirectory, "Resources", "ModuleCatalog.xml");
+
+            _objectUnderTest = Parser.Parse(fileName);
+            _root = _objectUnderTest.Children.Single();
+        }
+
+        [Test]
+        public void File_Name_matches() => Assert.That(_objectUnderTest.Name, Does.EndWith(Path.DirectorySeparatorChar + "ModuleCatalog.xml"));
+
+        [Test]
+        public void File_LocationSpan_matches()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
+                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
+
+                Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
+            });
+        }
+
+        [Test]
+        public void Root_LocationSpan_matches()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)), "Wrong start"); // TODO: RKN Not sure why it is a 2 (actually, the comment should be considered as well here)
+                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
+
+                Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(88, 395)), "Wrong header");
+                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(676, 702)), "Wrong footer");
+            });
+        }
+
+        [TestCase(0, 5, 1, 7, 68, 396, 542)]
+        [TestCase(1, 8, 1, 9,  2, 543, 675)]
+        public void Element_matches(int index, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int startPos, int endPos)
+        {
+            var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().ElementAt(index);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(startLineNumber, startLinePos)), "Wrong start");
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(endLineNumber, endLinePos)), "Wrong end");
+
+                Assert.That(node.Span, Is.EqualTo(new CharacterSpan(startPos, endPos)), "Wrong span");
+            });
+        }
+    }
+}

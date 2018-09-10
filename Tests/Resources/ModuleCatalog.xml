@@ -1,0 +1,10 @@
+﻿<!-- See also:  https://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx -->
+<Modularity:ModuleCatalog xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:Modularity="clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism">
+
+    <Modularity:ModuleInfo Ref="file:///Module1.dll" ModuleName="ModuleOne"
+                           ModuleType="Module1.Module, Module1" />
+    <Modularity:ModuleInfo Ref="file:///Module2.dll" ModuleName="ModuleTwo" ModuleType="Module2.PortForwardingModule, Module2" />
+
+</Modularity:ModuleCatalog>
