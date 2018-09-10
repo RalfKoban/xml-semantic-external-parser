@@ -328,14 +328,19 @@ namespace MiKoSolutions.SemanticParsers.Xml
             if (xmlDeclaration != null)
             {
                 // let root include the XML declaration
-                var rootStart = xmlDeclaration.LocationSpan.Start;
-
-                // adjust positions
-                root.LocationSpan = new LocationSpan(rootStart, root.LocationSpan.End);
-                root.HeaderSpan = new CharacterSpan(xmlDeclaration.Span.Start, root.HeaderSpan.End);
+                AdjustRoot(root, xmlDeclaration);
             }
 
             return root.LocationSpan.End;
+        }
+
+        private static void AdjustRoot(Container root, TerminalNode node)
+        {
+            var rootStart = node.LocationSpan.Start;
+
+            // adjust positions
+            root.LocationSpan = new LocationSpan(rootStart, root.LocationSpan.End);
+            root.HeaderSpan = new CharacterSpan(node.Span.Start, root.HeaderSpan.End);
         }
     }
 }
