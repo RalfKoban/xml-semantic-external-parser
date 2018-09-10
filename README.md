@@ -28,6 +28,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Entity Framework Database Schema (V3) | .edmx
 | FxCop | _CustomDictionary.xml_
 | Microsoft Build Engine (MSBuild) | .proj, .targets, .props, .projitems
+| Microsoft Prism (Library 5.0 for WPF) Module catalog | .xaml
 | [NDepend](https://www.ndepend.com/) | .ndproj, .ndrules
 | NuGet Configuration | _packages.config_
 | [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project  | .shfbproj
