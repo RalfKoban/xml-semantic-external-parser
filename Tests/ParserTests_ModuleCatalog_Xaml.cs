@@ -47,13 +47,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(2, 1)), "Wrong start"); // TODO: RKN Not sure why it is a 2 (actually, the comment should be considered as well here)
                 Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
 
-                Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(88, 395)), "Wrong header");
-                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(676, 702)), "Wrong footer");
+                Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 395)), "Wrong header");
+                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(662, 688)), "Wrong footer");
             });
         }
 
         [TestCase("ModuleOne", 5, 1, 7, 68, 396, 542)]
-        [TestCase("ModuleTwo", 8, 1, 9,  2, 543, 675)]
+        [TestCase("ModuleTwo", 8, 1, 9,  2, 543, 661)]
         public void Element_matches(string name, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int startPos, int endPos)
         {
             var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().FirstOrDefault(_ => _.Name == name);
