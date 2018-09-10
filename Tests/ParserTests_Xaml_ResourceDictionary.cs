@@ -72,7 +72,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase(08, 13, 1, 13, 183, 1854, 2006, 2025, 2036)]
         [TestCase(09, 14, 1, 14, 183, 2037, 2189, 2208, 2219)]
         [TestCase(10, 15, 1, 15, 183, 2220, 2372, 2391, 2402)]
-        public void First_Element_matches(int index, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
+        public void Element_matches(int index, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int headerStartPos, int headerEndPos, int footerStartPos, int footerEndPos)
         {
             var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().ElementAt(index);
 
