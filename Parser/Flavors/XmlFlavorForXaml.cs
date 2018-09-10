@@ -8,6 +8,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public sealed class XmlFlavorForXaml : XmlFlavor
     {
+        private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+        private const string XamlPresentationNamespace = XamlNamespace + "/presentation";
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             "Button",
@@ -48,7 +51,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(string filePath) => filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase);
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.Namespace, "http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(DocumentInfo info) => string.Equals(info.Namespace, XamlPresentationNamespace, StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
         {
@@ -56,9 +59,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 var name = reader.LocalName;
 
-                return reader.GetAttribute("Name", "http://schemas.microsoft.com/winfx/2006/xaml") ??
-                       reader.GetAttribute("Key", "http://schemas.microsoft.com/winfx/2006/xaml") ??
-                       name;
+                return reader.GetAttribute("Name", XamlNamespace) ?? reader.GetAttribute("Key", XamlNamespace) ?? name;
             }
 
             return base.GetName(reader);
