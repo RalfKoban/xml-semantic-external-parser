@@ -60,7 +60,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     }
 
                     var root = dummyRoot.Children.OfType<Container>().Last();
-                    var rootEnd = IncludeXmlDeclarationInRoot(root, dummyRoot);
+                    var rootEnd = FixRoot(root, dummyRoot);
 
                     var fileEnd = new LineInfo(reader.LineNumber, reader.LinePosition - 1);
 
@@ -321,7 +321,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             return new CharacterSpan(startPos, endPos);
         }
 
-        private static LineInfo IncludeXmlDeclarationInRoot(Container root, Container dummyRoot)
+        private static LineInfo FixRoot(Container root, Container dummyRoot)
         {
             if (dummyRoot.Children.Any())
             {
@@ -332,21 +332,18 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     // let root include the XML declaration
                     AdjustRoot(root, xmlDeclaration);
                 }
-
-                // there might be a comment
-                var xmlComment = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.Comment);
-                if (xmlComment != null)
+                else
                 {
-                    // so is it the first element (or directly after the XML declaration) ?
-                    switch (dummyRoot.Children.IndexOf(xmlComment))
+                    // there might be a comment
+                    var xmlComment = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.Comment);
+                    if (xmlComment != null)
                     {
-                        case 0:
-                        case 1 when xmlDeclaration != null:
-                            {
-                                // let root include the comment
-                                AdjustRoot(root, xmlComment);
-                                break;
-                            }
+                        // so is it the first element?
+                        if (dummyRoot.Children.IndexOf(xmlComment) == 0)
+                        {
+                            // let root include the comment
+                            AdjustRoot(root, xmlComment);
+                        }
                     }
                 }
             }

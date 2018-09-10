@@ -53,7 +53,9 @@
   <ItemGroup>
     <Compile Include="CharacterPositionFinderTests.cs" />
     <Compile Include="ParserTests_AssemblyDocumentation.cs" />
+    <Compile Include="ParserTests_CommentAfterDeclaration.cs" />
     <Compile Include="ParserTests_CommentAfterEnd.cs" />
+    <Compile Include="ParserTests_CommentWithoutDeclaration.cs" />
     <Compile Include="ParserTests_CSharp_Project.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
@@ -83,7 +85,13 @@
     <Content Include="Resources\AssemblyDocumentation.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\CommentAfterDeclaration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\CommentAfterEnd.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CommentWithoutDeclaration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\CSharp_Project.xml">
