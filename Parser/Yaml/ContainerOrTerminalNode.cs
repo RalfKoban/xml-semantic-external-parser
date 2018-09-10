@@ -48,6 +48,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         private static string WorkaroundForRegexIssue(string value) => value
                                                                         .Replace("\\", " \\ ")
                                                                         .Replace("++", "+ +")
+                                                                        .Replace("**", "* *")
                                                                         .Replace("[]", string.Empty);
     }
 }
