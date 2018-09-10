@@ -323,12 +323,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
         private static LineInfo IncludeXmlDeclarationInRoot(Container root, Container dummyRoot)
         {
-            // there might be no declaration, such as when trying to parse XAML files
-            var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.XmlDeclaration);
-            if (xmlDeclaration != null)
+            if (dummyRoot.Children.Any())
             {
-                // let root include the XML declaration
-                AdjustRoot(root, xmlDeclaration);
+                // there might be no declaration, such as when trying to parse XAML files
+                var xmlDeclaration = dummyRoot.Children.OfType<TerminalNode>().FirstOrDefault(_ => _.Type == NodeType.XmlDeclaration);
+                if (xmlDeclaration != null)
+                {
+                    // let root include the XML declaration
+                    AdjustRoot(root, xmlDeclaration);
+                }
             }
 
             return root.LocationSpan.End;
