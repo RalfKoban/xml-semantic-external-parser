@@ -5,6 +5,6 @@
 
     <Modularity:ModuleInfo Ref="file:///Module1.dll" ModuleName="ModuleOne"
                            ModuleType="Module1.Module, Module1" />
-    <Modularity:ModuleInfo Ref="file:///Module2.dll" ModuleName="ModuleTwo" ModuleType="Module2.PortForwardingModule, Module2" />
+    <Modularity:ModuleInfo Ref="file:///Module2.dll" ModuleName="ModuleTwo" ModuleType="Module2.Module, Module2" />
 
 </Modularity:ModuleCatalog>
