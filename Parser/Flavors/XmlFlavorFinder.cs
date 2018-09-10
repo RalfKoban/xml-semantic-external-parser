@@ -44,8 +44,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         // get first element
                         if (reader.NodeType == XmlNodeType.Element)
                         {
-                            var name = reader.Name;
-                            var ns = namespaces.Select(reader.GetAttribute).FirstOrDefault(_ => _ != null);
+                            var name = reader.LocalName;
+                            var ns = reader.LookupNamespace(reader.Prefix);
 
                             return new DocumentInfo
                                        {
