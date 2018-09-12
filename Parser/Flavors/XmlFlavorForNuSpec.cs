@@ -63,13 +63,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     case ElementNames.Id:
                         // side effect: set content here to be able to get it for MetaData as well
-                        node.Content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
+                        node.Content = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content.Trim();
 
                         // ID shall be a terminal node
                         return node.ToTerminalNode();
 
                     case ElementNames.Metadata:
-                        node.Name = c.Children.FirstOrDefault(_ => _.Type == ElementNames.Id)?.Content;
+                        node.Name = c.Children.FirstOrDefault(_ => _.Type == ElementNames.Id)?.Content.Trim();
                         break;
                 }
             }
@@ -89,6 +89,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.File:
                     return AttributeNames.Src;
 
+                case ElementNames.Repository:
+                    return AttributeNames.Url;
+
                 default:
                     return AttributeNames.Id;
             }
@@ -104,6 +107,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Metadata = "metadata";
             internal const string Package = "package";
             internal const string References = "references";
+            internal const string Repository = "repository";
             internal const string Group = "group";
         }
 
@@ -112,6 +116,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Id = "id";
             internal const string Src = "src";
             internal const string TargetFramework = "targetFramework";
+            internal const string Url = "url";
         }
     }
 }
