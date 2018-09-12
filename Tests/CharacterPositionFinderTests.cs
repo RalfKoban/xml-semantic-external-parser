@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Text;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
@@ -18,7 +18,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var parentDirectory = Directory.GetParent(new Uri(GetType().Assembly.Location).LocalPath).FullName;
             var fileName = Path.Combine(parentDirectory, "Resources", "test.xml");
 
-            _objectUnderTest = CharacterPositionFinder.CreateFrom(fileName);
+            _objectUnderTest = CharacterPositionFinder.CreateFrom(fileName, Encoding.Unicode);
         }
 
         [TestCase(3, 10, ExpectedResult = 63)]

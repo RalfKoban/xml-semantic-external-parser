@@ -23,10 +23,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Tracer.Trace($"Using {flavor.GetType().Name} flavor for '{filePath}'.");
 
+            var encodingToUse = Encoding.GetEncoding(encoding);
+
             File file;
-            using (var finder = CharacterPositionFinder.CreateFrom(filePath))
+            using (var finder = CharacterPositionFinder.CreateFrom(filePath, encodingToUse))
             {
-                file = ParseCore(filePath, finder, flavor, Encoding.GetEncoding(encoding));
+                file = ParseCore(filePath, finder, flavor, encodingToUse);
 
                 Resorter.Resort(file);
                 GapFiller.Fill(file, finder);

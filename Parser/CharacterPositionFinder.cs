@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
-
-using SystemFile = System.IO.File;
 
 namespace MiKoSolutions.SemanticParsers.Xml
 {
@@ -22,7 +21,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             _characterPositionToLineInfoMap = characterPositionToLineInfoMap;
         }
 
-        public static CharacterPositionFinder CreateFrom(string filePath)
+        public static CharacterPositionFinder CreateFrom(string filePath, Encoding encoding)
         {
             var lineNumber = 1;
             var count = -1;
@@ -40,7 +39,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                                        };
 
             var lineLength = 0;
-            using (var reader = SystemFile.OpenText(filePath))
+
+            using (var reader = new StreamReader(filePath, encoding))
             {
                 while (!reader.EndOfStream)
                 {

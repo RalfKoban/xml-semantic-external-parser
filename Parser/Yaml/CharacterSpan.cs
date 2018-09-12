@@ -8,7 +8,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         {
             if (start > end && (start != 0 || end != -1))
             {
-                throw new ArgumentException($"{nameof(start)} should be less than {nameof(end)} but {start} is greater than {end}!");
+                throw new ArgumentException($"{nameof(start)} should be less than {nameof(end)} but {start} is greater than {end}!", nameof(start));
             }
 
             Start = start;
