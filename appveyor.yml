@@ -17,7 +17,7 @@ init:
 # environment:
 
 install:
-  - choco install gitversion.portable -pre -y
+#  - choco install gitversion.portable -pre -y
   
 # Install NUnit console runner
 #  - ps: Start-FileDownload $env:NUnitRunnerUri -FileName NUnitInstaller.zip
