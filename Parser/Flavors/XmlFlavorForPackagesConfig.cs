@@ -9,7 +9,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         public override bool ParseAttributesEnabled => false;
 
-        public override bool Supports(string filePath) => filePath.EndsWith("packages.config", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(string filePath) => filePath.EndsWith(".config", StringComparison.OrdinalIgnoreCase); // do not check for "packages.config" as e.g. TFS might use a temp <some guid>.config file instead
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "packages", StringComparison.OrdinalIgnoreCase);
 
