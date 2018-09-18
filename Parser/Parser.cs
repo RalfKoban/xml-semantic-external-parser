@@ -17,10 +17,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
     public static class Parser
     {
         // we have issues with UTF-8 encodings in files that should have an encoding='iso-8859-1'
-        public static File Parse(string filePath, string encoding = "iso-8859-1")
-        {
-            var flavor = XmlFlavorFinder.Find(filePath);
+        public static File Parse(string filePath) => Parse(filePath, "iso-8859-1", XmlFlavorFinder.Find(filePath));
 
+        public static File Parse(string filePath, string encoding, IXmlFlavor flavor)
+        {
             Tracer.Trace($"Using {flavor.GetType().Name} flavor for '{filePath}'.");
 
             var encodingToUse = Encoding.GetEncoding(encoding);

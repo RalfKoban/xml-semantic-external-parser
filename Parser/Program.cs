@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime;
 using System.Threading.Tasks;
 
+using MiKoSolutions.SemanticParsers.Xml.Flavors;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using SystemFile = System.IO.File;
@@ -30,9 +31,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var gcWatch = Stopwatch.StartNew();
             while (true)
             {
-                // TODO: RKN
-                //// Tracer.Trace($"Ready to parse, waiting for input (instance {InstanceId:B})");
-
                 var inputFile = await Console.In.ReadLineAsync();
                 if (inputFile == null || "end".Equals(inputFile, StringComparison.OrdinalIgnoreCase))
                 {
@@ -44,16 +42,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 var encodingToUse = await Console.In.ReadLineAsync();
                 var outputFile = await Console.In.ReadLineAsync();
 
-                // TODO: RKN
-                //// Tracer.Trace($"Trying to parse '{inputFile}' with encoding '{encodingToUse}', output will be written to '{outputFile}' (instance {InstanceId:B})");
-
                 try
                 {
                     try
                     {
                         watch.Restart();
 
-                        var file = Parser.Parse(inputFile, encodingToUse);
+                        // we find a flavor here, as we want to support different main methods, based on file ending
+                        var flavor = XmlFlavorFinder.Find(inputFile);
+
+                        var file = Parser.Parse(inputFile, encodingToUse, flavor);
 
                         using (var writer = SystemFile.CreateText(outputFile))
                         {
