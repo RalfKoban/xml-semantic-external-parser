@@ -65,6 +65,7 @@
     <Compile Include="Flavors\XmlFlavorForDotNetCoreMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForEdmxV3.cs" />
     <Compile Include="Flavors\XmlFlavorForFxCop.cs" />
+    <Compile Include="Flavors\XmlFlavorForLayerDiagram.cs" />
     <Compile Include="Flavors\XmlFlavorForModuleCatalogXaml.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
     <Compile Include="Flavors\XmlFlavorForNuSpec.cs" />
