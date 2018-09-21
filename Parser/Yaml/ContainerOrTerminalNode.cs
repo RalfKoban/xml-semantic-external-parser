@@ -49,6 +49,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                                                                         .Replace("\\", " \\ ")
                                                                         .Replace("++", "+ +")
                                                                         .Replace("**", "* *")
+                                                                        .Replace("(*)", "( * )")
                                                                         .Replace("[]", string.Empty);
     }
 }
