@@ -147,6 +147,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return name;
             }
 
+            if (name == ElementNames.Folder)
+            {
+                // if it is a folder, then we want to have the complete name
+                return result;
+            }
+
             // if there is a comma, then we want to get the name before the comma (except that we have a directory at the end)
             var commaIndex = result.IndexOf(',');
             var directorySeparatorIndex = result.LastIndexOfAny(DirectorySeparators);

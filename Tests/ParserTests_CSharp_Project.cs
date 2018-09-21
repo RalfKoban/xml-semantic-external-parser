@@ -38,6 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("DefineConstants", "'$(TargetFramework)' != 'net20'")]
         [TestCase("CppCompile", "Common.cpp")]
         [TestCase("OfficialBuildRID", "tizen")]
+        [TestCase("Folder", "Some  \\  path/to/wherever")] // TODO: RKN rename after fix of workaround for Regex issue in GMaster
         public void Item_is_found_and_truncated_properly(string groupType, string name)
         {
             var item = _root.Children.OfType<Container>().SelectMany(_ => _.Children).Where(_ => _.Type == groupType).Any(_ => _.Name == name);
