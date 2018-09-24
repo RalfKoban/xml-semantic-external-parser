@@ -61,7 +61,7 @@ test_script:
 -  .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:" "".\Tests\bin\Tests.dll"" --workers=16 " -returntargetcode -filter:"+[MiKo*]* -[*Test*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -excludebyfile:*\*Designer.cs -hideskipped:All -output:"c:\projects\XmlSemanticParsers\CodeCoverage.xml"
 
 # Codecov Flags (https://docs.codecov.io/v4.3.6/docs/flags)
-- .\packages\Codecov.1.0.5\tools\codecov.exe -f "c:\projects\XmlSemanticParsers\CodeCoverage.xml" --flag api
+- .\packages\Codecov.1.1.0\tools\codecov.exe -f "c:\projects\XmlSemanticParsers\CodeCoverage.xml" --flag api
 
 # cache:
 
