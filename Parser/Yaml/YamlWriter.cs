@@ -14,6 +14,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
                 .WithTypeConverter(new CharacterSpanConverter())
                 .WithTypeConverter(new LocationSpanConverter())
                 .WithTypeConverter(new ParsingErrorConverter())
+                .EmitDefaults() // Force even default values to be written, like 0, false.
                 .Build();
             serializer.Serialize(writer, graph);
         }
