@@ -17,7 +17,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             ModuleInfo,
                                                                         };
 
-        public override bool ParseAttributesEnabled => true;
+        public override bool ParseAttributesEnabled => false;
 
         public override string PreferredNamespacePrefix => "xmlns:Modularity";
 

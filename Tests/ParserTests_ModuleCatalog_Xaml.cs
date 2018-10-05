@@ -66,5 +66,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 Assert.That(node.Span, Is.EqualTo(new CharacterSpan(startPos, endPos)), "Wrong span");
             });
         }
+
+        [Test]
+        public void No_attributes_are_reported_to_allow_semantic_merge()
+        {
+            var hasAttributes = _root.Children.Any(_ => _.Type == NodeType.Attribute);
+
+            Assert.That(hasAttributes, Is.False);
+        }
     }
 }
