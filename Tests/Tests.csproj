@@ -52,23 +52,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterPositionFinderTests.cs" />
+    <Compile Include="ParserTests.cs" />
     <Compile Include="ParserTests_AssemblyDocumentation.cs" />
+    <Compile Include="ParserTests_CData.cs" />
+    <Compile Include="ParserTests_CSharp_Project.cs" />
     <Compile Include="ParserTests_CommentAfterDeclaration.cs" />
     <Compile Include="ParserTests_CommentAfterEnd.cs" />
     <Compile Include="ParserTests_CommentWithoutDeclaration.cs" />
-    <Compile Include="ParserTests_CSharp_Project.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
+    <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
+    <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_NuSpec.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
-    <Compile Include="ParserTests.cs" />
-    <Compile Include="ParserTests_LineEnds.cs" />
-    <Compile Include="ParserTests_CData.cs" />
-    <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_RuleSet.cs" />
-    <Compile Include="ParserTests_SettingsFile.cs" />
     <Compile Include="ParserTests_SHFB_Project.cs" />
+    <Compile Include="ParserTests_SettingsFile.cs" />
     <Compile Include="ParserTests_SingleLineDeclaration.cs" />
     <Compile Include="ParserTests_VisualBuild_Script.cs" />
     <Compile Include="ParserTests_WIX_Config.cs" />
@@ -86,6 +86,9 @@
     <Content Include="Resources\AssemblyDocumentation.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\CSharp_Project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\CommentAfterDeclaration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -95,22 +98,26 @@
     <Content Include="Resources\CommentWithoutDeclaration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\CSharp_Project.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\FxCop_CustomDictionary.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ModuleCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\NDepend_project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\NuSpec.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Settings_file.xml">
+    <Content Include="Resources\RuleSet.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\SFHB_Project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Settings_file.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\VisualBuild_script.xml">
@@ -122,17 +129,6 @@
     <Content Include="Resources\Xaml_ResourceDictionary.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="packages.config" />
-    <Content Include="Resources\NDepend_project.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\RuleSet.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="Tests.ruleset" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\packages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -145,24 +141,28 @@
     <Content Include="Resources\single_line_description.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\test_with_CDATA.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\test_without_declaration.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\test_with_CDATA.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\test_with_Macintosh_LineEnd.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\test_with_umlaut_and_wrong_encoding.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\test_with_Unix_LineEnd.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\test_with_umlaut_and_wrong_encoding.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\test_without_declaration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Tests.ruleset" />
   </ItemGroup>
   <ItemGroup Condition="'$(NCrunch)' != '1'">
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
