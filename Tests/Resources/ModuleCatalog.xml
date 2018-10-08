@@ -7,4 +7,6 @@
                            ModuleType="Module1.Module, Module1" />
     <Modularity:ModuleInfo Ref="file:///Module2.dll" ModuleName="ModuleTwo" ModuleType="Module2.Module, Module2" />
 
+  <!-- Comment after the last item -->
+
 </Modularity:ModuleCatalog>

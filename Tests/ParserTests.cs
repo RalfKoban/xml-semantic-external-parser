@@ -50,11 +50,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(28, 12)), "Wrong end");
 
             Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 53)), "Wrong header");
-            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(524, 535)), "Wrong footer");
+            Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(498, 535)), "Wrong footer");
         }
 
-        [TestCase("some", 3, 1, 4, 24, 54, 103)]
-        [TestCase("last", 23, 1, 27, 2, 437, 523)]
+        [TestCase("some",  3, 1,  4, 24,  54, 103)]
+        [TestCase("last", 23, 1, 24, 59, 437, 497)]
         public void ProcessingInstruction_LocationSpan_and_Span_matches(string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
         {
             Assert.Multiple(() =>

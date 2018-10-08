@@ -33,7 +33,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.Multiple(() =>
             {
                 Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
-                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
+                Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(12, 27)), "Wrong end");
 
                 Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
             });
@@ -45,15 +45,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
             Assert.Multiple(() =>
             {
                 Assert.That(_root.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 1)), "Wrong start");
-                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(10, 27)), "Wrong end");
+                Assert.That(_root.LocationSpan.End, Is.EqualTo(new LineInfo(12, 27)), "Wrong end");
 
                 Assert.That(_root.HeaderSpan, Is.EqualTo(new CharacterSpan(0, 395)), "Wrong header");
-                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(662, 688)), "Wrong footer");
+                Assert.That(_root.FooterSpan, Is.EqualTo(new CharacterSpan(660, 730)), "Wrong footer (should include comment at the end)");
             });
         }
 
-        [TestCase("ModuleOne", 5, 1, 7, 68, 396, 542)]
-        [TestCase("ModuleTwo", 8, 1, 9,  2, 543, 661)]
+        [TestCase("ModuleOne", 5, 1, 7,  68, 396, 542)]
+        [TestCase("ModuleTwo", 8, 1, 8, 117, 543, 659)]
         public void Element_matches(string name, int startLineNumber, int startLinePos, int endLineNumber, int endLinePos, int startPos, int endPos)
         {
             var node = _root.Children.Where(_ => _.Type != NodeType.Attribute).OfType<TerminalNode>().FirstOrDefault(_ => _.Name == name);

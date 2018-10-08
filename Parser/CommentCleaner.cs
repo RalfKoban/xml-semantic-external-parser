@@ -12,11 +12,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
         {
             foreach (var child in file.Children)
             {
-                Clean(child);
+                Clean(child, true);
             }
         }
 
-        private static void Clean(Container parent)
+        private static void Clean(Container parent, bool initial = false)
         {
             var children = parent.Children;
 
@@ -36,11 +36,22 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     var comment = child as TerminalNode;
                     if (comment?.Type == NodeType.Comment)
                     {
-                        var node = GetNodeToAdjust(parent, comment, i, first, last);
+                        if (initial && i == last)
+                        {
+                            // special situation, a comment is the last element before the root footer
+                            // so we simply adjust the footer instead
+                            AdjustLocationSpan(comment, parent);
+                            parent.FooterSpan = new CharacterSpan(comment.Span.Start, parent.FooterSpan.End);
+                        }
+                        else
+                        {
+                            var node = GetNodeToAdjust(parent, comment, i, first, last);
 
-                        Adjust(comment, node);
+                            Adjust(comment, node);
+                        }
 
                         children.Remove(comment);
+
                         last--;
                         i--;
                     }
