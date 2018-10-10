@@ -59,6 +59,7 @@
     <Compile Include="ParserTests_CommentAfterDeclaration.cs" />
     <Compile Include="ParserTests_CommentAfterEnd.cs" />
     <Compile Include="ParserTests_CommentWithoutDeclaration.cs" />
+    <Compile Include="ParserTests_EdmxV3.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
@@ -96,6 +97,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\CommentWithoutDeclaration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\EdmxV3.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\FxCop_CustomDictionary.xml">

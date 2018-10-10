@@ -42,7 +42,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(string filePath) => filePath.EndsWith(".edmx", StringComparison.OrdinalIgnoreCase);
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "edmx:Edmx", StringComparison.OrdinalIgnoreCase)
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Edmx", StringComparison.OrdinalIgnoreCase)
                                                             && string.Equals(info.Namespace, Namespace, StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader)
