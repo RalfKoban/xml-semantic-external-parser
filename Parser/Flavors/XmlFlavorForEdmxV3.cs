@@ -50,8 +50,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             if (reader.NodeType == XmlNodeType.Element)
             {
                 var name = reader.Name;
-                var identifier = GetIdentifier(reader, "Name", "Role", "TypeName", "StoreEntitySet", "EntityType", "Association");
-                return identifier ?? name;
+                switch (name)
+                {
+                    case "Schema":
+                        return GetIdentifier(reader, "Namespace") ?? name;
+
+                    case "FunctionImportMapping":
+                        return GetIdentifier(reader, "FunctionName") ?? name;
+
+                    default:
+                        var identifier = GetIdentifier(reader, "Name", "Role", "TypeName", "StoreEntitySet", "EntityType", "Association");
+                        return identifier ?? name;
+                }
             }
 
             return base.GetName(reader);

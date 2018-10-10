@@ -70,5 +70,25 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(928, 946)), "Wrong footer");
             });
         }
+
+        [Test]
+        public void Schema_has_namespace()
+        {
+            var runtime = _root.Children.OfType<Container>().Single();
+            var storageModels = runtime.Children.OfType<Container>().First();
+            var node = storageModels.Children.OfType<Container>().First();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(node.Type, Is.EqualTo("Schema"));
+                Assert.That(node.Name, Is.EqualTo("Model.Store"));
+
+                Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(7, 1)), "Wrong start");
+                Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(15, 17)), "Wrong end");
+
+                Assert.That(node.HeaderSpan, Is.EqualTo(new CharacterSpan(228, 573)), "Wrong header");
+                Assert.That(node.FooterSpan, Is.EqualTo(new CharacterSpan(884, 900)), "Wrong footer");
+            });
+        }
     }
 }
