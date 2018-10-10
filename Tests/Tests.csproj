@@ -75,6 +75,7 @@
     <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="ParserTests_Xaml_ResourceDictionary.cs" />
+    <Compile Include="ParserTests_Xsl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +123,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Settings_file.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StyleSheet.xslt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\VisualBuild_script.xml">
