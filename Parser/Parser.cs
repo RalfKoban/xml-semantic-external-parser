@@ -44,10 +44,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
             using (var reader = new XmlTextReader(new StreamReader(SystemFile.OpenRead(filePath), encoding)))
             {
                 var file = new File
-                {
-                    Name = filePath,
-                    FooterSpan = new CharacterSpan(0, -1), // there is no footer
-                };
+                               {
+                                   Name = filePath,
+                                   FooterSpan = CharacterSpan.None, // there is no footer
+                               };
 
                 var fileBegin = new LineInfo(reader.LineNumber + 1, reader.LinePosition);
 
@@ -84,15 +84,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     var lines = SystemFile.ReadLines(filePath).Count();
                     if (lines == 0)
                     {
-                        file.LocationSpan = new LocationSpan(new LineInfo(0, -1), new LineInfo(0, -1));
+                        file.LocationSpan = new LocationSpan(LineInfo.None, LineInfo.None);
                     }
                     else
                     {
                         file.ParsingErrors.Add(new ParsingError
-                        {
-                            ErrorMessage = ex.Message,
-                            Location = new LineInfo(ex.LineNumber, ex.LinePosition),
-                        });
+                                                   {
+                                                       ErrorMessage = ex.Message,
+                                                       Location = new LineInfo(ex.LineNumber, ex.LinePosition),
+                                                   });
 
                         file.LocationSpan = new LocationSpan(new LineInfo(1, 0), new LineInfo(lines + 1, 0));
                     }
@@ -132,11 +132,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
             var content = flavor.GetContent(reader);
 
             var container = new Container
-            {
-                Type = type,
-                Name = name,
-                Content = content,
-            };
+                                {
+                                    Type = type,
+                                    Name = name,
+                                    Content = content,
+                                };
 
             var isEmpty = reader.IsEmptyElement;
 
@@ -247,13 +247,13 @@ namespace MiKoSolutions.SemanticParsers.Xml
         private static TerminalNode AddTerminalNode(Container parent, string type, string name, string content, LocationSpan locationSpan, CharacterSpan span)
         {
             var child = new TerminalNode
-            {
-                Type = type,
-                Name = name,
-                Content = content,
-                LocationSpan = locationSpan,
-                Span = span,
-            };
+                            {
+                                Type = type,
+                                Name = name,
+                                Content = content,
+                                LocationSpan = locationSpan,
+                                Span = span,
+                            };
             parent.Children.Add(child);
 
             return child;

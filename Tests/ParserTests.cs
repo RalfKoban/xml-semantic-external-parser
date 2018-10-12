@@ -183,10 +183,10 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 File.Delete(fileName);
             }
 
-            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(0, -1)), "Wrong start");
-            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(0, -1)), "Wrong end");
+            Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(LineInfo.None), "Wrong start");
+            Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(LineInfo.None), "Wrong end");
 
-            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
+            Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(CharacterSpan.None), "Wrong footer");
         }
 
         private static void RemoveChars(HashSet<int> chars, Container node)

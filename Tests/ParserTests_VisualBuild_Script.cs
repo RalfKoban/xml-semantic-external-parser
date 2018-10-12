@@ -39,7 +39,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 Assert.That(_objectUnderTest.LocationSpan.Start, Is.EqualTo(new LineInfo(1, 0)), "Wrong start");
                 Assert.That(_objectUnderTest.LocationSpan.End, Is.EqualTo(new LineInfo(18, 10)), "Wrong end");
 
-                Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(new CharacterSpan(0, -1)), "Wrong footer");
+                Assert.That(_objectUnderTest.FooterSpan, Is.EqualTo(CharacterSpan.None), "Wrong footer");
             });
         }
 

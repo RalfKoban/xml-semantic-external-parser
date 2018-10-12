@@ -6,6 +6,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
     public struct LineInfo : IEquatable<LineInfo>, IComparable<LineInfo>
     {
+        public static readonly LineInfo None = new LineInfo(0, -1);
+
         public LineInfo(int lineNumber, int linePosition)
         {
             LineNumber = lineNumber;
