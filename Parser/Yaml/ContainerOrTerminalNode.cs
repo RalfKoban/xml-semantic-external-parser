@@ -20,14 +20,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public string Type
         {
             get => _type;
-            set => _type = value is null ? null : string.Intern(WorkaroundForRegexIssue(value)); // performance optimization for large files
+            set => _type = value is null ? null : string.Intern(value); // performance optimization for large files
         }
 
         [YamlMember(Alias = "name", Order = 2)]
         public string Name
         {
             get => _name;
-            set => _name = value is null ? null : string.Intern(WorkaroundForRegexIssue(value)); // performance optimization for large files
+            set => _name = value is null ? null : string.Intern(value); // performance optimization for large files
         }
 
         [YamlMember(Alias = "locationSpan", Order = 3)]
@@ -43,12 +43,5 @@ namespace MiKoSolutions.SemanticParsers.Xml.Yaml
         public abstract CharacterSpan GetTotalSpan();
 
         public abstract TerminalNode ToTerminalNode();
-
-        // workaround for Semantic/GMaster RegEx parsing exception that is not aware of special backslash character sequences
-        private static string WorkaroundForRegexIssue(string value) => value
-                                                                        .Replace("\\", " \\ ")
-                                                                        .Replace("++", "+ +")
-                                                                        .Replace("**", "* *")
-                                                                        .Replace("[]", string.Empty);
     }
 }
