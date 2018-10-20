@@ -18,11 +18,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             Association,
                                                                             Classifier,
                                                                             ClassifierRole,
+                                                                            Collaboration,
                                                                             Comment,
                                                                             Dependency,
                                                                             Diagram,
                                                                             DiagramElement,
                                                                             Expression,
+                                                                            Generalization,
                                                                             Parameter,
                                                                             Stereotype,
                                                                             TaggedValue,
@@ -38,7 +40,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                          { ModelElement_Stereotype, "Stereotypes" },
                                                                                          { Namespace_OwnedElement, "Types" },
                                                                                          { Comment, Comment },
-
                                                                                      };
 
         public override bool ParseAttributesEnabled => false;
@@ -112,18 +113,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
-        private const string Association = "Association";
-        private const string AssociationEnd = "AssociationEnd";
         private const string Attribute = "Attribute";
         private const string Class = "Class";
+        private const string Interface = "Interface";
+
+        private const string Association = "Association";
+        private const string AssociationEnd = "AssociationEnd";
         private const string Classifier = "Classifier";
         private const string ClassifierRole = "ClassifierRole";
+        private const string Collaboration = "Collaboration";
         private const string Comment = "Comment";
         private const string Dependency = "Dependency";
         private const string Diagram = "Diagram";
         private const string DiagramElement = "DiagramElement";
         private const string Expression = "Expression";
-        private const string Interface = "Interface";
+        private const string Generalization = "Generalization";
         private const string Parameter = "Parameter";
         private const string Stereotype = "Stereotype";
         private const string TaggedValue = "TaggedValue";
