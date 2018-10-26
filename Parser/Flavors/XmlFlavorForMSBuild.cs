@@ -330,32 +330,35 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Analyzer:
                 case ElementNames.AssemblyMetadata:
                 case ElementNames.BootstrapperPackage:
-                case ElementNames.CodeAnalysisDictionary:
                 case ElementNames.CodeAnalysisDependentAssemblyPaths:
+                case ElementNames.CodeAnalysisDictionary:
                 case ElementNames.Compile:
                 case ElementNames.Content:
                 case ElementNames.CoreRootProjectLockJsonFiles:
+                case ElementNames.CppCompile:
                 case ElementNames.CrossGenFiles:
                 case ElementNames.EmbeddedResource:
+                case ElementNames.EntityDeploy:
                 case ElementNames.ExcludeList:
                 case ElementNames.ExcludeTraitsItems:
                 case ElementNames.Folder:
                 case ElementNames.IncludeTraitsItems:
                 case ElementNames.NativeProjectBinaries:
                 case ElementNames.None:
+                case ElementNames.OfficialBuildRID:
                 case ElementNames.PackageReference:
                 case ElementNames.Page:
                 case ElementNames.ProductProjectLockJsonFiles:
                 case ElementNames.Project:
                 case ElementNames.ProjectReference:
-                case ElementNames.Reference:
                 case ElementNames.RefProjectLockJsonFiles:
+                case ElementNames.Reference:
                 case ElementNames.Resource:
+                case ElementNames.Service:
+                case ElementNames.SgenTypes:
                 case ElementNames.TestTargetFramework:
-                case ElementNames.Validate:
                 case ElementNames.VCRuntimeFiles:
-                case ElementNames.OfficialBuildRID:
-                case ElementNames.CppCompile:
+                case ElementNames.Validate:
                     return AttributeNames.Include;
 
                 case ElementNames.Import:
@@ -415,52 +418,55 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Analyzer = "Analyzer";
             internal const string AssemblyMetadata = "AssemblyMetadata";
             internal const string BootstrapperPackage = "BootstrapperPackage";
-            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
             internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
+            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
             internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
+            internal const string CppCompile = "CppCompile";
             internal const string CrossGenFiles = "CrossGenFiles";
             internal const string DefineConstants = "DefineConstants";
             internal const string EmbeddedResource = "EmbeddedResource";
+            internal const string EntityDeploy = "EntityDeploy";
             internal const string ExcludeList = "ExcludeList";
+            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
             internal const string Folder = "Folder";
             internal const string Import = "Import";
             internal const string ImportGroup = "ImportGroup";
+            internal const string IncludeTraitsItems = "IncludeTraitsItems";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
             internal const string NativeProjectBinaries = "NativeProjectBinaries";
             internal const string None = "None";
+            internal const string OfficialBuildRID = "OfficialBuildRID";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
+            internal const string PostBuildEvent = "PostBuildEvent";
+            internal const string PreBuildEvent = "PreBuildEvent";
             internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
             internal const string Project = "Project";
             internal const string ProjectConfiguration = "ProjectConfiguration";
             internal const string ProjectGuid = "ProjectGuid";
             internal const string ProjectReference = "ProjectReference";
             internal const string PropertyGroup = "PropertyGroup";
-            internal const string Reference = "Reference";
             internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
+            internal const string Reference = "Reference";
             internal const string Resource = "Resource";
+            internal const string Service = "Service";
+            internal const string SgenTypes = "SgenTypes";
             internal const string Target = "Target";
             internal const string TestTargetFramework = "TestTargetFramework";
-            internal const string Validate = "Validate";
             internal const string VCRuntimeFiles = "VCRuntimeFiles";
-            internal const string PostBuildEvent = "PostBuildEvent";
-            internal const string PreBuildEvent = "PreBuildEvent";
-            internal const string IncludeTraitsItems = "IncludeTraitsItems";
-            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
-            internal const string OfficialBuildRID = "OfficialBuildRID";
-            internal const string CppCompile = "CppCompile";
+            internal const string Validate = "Validate";
         }
 
         private static class AttributeNames
         {
             internal const string Condition = "Condition";
             internal const string Include = "Include";
-            internal const string Update = "Update";
             internal const string Name = "Name";
             internal const string Project = "Project";
+            internal const string Update = "Update";
         }
 
         private static class SHFB
@@ -469,16 +475,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             internal static class ElementNames
             {
-                internal const string DocumentationSources = "DocumentationSources";
+                internal const string ApiFilter = "ApiFilter";
+                internal const string ComponentConfig = "ComponentConfig";
+                internal const string ComponentConfigurations = "ComponentConfigurations";
                 internal const string DocumentationSource = "DocumentationSource";
+                internal const string DocumentationSources = "DocumentationSources";
+                internal const string Filter = "Filter";
                 internal const string NamespaceSummaries = "NamespaceSummaries";
                 internal const string NamespaceSummaryItem = "NamespaceSummaryItem";
-                internal const string PlugInConfigurations = "PlugInConfigurations";
                 internal const string PlugInConfig = "PlugInConfig";
-                internal const string ComponentConfigurations = "ComponentConfigurations";
-                internal const string ComponentConfig = "ComponentConfig";
-                internal const string ApiFilter = "ApiFilter";
-                internal const string Filter = "Filter";
+                internal const string PlugInConfigurations = "PlugInConfigurations";
             }
 
             internal static class AttributeNames
