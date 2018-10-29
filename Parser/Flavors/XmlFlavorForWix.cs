@@ -336,6 +336,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     case Fragment:
                     {
                         var child = c.Children.FirstOrDefault(_ => _.Type == ComponentGroup) ?? c.Children.FirstOrDefault(_ => _.Type == Component);
+
+                        if (child == null && c.Children.Count == 1)
+                        {
+                            child = c.Children.First();
+                        }
+
                         if (child != null)
                         {
                             c.Name = Fragment + $" '{child.Name}'";
