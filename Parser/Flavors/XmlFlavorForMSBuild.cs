@@ -15,18 +15,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                            {
-                                                                               ElementNames.ItemGroup,
-                                                                               ElementNames.ItemDefinitionGroup,
+                                                                               ElementNames.Choose,
                                                                                ElementNames.ImportGroup,
+                                                                               ElementNames.ItemDefinitionGroup,
+                                                                               ElementNames.ItemGroup,
+                                                                               ElementNames.Otherwise,
                                                                                ElementNames.Project,
                                                                                ElementNames.ProjectConfiguration,
                                                                                ElementNames.PropertyGroup,
                                                                                ElementNames.Target,
+                                                                               ElementNames.When,
+                                                                               SHFB.ElementNames.ApiFilter,
+                                                                               SHFB.ElementNames.ComponentConfigurations,
                                                                                SHFB.ElementNames.DocumentationSources,
                                                                                SHFB.ElementNames.NamespaceSummaries,
                                                                                SHFB.ElementNames.PlugInConfigurations,
-                                                                               SHFB.ElementNames.ComponentConfigurations,
-                                                                               SHFB.ElementNames.ApiFilter,
                                                                            };
 
         private static readonly Regex VersionNumberRegex = new Regex("(.{1}([0-9]+.{1})+)+"); // format of version numbers is ".1.2.3.4"
@@ -364,8 +367,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Import:
                     return AttributeNames.Project;
 
+                case ElementNames.MSBuild:
+                    return AttributeNames.Projects;
+
                 case ElementNames.Target:
                     return AttributeNames.Name;
+
+                case ElementNames.CallTarget:
+                    return AttributeNames.Targets;
 
                 case SHFB.ElementNames.ComponentConfig:
                 case SHFB.ElementNames.PlugInConfig:
@@ -418,6 +427,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Analyzer = "Analyzer";
             internal const string AssemblyMetadata = "AssemblyMetadata";
             internal const string BootstrapperPackage = "BootstrapperPackage";
+            internal const string CallTarget = "CallTarget";
+            internal const string Choose = "Choose";
             internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
             internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
             internal const string Compile = "Compile";
@@ -436,9 +447,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string IncludeTraitsItems = "IncludeTraitsItems";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
+            internal const string MSBuild = "MSBuild";
             internal const string NativeProjectBinaries = "NativeProjectBinaries";
             internal const string None = "None";
             internal const string OfficialBuildRID = "OfficialBuildRID";
+            internal const string Otherwise = "Otherwise";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
             internal const string PostBuildEvent = "PostBuildEvent";
@@ -458,6 +471,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string TestTargetFramework = "TestTargetFramework";
             internal const string VCRuntimeFiles = "VCRuntimeFiles";
             internal const string Validate = "Validate";
+            internal const string When = "When";
         }
 
         private static class AttributeNames
@@ -466,6 +480,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Include = "Include";
             internal const string Name = "Name";
             internal const string Project = "Project";
+            internal const string Projects = "Projects";
+            internal const string Targets = "Targets";
             internal const string Update = "Update";
         }
 
