@@ -25,6 +25,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | .NET Configuration | .config
 | .NET Settings | .settings
 | C# Rule sets | .ruleset
+| dotCover (NDepend XML format) | .xml
 | Entity Framework Database Schema (V3) | .edmx
 | FxCop | _CustomDictionary.xml_
 | Microsoft Build Engine (MSBuild) | .proj, .targets, .props, .projitems

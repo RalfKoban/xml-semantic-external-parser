@@ -47,10 +47,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                             var name = reader.LocalName;
                             var ns = reader.LookupNamespace(reader.Prefix);
 
+                            var attributes = new List<KeyValuePair<string, string>>();
+                            var attributeCount = reader.AttributeCount;
+                            for (var i = 0; i < attributeCount; i++)
+                            {
+                                reader.MoveToAttribute(i);
+                                var attributeName = reader.LocalName;
+                                var attributeValue = reader.GetAttribute(i);
+                                attributes.Add(new KeyValuePair<string, string>(attributeName, attributeValue));
+                            }
+
                             return new DocumentInfo
                                        {
                                            RootElement = name,
                                            Namespace = ns,
+                                           Attributes = attributes,
                                        };
                         }
                     }

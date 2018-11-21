@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
@@ -8,5 +9,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public string RootElement { get; set; }
 
         public string Namespace { get; set; }
+
+        public IReadOnlyCollection<KeyValuePair<string, string>> Attributes { get; set; }
     }
 }
