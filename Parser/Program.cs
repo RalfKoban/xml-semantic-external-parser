@@ -97,7 +97,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                     Console.WriteLine("KO");
 
-                    throw;
+                    return 0;
                 }
             }
         }
