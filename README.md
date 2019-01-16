@@ -22,6 +22,8 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Description | File name / extension |
 |-------------|-----------------------|
 | .NET API reference XML comments | .xml
+| .NET Application manifest | .manifest
+| .NET Assembly manifest | .manifest
 | .NET Configuration | .config
 | .NET Settings | .settings
 | C# Rule sets | .ruleset
