@@ -60,6 +60,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
         }
 
         [TestCase("Import", "dir.props")]
+        [TestCase("Import", "Microsoft.Common.props")]
+        [TestCase("Import", "dependencies.props")]
         public void TopLevel_Item_is_found_and_truncated_properly(string itemType, string name)
         {
             var item = _root.Children.Where(_ => _.Type == itemType).Any(_ => _.Name == name);

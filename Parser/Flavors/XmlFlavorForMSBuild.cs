@@ -164,6 +164,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 result = result.Substring(0, commaIndex);
             }
 
+            const string Marker = "GetPathOfFileAbove('";
+            var mentionedFileIndex = result.IndexOf(Marker);
+            if (mentionedFileIndex >= 0)
+            {
+                result = result.Substring(mentionedFileIndex + Marker.Length);
+                result = result.Substring(0, result.IndexOf('\''));
+            }
+
             return GetFileName(result);
         }
 
@@ -173,7 +181,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (c.Type == SHFB.ElementNames.NamespaceSummaryItem)
             {
-                c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
+                    c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
             }
         }
 
