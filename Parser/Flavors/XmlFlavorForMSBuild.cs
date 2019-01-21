@@ -25,6 +25,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                ElementNames.PropertyGroup,
                                                                                ElementNames.Target,
                                                                                ElementNames.When,
+
+                                                                               // adjustments for contents
+                                                                               ElementNames.AssemblyOriginatorKeyFile,
+                                                                               ElementNames.CodeAnalysisRuleSet,
+                                                                               ElementNames.NuspecFile,
+                                                                               ElementNames.PackageId,
+                                                                               ElementNames.PackageTargetFallback,
+
                                                                                SHFB.ElementNames.ApiFilter,
                                                                                SHFB.ElementNames.ComponentConfigurations,
                                                                                SHFB.ElementNames.DocumentationSources,
@@ -125,6 +133,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             foreach (var name in NonTerminalNodeNames)
             {
+                switch (type)
+                {
+                    case ElementNames.AssemblyOriginatorKeyFile:
+                    case ElementNames.CodeAnalysisRuleSet:
+                    case ElementNames.NuspecFile:
+                    case ElementNames.PackageId:
+                    case ElementNames.PackageTargetFallback:
+                        return true;
+                }
+
                 if (IsNonTerminalNodeName(type, name))
                 {
                     return false;
@@ -179,9 +197,22 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static void FinalAdjustNodeWithContent(Container c, IEnumerable<TerminalNode> attributes, string content)
         {
-            if (c.Type == SHFB.ElementNames.NamespaceSummaryItem)
+            switch (c.Type)
             {
+                case SHFB.ElementNames.NamespaceSummaryItem:
                     c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
+                    break;
+
+                case ElementNames.AssemblyOriginatorKeyFile:
+                case ElementNames.CodeAnalysisRuleSet:
+                case ElementNames.NuspecFile:
+                    c.Name = GetFileName(content);
+                    break;
+
+                case ElementNames.PackageId:
+                case ElementNames.PackageTargetFallback:
+                    c.Name = content;
+                    break;
             }
         }
 
@@ -434,11 +465,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
             internal const string AssemblyMetadata = "AssemblyMetadata";
+            internal const string AssemblyOriginatorKeyFile = "AssemblyOriginatorKeyFile";
             internal const string BootstrapperPackage = "BootstrapperPackage";
             internal const string CallTarget = "CallTarget";
             internal const string Choose = "Choose";
             internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
             internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
+            internal const string CodeAnalysisRuleSet = "CodeAnalysisRuleSet";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
             internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
@@ -458,8 +491,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string MSBuild = "MSBuild";
             internal const string NativeProjectBinaries = "NativeProjectBinaries";
             internal const string None = "None";
+            internal const string NuspecFile = "NuspecFile";
             internal const string OfficialBuildRID = "OfficialBuildRID";
             internal const string Otherwise = "Otherwise";
+            internal const string PackageId = "PackageId";
+            internal const string PackageTargetFallback = "PackageTargetFallback";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
             internal const string PostBuildEvent = "PostBuildEvent";
