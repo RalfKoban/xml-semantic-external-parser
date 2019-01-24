@@ -54,6 +54,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                         break;
                     }
                 }
+
+                // do not report the attributes for the moment as that causes structural issues in SemanticMerge/GMaster (due to gaps between the attributes)
+                c.Children.RemoveAll(_ => _.Type == NodeType.Attribute);
             }
 
             return base.FinalAdjustAfterParsingComplete(node);
