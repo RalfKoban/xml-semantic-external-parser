@@ -45,7 +45,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             nameof(UInt64),
                                                                         };
 
-        public override bool ParseAttributesEnabled => true;
+        public override bool ParseAttributesEnabled => false;
 
         public override string PreferredNamespacePrefix => "xmlns:wpf";
 
