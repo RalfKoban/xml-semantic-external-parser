@@ -156,6 +156,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return result;
             }
 
+            if (attributeName == AttributeNames.Condition)
+            {
+                // if it is a condition, we want to have the complete condition name
+                return result;
+            }
+
             // if there is a comma, then we want to get the name before the comma (except that we have a directory at the end)
             var commaIndex = result.IndexOf(',');
             var directorySeparatorIndex = result.LastIndexOfAny(DirectorySeparators);
@@ -236,7 +242,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             // get rid of backslash or slash as we only are interested in the name, not the path
             // (and just add 1 and we get rid of situation that index might not be available ;))
             var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
-            return fileName;
+
+            // try to get rid of last bracket
+            var potentialFileName = fileName.Substring(fileName.LastIndexOf(')') + 1);
+            return potentialFileName.Length > 0
+                 ? potentialFileName
+                 : fileName;
         }
 
         private static string GetFilePath(string result)

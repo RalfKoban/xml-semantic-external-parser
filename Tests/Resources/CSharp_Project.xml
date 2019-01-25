@@ -86,6 +86,7 @@
     <Compile Include="Yaml\Converters\LocationSpanConverter.cs" />
     <Compile Include="Yaml\ParsingError.cs" />
     <Compile Include="Yaml\TerminalNode.cs" />
+    <Compile Include="$(Variable)Class.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
