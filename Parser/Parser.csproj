@@ -62,6 +62,7 @@
     <Compile Include="Flavors\XmlFlavorFinder.cs" />
     <Compile Include="Flavors\XmlFlavorForAssemblyDocumentation.cs" />
     <Compile Include="Flavors\XmlFlavorForConfig.cs" />
+    <Compile Include="Flavors\XmlFlavorForDependencies.cs" />
     <Compile Include="Flavors\XmlFlavorForDotCover.cs" />
     <Compile Include="Flavors\XmlFlavorForDotNetCoreMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForEdmxV3.cs" />
