@@ -348,6 +348,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             switch (name)
             {
+/*
                 case ElementNames.AdditionalFiles:
                 case ElementNames.Analyzer:
                 case ElementNames.AssemblyMetadata:
@@ -389,7 +390,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.XmlUpdateStep:
                 case ElementNames.XunitPerformanceDependency:
                     return AttributeNames.Include;
-
+*/
                 case ElementNames.Import:
                     return AttributeNames.Project;
 
@@ -419,7 +420,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     return AttributeNames.Condition;
 
                 default:
-                    return null;
+                    return AttributeNames.Include;
             }
         }
 
@@ -449,62 +450,64 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private protected static class ElementNames
         {
-            internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
-            internal const string AssemblyMetadata = "AssemblyMetadata";
-            internal const string BootstrapperPackage = "BootstrapperPackage";
             internal const string CallTarget = "CallTarget";
             internal const string Choose = "Choose";
-            internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
-            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
-            internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
-            internal const string CppCompile = "CppCompile";
-            internal const string CrossGenFiles = "CrossGenFiles";
             internal const string DefineConstants = "DefineConstants";
-            internal const string DependencyBuildInfo = "DependencyBuildInfo";
             internal const string EmbeddedResource = "EmbeddedResource";
-            internal const string EntityDeploy = "EntityDeploy";
-            internal const string ExcludeList = "ExcludeList";
-            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
             internal const string Folder = "Folder";
             internal const string Import = "Import";
             internal const string ImportGroup = "ImportGroup";
-            internal const string IncludeTraitsItems = "IncludeTraitsItems";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
             internal const string MSBuild = "MSBuild";
-            internal const string NativeProjectBinaries = "NativeProjectBinaries";
             internal const string None = "None";
-            internal const string OfficialBuildRID = "OfficialBuildRID";
             internal const string Otherwise = "Otherwise";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
             internal const string PostBuildEvent = "PostBuildEvent";
             internal const string PreBuildEvent = "PreBuildEvent";
-            internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
             internal const string Project = "Project";
             internal const string ProjectConfiguration = "ProjectConfiguration";
             internal const string ProjectGuid = "ProjectGuid";
-            internal const string ProjectReference = "ProjectReference";
             internal const string PropertyGroup = "PropertyGroup";
+            internal const string Resource = "Resource";
+            internal const string Target = "Target";
+            internal const string When = "When";
+/*
+            internal const string AdditionalFiles = "AdditionalFiles";
+            internal const string AssemblyMetadata = "AssemblyMetadata";
+            internal const string BootstrapperPackage = "BootstrapperPackage";
+            internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
+            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
+            internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
+            internal const string CppCompile = "CppCompile";
+            internal const string CrossGenFiles = "CrossGenFiles";
+            internal const string DependencyBuildInfo = "DependencyBuildInfo";
+            internal const string EntityDeploy = "EntityDeploy";
+            internal const string ExcludeList = "ExcludeList";
+            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
+            internal const string IncludeTraitsItems = "IncludeTraitsItems";
+            internal const string NativeProjectBinaries = "NativeProjectBinaries";
+            internal const string OfficialBuildRID = "OfficialBuildRID";
+            internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
+            internal const string ProjectReference = "ProjectReference";
             internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
             internal const string Reference = "Reference";
             internal const string RemoteDependencyBuildInfo = "RemoteDependencyBuildInfo";
-            internal const string Resource = "Resource";
             internal const string Service = "Service";
             internal const string SgenTypes = "SgenTypes";
             internal const string StaticDependency = "StaticDependency";
-            internal const string Target = "Target";
             internal const string TestTargetFramework = "TestTargetFramework";
             internal const string VCRuntimeFiles = "VCRuntimeFiles";
             internal const string Validate = "Validate";
-            internal const string When = "When";
             internal const string XUnitDependency = "XUnitDependency";
             internal const string XUnitPerformanceApiDependency = "XUnitPerformanceApiDependency";
             internal const string XmlUpdateStep = "XmlUpdateStep";
             internal const string XunitPerformanceDependency = "XunitPerformanceDependency";
+*/
         }
 
         private static class AttributeNames
