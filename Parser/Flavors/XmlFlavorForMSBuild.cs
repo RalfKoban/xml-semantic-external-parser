@@ -359,6 +359,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.CoreRootProjectLockJsonFiles:
                 case ElementNames.CppCompile:
                 case ElementNames.CrossGenFiles:
+                case ElementNames.DependencyBuildInfo:
                 case ElementNames.EmbeddedResource:
                 case ElementNames.EntityDeploy:
                 case ElementNames.ExcludeList:
@@ -375,12 +376,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.ProjectReference:
                 case ElementNames.RefProjectLockJsonFiles:
                 case ElementNames.Reference:
+                case ElementNames.RemoteDependencyBuildInfo:
                 case ElementNames.Resource:
                 case ElementNames.Service:
                 case ElementNames.SgenTypes:
+                case ElementNames.StaticDependency:
                 case ElementNames.TestTargetFramework:
                 case ElementNames.VCRuntimeFiles:
                 case ElementNames.Validate:
+                case ElementNames.XUnitDependency:
+                case ElementNames.XUnitPerformanceApiDependency:
+                case ElementNames.XmlUpdateStep:
+                case ElementNames.XunitPerformanceDependency:
                     return AttributeNames.Include;
 
                 case ElementNames.Import:
@@ -456,6 +463,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string CppCompile = "CppCompile";
             internal const string CrossGenFiles = "CrossGenFiles";
             internal const string DefineConstants = "DefineConstants";
+            internal const string DependencyBuildInfo = "DependencyBuildInfo";
             internal const string EmbeddedResource = "EmbeddedResource";
             internal const string EntityDeploy = "EntityDeploy";
             internal const string ExcludeList = "ExcludeList";
@@ -483,14 +491,20 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string PropertyGroup = "PropertyGroup";
             internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
             internal const string Reference = "Reference";
+            internal const string RemoteDependencyBuildInfo = "RemoteDependencyBuildInfo";
             internal const string Resource = "Resource";
             internal const string Service = "Service";
             internal const string SgenTypes = "SgenTypes";
+            internal const string StaticDependency = "StaticDependency";
             internal const string Target = "Target";
             internal const string TestTargetFramework = "TestTargetFramework";
             internal const string VCRuntimeFiles = "VCRuntimeFiles";
             internal const string Validate = "Validate";
             internal const string When = "When";
+            internal const string XUnitDependency = "XUnitDependency";
+            internal const string XUnitPerformanceApiDependency = "XUnitPerformanceApiDependency";
+            internal const string XmlUpdateStep = "XmlUpdateStep";
+            internal const string XunitPerformanceDependency = "XunitPerformanceDependency";
         }
 
         private static class AttributeNames
