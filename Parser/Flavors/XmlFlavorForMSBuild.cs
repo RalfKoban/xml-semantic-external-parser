@@ -243,7 +243,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             // (and just add 1 and we get rid of situation that index might not be available ;))
             var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
 
+            if (fileName == "*" || fileName == "**")
+            {
+                // get the path
+                var path = GetFilePath(result);
+                var pathWithFileName = result.Substring(path.LastIndexOfAny(DirectorySeparators) + 1);
+                return pathWithFileName;
+            }
+
             // try to get rid of last bracket
+            // (and just add 1 and we get rid of situation that the bracket might not be available ;))
             var potentialFileName = fileName.Substring(fileName.LastIndexOf(')') + 1);
             return potentialFileName.Length > 0
                  ? potentialFileName
