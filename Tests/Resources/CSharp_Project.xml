@@ -127,4 +127,7 @@
   </ItemGroup>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('dependencies.props', '$(MSBuildThisFileDirectory)../'))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\something\*" />
+  </ItemGroup>
 </Project>
