@@ -9,8 +9,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         public virtual bool ParseAttributesEnabled => true;
 
-        public virtual string PreferredNamespacePrefix => "xmlns";
-
         public virtual bool Supports(string filePath) => filePath.EndsWith(".xml", StringComparison.OrdinalIgnoreCase);
 
         public virtual bool Supports(DocumentInfo info) => true;

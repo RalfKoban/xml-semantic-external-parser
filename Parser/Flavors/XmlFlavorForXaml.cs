@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -11,20 +12,38 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
         private const string XamlPresentationNamespace = XamlNamespace + "/presentation";
 
+        private const StringComparison OrdinalIgnoreCase = StringComparison.OrdinalIgnoreCase;
+
+        private static readonly string[] AlternativeSupportedNamespaces =
+                                                                        {
+                                                                            // Actipro
+                                                                            "http://schemas.actiprosoftware.com/winfx/xaml",
+                                                                            "clr-namespace:ActiproSoftware.",
+
+                                                                            // DevExpress
+                                                                            "http://schemas.devexpress.com/winfx/2008/xaml",
+                                                                            "clr-namespace:DevExpress.",
+                                                                        };
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
-                                                                            "Button",
-                                                                            "Binding",
-                                                                            "ColumnDefinition",
-                                                                            "CheckBox",
-                                                                            "DataGridTemplateColumn",
-                                                                            "Image",
-                                                                            "KeyBinding",
-                                                                            "Label",
-                                                                            "RowDefinition",
-                                                                            "Setter",
-                                                                            "TextBlock",
-                                                                            "TextBox",
+                                                                            ElementNames.Button,
+                                                                            ElementNames.Binding,
+                                                                            ElementNames.ColumnDefinition,
+                                                                            ElementNames.CheckBox,
+                                                                            ElementNames.DataGridTemplateColumn,
+                                                                            ElementNames.EventSetter,
+                                                                            ElementNames.GlobalResourceDictionary,
+                                                                            ElementNames.Image,
+                                                                            ElementNames.KeyBinding,
+                                                                            ElementNames.Label,
+                                                                            ElementNames.RowDefinition,
+                                                                            ElementNames.Separator,
+                                                                            ElementNames.Setter,
+                                                                            ElementNames.TextBlock,
+                                                                            ElementNames.TextBox,
+
+                                                                            // common .NET types
                                                                             nameof(Boolean),
                                                                             nameof(Byte),
                                                                             nameof(Char),
@@ -45,21 +64,66 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             nameof(UInt64),
                                                                         };
 
+        private static readonly IDictionary<string, string> ElementAttributeMapping = new Dictionary<string, string>
+                                                                                          {
+                                                                                              { ElementNames.Button, AttributeNames.Command },
+                                                                                              { ElementNames.ContentPresenter, AttributeNames.Content },
+                                                                                              { ElementNames.DataTemplate, AttributeNames.DataType },
+                                                                                              { ElementNames.EventSetter, AttributeNames.Event },
+                                                                                              { ElementNames.GlobalResourceDictionary, AttributeNames.Source },
+                                                                                              { ElementNames.ListView, AttributeNames.ItemsSource },
+                                                                                              { ElementNames.Setter, AttributeNames.Property },
+                                                                                              { ElementNames.StaticResource, AttributeNames.ResourceKey },
+                                                                                              { ElementNames.Style, AttributeNames.TargetType },
+                                                                                              { ElementNames.Trigger, AttributeNames.Property },
+                                                                                          };
+
+        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+
         public override bool ParseAttributesEnabled => false;
 
-        public override string PreferredNamespacePrefix => "xmlns:wpf";
+        public override bool Supports(string filePath) => filePath.EndsWith(".xaml", OrdinalIgnoreCase);
 
-        public override bool Supports(string filePath) => filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(DocumentInfo info)
+        {
+            if (info.Namespace is null)
+            {
+                return false;
+            }
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.Namespace, XamlPresentationNamespace, StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(info.Namespace, XamlPresentationNamespace, OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            foreach (var ns in AlternativeSupportedNamespaces)
+            {
+                if (info.Namespace.StartsWith(ns, OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public override string GetName(XmlTextReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                var name = reader.LocalName;
+                // some have a name, some have a key, and some might have an AutomationId
+                var defaultName = reader.GetAttribute(AttributeNames.Name, XamlNamespace)
+                               ?? reader.GetAttribute(AttributeNames.Key, XamlNamespace)
+                               ?? reader.GetAttribute(AttributeNames.AutomationId);
 
-                return reader.GetAttribute("Name", XamlNamespace) ?? reader.GetAttribute("Key", XamlNamespace) ?? name;
+                if (defaultName is null)
+                {
+                    var name = reader.LocalName;
+                    var proposedName = GetNameFromAttribute(reader, name);
+                    return proposedName ?? name;
+                }
+
+                return defaultName;
             }
 
             return base.GetName(reader);
@@ -67,6 +131,90 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
-        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
+        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node)
+        {
+            if (node is null)
+            {
+                return false;
+            }
+
+            var nodeType = node.Type;
+            if (TerminalNodeNames.Contains(nodeType))
+            {
+                return true;
+            }
+
+            if (nodeType.EndsWith(ElementNames.Converter))
+            {
+                // even unknown converters shall be terminal nodes
+                return true;
+            }
+
+            return false;
+        }
+
+        private static string GetNameFromAttribute(XmlTextReader reader, string name)
+        {
+            if (ElementAttributeMapping.TryGetValue(name, out string value))
+            {
+                var proposedName = reader.GetAttribute(value);
+                if (proposedName != null)
+                {
+                    return GetFileName(proposedName);
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetFileName(string result)
+        {
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // (and just add 1 and we get rid of situation that index might not be available ;))
+            var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
+            return fileName;
+        }
+
+        private static class ElementNames
+        {
+            internal const string Button = "Button";
+            internal const string Binding = "Binding";
+            internal const string ColumnDefinition = "ColumnDefinition";
+            internal const string CheckBox = "CheckBox";
+            internal const string ContentPresenter = "ContentPresenter";
+            internal const string Converter = "Converter";
+            internal const string DataTemplate = "DataTemplate";
+            internal const string DataGridTemplateColumn = "DataGridTemplateColumn";
+            internal const string EventSetter = "EventSetter";
+            internal const string GlobalResourceDictionary = "GlobalResourceDictionary";
+            internal const string Image = "Image";
+            internal const string KeyBinding = "KeyBinding";
+            internal const string Label = "Label";
+            internal const string ListView = "ListView";
+            internal const string RowDefinition = "RowDefinition";
+            internal const string Separator = "Separator";
+            internal const string Setter = "Setter";
+            internal const string StaticResource = "StaticResource";
+            internal const string Style = "Style";
+            internal const string TextBlock = "TextBlock";
+            internal const string TextBox = "TextBox";
+            internal const string Trigger = "Trigger";
+        }
+
+        private static class AttributeNames
+        {
+            internal const string AutomationId = "AutomationProperties.AutomationId";
+            internal const string Name = "Name";
+            internal const string Key = "Key";
+            internal const string Command = "Command";
+            internal const string Content = "Content";
+            internal const string DataType = "DataType";
+            internal const string Event = "Event";
+            internal const string ItemsSource = "ItemsSource";
+            internal const string Property = "Property";
+            internal const string ResourceKey = "ResourceKey";
+            internal const string Source = "Source";
+            internal const string TargetType = "TargetType";
+        }
     }
 }

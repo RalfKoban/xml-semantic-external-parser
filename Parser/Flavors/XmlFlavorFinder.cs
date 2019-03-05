@@ -29,11 +29,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static IXmlFlavor GetXmlFlavorForDocument(string filePath)
         {
-            var info = GetDocumentInfo(filePath, Flavors.Select(_ => _.PreferredNamespacePrefix).ToHashSet());
+            var info = GetDocumentInfo(filePath);
             return info != null ? Flavors.FirstOrDefault(_ => _.Supports(info)) : null;
         }
 
-        private static DocumentInfo GetDocumentInfo(string filePath, IEnumerable<string> namespaces)
+        private static DocumentInfo GetDocumentInfo(string filePath)
         {
             try
             {

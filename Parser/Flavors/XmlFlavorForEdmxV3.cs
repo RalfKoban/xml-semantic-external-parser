@@ -38,8 +38,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
-        public override string PreferredNamespacePrefix => "xmlns:edmx";
-
         public override bool Supports(string filePath) => filePath.EndsWith(".edmx", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Edmx", StringComparison.OrdinalIgnoreCase)

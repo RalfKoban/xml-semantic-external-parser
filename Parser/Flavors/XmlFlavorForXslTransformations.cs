@@ -22,8 +22,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
-        public override string PreferredNamespacePrefix => "xmlns:xsl";
-
         public override bool Supports(string filePath) => filePath.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase);
 
