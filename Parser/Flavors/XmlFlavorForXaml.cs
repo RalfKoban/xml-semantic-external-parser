@@ -12,10 +12,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
         private const string XamlPresentationNamespace = XamlNamespace + "/presentation";
 
-        private const string ActiproNamespace = "http://schemas.actiprosoftware.com/winfx/xaml";
-        private const string DevExpressNamespace = "http://schemas.devexpress.com/winfx/2008/xaml";
-
         private const StringComparison OrdinalIgnoreCase = StringComparison.OrdinalIgnoreCase;
+
+        private static readonly string[] AlternativeSupportedNamespaces =
+                                                                        {
+                                                                            // Actipro
+                                                                            "http://schemas.actiprosoftware.com/winfx/xaml",
+                                                                            "clr-namespace:ActiproSoftware.",
+
+                                                                            // DevExpress
+                                                                            "http://schemas.devexpress.com/winfx/2008/xaml",
+                                                                            "clr-namespace:DevExpress.",
+                                                                        };
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
@@ -25,10 +33,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             ElementNames.CheckBox,
                                                                             ElementNames.DataGridTemplateColumn,
                                                                             ElementNames.EventSetter,
+                                                                            ElementNames.GlobalResourceDictionary,
                                                                             ElementNames.Image,
                                                                             ElementNames.KeyBinding,
                                                                             ElementNames.Label,
                                                                             ElementNames.RowDefinition,
+                                                                            ElementNames.Separator,
                                                                             ElementNames.Setter,
                                                                             ElementNames.TextBlock,
                                                                             ElementNames.TextBox,
@@ -58,14 +68,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                           {
                                                                                               { ElementNames.Button, AttributeNames.Command },
                                                                                               { ElementNames.ContentPresenter, AttributeNames.Content },
+                                                                                              { ElementNames.DataTemplate, AttributeNames.DataType },
                                                                                               { ElementNames.EventSetter, AttributeNames.Event },
                                                                                               { ElementNames.GlobalResourceDictionary, AttributeNames.Source },
+                                                                                              { ElementNames.ListView, AttributeNames.ItemsSource },
                                                                                               { ElementNames.Setter, AttributeNames.Property },
+                                                                                              { ElementNames.StaticResource, AttributeNames.ResourceKey },
                                                                                               { ElementNames.Style, AttributeNames.TargetType },
                                                                                               { ElementNames.Trigger, AttributeNames.Property },
                                                                                           };
 
-    public override bool ParseAttributesEnabled => false;
+        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+
+        public override bool ParseAttributesEnabled => false;
 
         public override bool Supports(string filePath) => filePath.EndsWith(".xaml", OrdinalIgnoreCase);
 
@@ -81,14 +96,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return true;
             }
 
-            if (info.Namespace.StartsWith(ActiproNamespace, OrdinalIgnoreCase))
+            foreach (var ns in AlternativeSupportedNamespaces)
             {
-                return true;
-            }
-
-            if (info.Namespace.StartsWith(DevExpressNamespace, OrdinalIgnoreCase))
-            {
-                return true;
+                if (info.Namespace.StartsWith(ns, OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -98,7 +111,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                var defaultName = reader.GetAttribute(AttributeNames.Name, XamlNamespace) ?? reader.GetAttribute(AttributeNames.Key, XamlNamespace);
+                // some have a name, some have a key, and some might have an AutomationId
+                var defaultName = reader.GetAttribute(AttributeNames.Name, XamlNamespace)
+                               ?? reader.GetAttribute(AttributeNames.Key, XamlNamespace)
+                               ?? reader.GetAttribute(AttributeNames.AutomationId);
+
                 if (defaultName is null)
                 {
                     var name = reader.LocalName;
@@ -114,9 +131,27 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
-        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
+        protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node)
+        {
+            if (node is null)
+            {
+                return false;
+            }
 
-        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+            var nodeType = node.Type;
+            if (TerminalNodeNames.Contains(nodeType))
+            {
+                return true;
+            }
+
+            if (nodeType.EndsWith(ElementNames.Converter))
+            {
+                // even unknown converters shall be terminal nodes
+                return true;
+            }
+
+            return false;
+        }
 
         private static string GetNameFromAttribute(XmlTextReader reader, string name)
         {
@@ -147,14 +182,19 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string ColumnDefinition = "ColumnDefinition";
             internal const string CheckBox = "CheckBox";
             internal const string ContentPresenter = "ContentPresenter";
+            internal const string Converter = "Converter";
+            internal const string DataTemplate = "DataTemplate";
             internal const string DataGridTemplateColumn = "DataGridTemplateColumn";
             internal const string EventSetter = "EventSetter";
             internal const string GlobalResourceDictionary = "GlobalResourceDictionary";
             internal const string Image = "Image";
             internal const string KeyBinding = "KeyBinding";
             internal const string Label = "Label";
+            internal const string ListView = "ListView";
             internal const string RowDefinition = "RowDefinition";
+            internal const string Separator = "Separator";
             internal const string Setter = "Setter";
+            internal const string StaticResource = "StaticResource";
             internal const string Style = "Style";
             internal const string TextBlock = "TextBlock";
             internal const string TextBox = "TextBox";
@@ -163,12 +203,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static class AttributeNames
         {
+            internal const string AutomationId = "AutomationProperties.AutomationId";
             internal const string Name = "Name";
             internal const string Key = "Key";
             internal const string Command = "Command";
             internal const string Content = "Content";
+            internal const string DataType = "DataType";
             internal const string Event = "Event";
+            internal const string ItemsSource = "ItemsSource";
             internal const string Property = "Property";
+            internal const string ResourceKey = "ResourceKey";
             internal const string Source = "Source";
             internal const string TargetType = "TargetType";
         }
