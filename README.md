@@ -47,6 +47,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Visual Studio Installer XML | .vsixmanifest
 | WPF | .xaml
 | [Wix Toolkit](http://wixtoolset.org/) | .wxi, .wxl, .wxs
+| XML Localization Interchange File Format | .xlf
 | XML | .xml
 | XSD | .xsd
 | XSL Transformation (XSLT) | .xsl, .xslt
