@@ -37,8 +37,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
-        public override string PreferredNamespacePrefix => string.Empty;
-
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "doc", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? GetElementName(reader, reader.Name) : base.GetName(reader);
