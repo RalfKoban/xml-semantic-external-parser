@@ -41,7 +41,11 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Visual Studio C# Project | .csproj
 | Visual Studio CIL assembler Project | .ilproj
 | Visual Studio Code Sharing App Project | .shproj
+| Visual Studio F# Project | .fsproj
+| Visual Studio Javascript Project | .jsproj
 | Visual Studio Modeling Project | .modelproj
+| Visual Studio Node JS Project | .njsproj
+| Visual Studio Python Project | .pyproj
 | Visual Studio SQL Server Project | .sqlproj
 | Visual Studio Visual Basic Project | .vbproj
 | Visual Studio Installer XML | .vsixmanifest
