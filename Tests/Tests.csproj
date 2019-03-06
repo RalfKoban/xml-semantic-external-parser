@@ -75,6 +75,7 @@
     <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="ParserTests_Xaml_ResourceDictionary.cs" />
+    <Compile Include="ParserTests_Xlf.cs" />
     <Compile Include="ParserTests_Xsl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -165,6 +166,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\test_without_declaration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\xliff1.xlf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
