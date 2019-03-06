@@ -56,7 +56,8 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     var dummyRoot = new Container();
 
                     // Parse the XML and display the text content of each of the elements.
-                    while (reader.Read())
+                    // as there are XMLs that have the declaration on same line as the root element, we just loop and parse until the end
+                    while (!reader.EOF)
                     {
                         Parse(reader, dummyRoot, finder, flavor);
                     }
@@ -122,6 +123,12 @@ namespace MiKoSolutions.SemanticParsers.Xml
                         ParseTerminalNode(reader, parent, finder, flavor);
                         break;
                     }
+
+                default:
+                    {
+                        reader.Read();
+                        break;
+                    }
             }
         }
 
@@ -166,11 +173,6 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     }
 
                     if (reader.NodeType == XmlNodeType.EndElement)
-                    {
-                        break;
-                    }
-
-                    if (!reader.Read())
                     {
                         break;
                     }
