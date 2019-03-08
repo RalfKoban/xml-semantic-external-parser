@@ -42,6 +42,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                        || filePath.EndsWith(".ilproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".jsproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".nativeproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".njsproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)

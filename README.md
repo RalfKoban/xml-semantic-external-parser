@@ -44,6 +44,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Visual Studio F# Project | .fsproj
 | Visual Studio Javascript Project | .jsproj
 | Visual Studio Modeling Project | .modelproj
+| Visual Studio Native Project | .nativeproj
 | Visual Studio Node JS Project | .njsproj
 | Visual Studio Python Project | .pyproj
 | Visual Studio SQL Server Project | .sqlproj
