@@ -12,8 +12,6 @@ How to use it with _**SemanticMerge**_ or _**Plastic SCM**_ is described [here](
 [![Build history](https://buildstats.info/appveyor/chart/RalfKoban/xml-semantic-external-parser)](https://ci.appveyor.com/project/RalfKoban/xml-semantic-external-parser/history)
 
 ## Issues
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/RalfKoban/xml-semantic-external-parser.svg?columns=all)](https://waffle.io/RalfKoban/xml-semantic-external-parser)
-
 Please raise issues on [GitHub](https://github.com/RalfKoban/xml-semantic-external-parser/issues).
 If you can repeat the issue then please provide a sample to make it easier for me to also repeat it and then implement a fix.
 
