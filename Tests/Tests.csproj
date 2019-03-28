@@ -64,6 +64,7 @@
     <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
     <Compile Include="ParserTests_NDepend.cs" />
+    <Compile Include="ParserTests_NLS.cs" />
     <Compile Include="ParserTests_NuSpec.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
@@ -111,6 +112,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\NDepend_project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NLS1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\NuSpec.xml">
