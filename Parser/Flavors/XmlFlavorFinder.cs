@@ -70,7 +70,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             catch (XmlException ex)
             {
                 // root element not contained, so ignore
-                Tracer.Trace($"While parsing '{filePath}', following {ex.GetType().Name} was thrown:\r\n'{ex}'");
+                Tracer.Trace($"While parsing '{filePath}', following {ex.GetType().Name} was thrown: {ex}", ex);
             }
 
             return null;

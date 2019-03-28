@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime;
 using System.Threading.Tasks;
 
@@ -87,13 +86,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                 }
                 catch (Exception ex)
                 {
-                    Tracer.Trace($"Exception: {ex}");
-
-                    var stackTraceLines = ex.StackTrace?.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries) ?? Enumerable.Empty<string>();
-                    foreach (var stackTraceLine in stackTraceLines)
-                    {
-                        Tracer.Trace(stackTraceLine);
-                    }
+                    Tracer.Trace($"Exception: {ex}", ex);
 
                     Console.WriteLine("KO");
 
