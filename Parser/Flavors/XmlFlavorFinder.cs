@@ -24,7 +24,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public static IXmlFlavor Find(string filePath)
         {
             var flavors = Flavors.Where(_ => _.Supports(filePath)).ToList();
-            return flavors.Count == 1 ? flavors[0] : GetXmlFlavorForDocument(filePath) ?? new XmlFlavor(); // just in case use XML flavor as fall-back (should never happen)
+            return flavors.Count == 1 ? flavors[0] : GetXmlFlavorForDocument(filePath) ?? new XmlFlavor(); // just in case use XML flavor as fall-back (happens e.g. if XML encoding is wrong and an XmlException gets thrown)
         }
 
         private static IXmlFlavor GetXmlFlavorForDocument(string filePath)
@@ -67,9 +67,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     }
                 }
             }
-            catch (XmlException)
+            catch (XmlException ex)
             {
                 // root element not contained, so ignore
+                Tracer.Trace($"While parsing '{filePath}', following {ex.GetType().Name} was thrown:\r\n'{ex}'");
             }
 
             return null;

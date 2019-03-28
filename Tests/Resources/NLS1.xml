@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" ?>
 <localization>
   <metadata>
     <version number="1.0">
-      <date>20196-03-26</date>
+      <date>2019-03-26</date>
       <comment/>
     </version>
     <languages>
@@ -15,10 +15,9 @@
   </metadata>
   <descriptions>
 
-    <!-- UI standard strings -->
     <string key="ID_CATEGORY_OF_DEVICE">
       <locale code="en">pressure</locale>
-      <locale code="en">Druck</locale>
+      <locale code="de">Druck</locale>
     </string>
 
     <string key="ID_MANUFACTURER">
