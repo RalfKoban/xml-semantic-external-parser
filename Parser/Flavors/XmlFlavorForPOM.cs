@@ -12,39 +12,39 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
-                                                                            ElementNames.ModelVersion,
-                                                                            ElementNames.GroupId,
                                                                             ElementNames.ArtifactId,
-                                                                            ElementNames.Version,
-                                                                            ElementNames.Parent,
-                                                                            ElementNames.Packaging,
-                                                                            ElementNames.Name,
-                                                                            ElementNames.Description,
-                                                                            ElementNames.Url,
-                                                                            ElementNames.InceptionYear,
-                                                                            ElementNames.Organization,
-                                                                            ElementNames.License,
-                                                                            ElementNames.Developer,
-                                                                            ElementNames.Contributor,
-                                                                            ElementNames.MailingList,
-                                                                            ElementNames.Prerequisites,
-                                                                            ElementNames.Module,
-                                                                            ElementNames.CiManagement,
-                                                                            ElementNames.DistributionManagement,
-                                                                            ElementNames.DependencyManagement,
-                                                                            ElementNames.Dependency,
-                                                                            ElementNames.Repository,
-                                                                            ElementNames.PluginRepository,
-                                                                            ElementNames.Plugin,
-                                                                            ElementNames.Reporting,
-                                                                            ElementNames.Connection,
-                                                                            ElementNames.DeveloperConnection,
-                                                                            ElementNames.ArtifactsToPublish,
                                                                             ElementNames.ArtifactsToDownload,
-                                                                            ElementNames.Tag,
+                                                                            ElementNames.ArtifactsToPublish,
+                                                                            ElementNames.CiManagement,
+                                                                            ElementNames.Connection,
+                                                                            ElementNames.Contributor,
+                                                                            ElementNames.Dependency,
+                                                                            ElementNames.DependencyManagement,
+                                                                            ElementNames.Description,
+                                                                            ElementNames.Developer,
+                                                                            ElementNames.DeveloperConnection,
+                                                                            ElementNames.DistributionManagement,
                                                                             ElementNames.GitRepositoryName,
-                                                                            ElementNames.System,
+                                                                            ElementNames.GroupId,
                                                                             ElementNames.Id,
+                                                                            ElementNames.InceptionYear,
+                                                                            ElementNames.License,
+                                                                            ElementNames.MailingList,
+                                                                            ElementNames.ModelVersion,
+                                                                            ElementNames.Module,
+                                                                            ElementNames.Name,
+                                                                            ElementNames.Organization,
+                                                                            ElementNames.Packaging,
+                                                                            ElementNames.Parent,
+                                                                            ElementNames.Plugin,
+                                                                            ElementNames.PluginRepository,
+                                                                            ElementNames.Prerequisites,
+                                                                            ElementNames.Reporting,
+                                                                            ElementNames.Repository,
+                                                                            ElementNames.System,
+                                                                            ElementNames.Tag,
+                                                                            ElementNames.Url,
+                                                                            ElementNames.Version,
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -66,16 +66,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 switch (nodeType)
                 {
                     case ElementNames.ArtifactId:
-                    case ElementNames.GroupId:
-                    case ElementNames.Module:
-                    case ElementNames.Name:
-                    case ElementNames.Id:
-                    case ElementNames.Url:
                     case ElementNames.Connection:
                     case ElementNames.DeveloperConnection:
-                    case ElementNames.Tag:
                     case ElementNames.GitRepositoryName:
+                    case ElementNames.GroupId:
+                    case ElementNames.Id:
+                    case ElementNames.Module:
+                    case ElementNames.Name:
                     case ElementNames.System:
+                    case ElementNames.Tag:
+                    case ElementNames.Url:
                         node.Name = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
                         break;
 
@@ -112,43 +112,43 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static class ElementNames
         {
-            internal const string Project = "project";
-            internal const string ModelVersion = "modelVersion";
-            internal const string Parent = "parent";
-            internal const string GroupId = "groupId";
             internal const string ArtifactId = "artifactId";
-            internal const string Version = "version";
-            internal const string Packaging = "packaging";
-            internal const string Name = "name";
-            internal const string Description = "description";
-            internal const string Url = "url";
-            internal const string InceptionYear = "inceptionYear";
-            internal const string Organization = "organization";
-            internal const string License = "license";
-            internal const string Developer = "developer";
-            internal const string Contributor = "contributor";
-            internal const string MailingList = "mailingList";
-            internal const string Prerequisites = "prerequisites";
-            internal const string Module = "module";
-            internal const string Scm = "scm";
-            internal const string IssueManagement = "issueManagement";
-            internal const string CiManagement = "ciManagement";
-            internal const string DistributionManagement = "distributionManagement";
-            internal const string DependencyManagement = "dependencyManagement";
-            internal const string Dependency = "dependency";
-            internal const string Repository = "repository";
-            internal const string PluginRepository = "pluginRepository";
-            internal const string Plugin = "plugin";
-            internal const string Reporting = "reporting";
-            internal const string Profile = "profile";
-            internal const string Id = "id";
-            internal const string Connection = "connection";
-            internal const string DeveloperConnection = "developerConnection";
-            internal const string ArtifactsToPublish = "artifactsToPublish";
             internal const string ArtifactsToDownload = "artifactsToDownload";
-            internal const string Tag = "tag";
+            internal const string ArtifactsToPublish = "artifactsToPublish";
+            internal const string CiManagement = "ciManagement";
+            internal const string Connection = "connection";
+            internal const string Contributor = "contributor";
+            internal const string Dependency = "dependency";
+            internal const string DependencyManagement = "dependencyManagement";
+            internal const string Description = "description";
+            internal const string Developer = "developer";
+            internal const string DeveloperConnection = "developerConnection";
+            internal const string DistributionManagement = "distributionManagement";
             internal const string GitRepositoryName = "gitRepositoryName";
+            internal const string GroupId = "groupId";
+            internal const string Id = "id";
+            internal const string InceptionYear = "inceptionYear";
+            internal const string IssueManagement = "issueManagement";
+            internal const string License = "license";
+            internal const string MailingList = "mailingList";
+            internal const string ModelVersion = "modelVersion";
+            internal const string Module = "module";
+            internal const string Name = "name";
+            internal const string Organization = "organization";
+            internal const string Packaging = "packaging";
+            internal const string Parent = "parent";
+            internal const string Plugin = "plugin";
+            internal const string PluginRepository = "pluginRepository";
+            internal const string Prerequisites = "prerequisites";
+            internal const string Profile = "profile";
+            internal const string Project = "project";
+            internal const string Reporting = "reporting";
+            internal const string Repository = "repository";
+            internal const string Scm = "scm";
             internal const string System = "system";
+            internal const string Tag = "tag";
+            internal const string Url = "url";
+            internal const string Version = "version";
         }
     }
 }
