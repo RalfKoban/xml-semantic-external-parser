@@ -8,7 +8,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public sealed class XmlFlavorForNLS : XmlFlavor
     {
-        // localization
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             ElementNames.Comment,
@@ -30,8 +29,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 var name = reader.LocalName;
                 var attr = GetAttributeName(name);
 
-                if (attr is null) return name;
-                return reader.GetAttribute(attr);
+                return attr is null ? name : reader.GetAttribute(attr);
             }
 
             return base.GetName(reader);
@@ -48,7 +46,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case ElementNames.Language: return AttributeNames.LCID;
                 case ElementNames.Locale: return AttributeNames.Code;
                 case ElementNames.String: return AttributeNames.Key;
-                default: return elementName;
+                default: return null;
             }
         }
 
