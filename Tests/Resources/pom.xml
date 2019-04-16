@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonarsource.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>51</version>
+  </parent>
+
+  <groupId>org.sonarsource.dotnet</groupId>
+  <artifactId>sonar-csharp</artifactId>
+  <version>7.13-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>SonarC# parent</name>
+  <description>Code Analyzer for C#</description>
+  <url>http://redirect.sonarsource.com/plugins/csharp.html</url>
+  <inceptionYear>2014</inceptionYear>
+  <organization>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>GNU LGPL 3</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>aleve</id>
+      <name>Amaury Levé</name>
+      <organization>SonarSource</organization>
+    </developer>
+	<developer>
+      <id>vhristov</id>
+      <name>Valeri Hristov</name>
+      <organization>SonarSource</organization>
+    </developer>
+	<developer>
+      <id>jgyerik</id>
+      <name>Janos Gyerik</name>
+      <organization>SonarSource</organization>
+    </developer>
+	<developer>
+      <id>dmeneses</id>
+      <name>Duarte Meneses</name>
+      <organization>SonarSource</organization>
+    </developer>
+	<developer>
+      <id>jhenry</id>
+      <name>Julien Henry</name>
+      <organization>SonarSource</organization>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>sonar-dotnet-shared-library</module>
+    <module>sonar-csharp-plugin</module>
+    <module>sonar-vbnet-plugin</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:git@github.com:SonarSource/sonar-dotnet.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarSource/sonar-dotnet.git</developerConnection>
+    <url>https://github.com/SonarSource/sonar-dotnet</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/SonarSource/sonar-dotnet/issues</url>
+  </issueManagement>
+
+  <properties>
+    <gitRepositoryName>sonar-dotnet</gitRepositoryName>
+    <!-- Release: enable publication to Bintray -->
+    <artifactsToPublish>${project.groupId}:sonar-csharp-plugin:jar,${project.groupId}:sonar-vbnet-plugin:jar</artifactsToPublish>
+    <artifactsToDownload>${project.groupId}:SonarAnalyzer.CSharp:nupkg,${project.groupId}:SonarAnalyzer.VisualBasic:nupkg</artifactsToDownload>
+    <sonar.jacoco.reportPaths>../target/jacoco.exec</sonar.jacoco.reportPaths>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.9</version>
+        <configuration>
+          <append>true</append>
+          <destFile>../target/jacoco.exec</destFile>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>sonaranalyzer</id>
+      <modules>
+        <module>sonaranalyzer-dotnet</module>
+      </modules>
+    </profile>
+  </profiles>
+</project>

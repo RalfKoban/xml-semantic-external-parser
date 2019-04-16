@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -61,6 +62,30 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         }
 
         public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+
+        public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
+        {
+            if (node is Container c)
+            {
+                switch (node.Type)
+                {
+                    case ElementNames.GroupId:
+                    case ElementNames.Module:
+                    case ElementNames.Name:
+                        node.Name = c.Children.FirstOrDefault(_ => _.Type == NodeType.Text)?.Content;
+                        break;
+                    case ElementNames.Developer:
+                    case ElementNames.License:
+                        node.Name = c.Children.FirstOrDefault(_ => _.Type == ElementNames.Name)?.Name;
+                        break;
+                    default:
+                        node.Name = c.Children.FirstOrDefault(_ => _.Type == ElementNames.GroupId)?.Name;
+                        break;
+                }
+            }
+
+            return base.FinalAdjustAfterParsingComplete(node);
+        }
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 

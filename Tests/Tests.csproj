@@ -67,6 +67,7 @@
     <Compile Include="ParserTests_NLS.cs" />
     <Compile Include="ParserTests_NuSpec.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
+    <Compile Include="ParserTests_POM.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
     <Compile Include="ParserTests_RuleSet.cs" />
     <Compile Include="ParserTests_SHFB_Project.cs" />
@@ -143,6 +144,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\packages.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\pom.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\registry_value.xml">
