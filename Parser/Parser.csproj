@@ -74,6 +74,7 @@
     <Compile Include="Flavors\XmlFlavorForNLS.cs" />
     <Compile Include="Flavors\XmlFlavorForNuSpec.cs" />
     <Compile Include="Flavors\XmlFlavorForPackagesConfig.cs" />
+    <Compile Include="Flavors\XmlFlavorForPOM.cs" />
     <Compile Include="Flavors\XmlFlavorForRuleSets.cs" />
     <Compile Include="Flavors\XmlFlavorForSettings.cs" />
     <Compile Include="Flavors\XmlFlavorForVisualBuild.cs" />
