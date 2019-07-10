@@ -7,7 +7,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public class XmlFlavor : IXmlFlavor
     {
-        public virtual bool ParseAttributesEnabled => true;
+        public virtual bool ParseAttributesEnabled => false;
 
         public virtual bool Supports(string filePath) => filePath.EndsWith(".xml", StringComparison.OrdinalIgnoreCase);
 

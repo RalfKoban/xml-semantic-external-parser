@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using MiKoSolutions.SemanticParsers.Xml.Flavors;
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 using NUnit.Framework;
@@ -117,6 +117,11 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [TestCase("second", "element", 6, 11, 6, 24, 148, 161)]
         public void First_level_element_attribute_LocationSpan_and_Span_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
         {
+            if (new XmlFlavor().ParseAttributesEnabled is false)
+            {
+                Assert.Ignore("Parsing of attributes disabled, hence test is ignored.");
+            }
+
             Assert.Multiple(() =>
             {
                 var parent = _root.Children.OfType<Container>().First(_ => _.Name == parentName);
