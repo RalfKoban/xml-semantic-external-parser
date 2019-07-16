@@ -113,6 +113,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
             });
         }
 
+        [Ignore("Parsing of Attributes is currently disabled")]
         [TestCase("first",  "element", 5, 10, 5, 23, 113, 126)]
         [TestCase("second", "element", 6, 11, 6, 24, 148, 161)]
         public void First_level_element_attribute_LocationSpan_and_Span_matches(string parentName, string name, int startLine, int startPos, int endLine, int endPos, int spanStartPos, int spanEndPos)
