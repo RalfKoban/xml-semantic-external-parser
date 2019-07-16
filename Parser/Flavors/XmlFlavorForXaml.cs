@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -77,8 +76,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                               { ElementNames.Style, AttributeNames.TargetType },
                                                                                               { ElementNames.Trigger, AttributeNames.Property },
                                                                                           };
-
-        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         public override bool ParseAttributesEnabled => false;
 
@@ -165,14 +162,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
 
             return null;
-        }
-
-        private static string GetFileName(string result)
-        {
-            // get rid of backslash or slash as we only are interested in the name, not the path
-            // (and just add 1 and we get rid of situation that index might not be available ;))
-            var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
-            return fileName;
         }
 
         private static class ElementNames

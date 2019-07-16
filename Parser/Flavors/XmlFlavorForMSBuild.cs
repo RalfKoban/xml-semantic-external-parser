@@ -242,7 +242,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        private static string GetFileName(string result)
+        private static new string GetFileName(string result)
         {
             // get rid of backslash or slash as we only are interested in the name, not the path
             // (and just add 1 and we get rid of situation that index might not be available ;))
@@ -252,6 +252,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 // get the path
                 var path = GetFilePath(result);
+
                 var pathWithFileName = result.Substring(path.LastIndexOfAny(DirectorySeparators) + 1);
                 return pathWithFileName;
             }
