@@ -62,13 +62,17 @@
     <Compile Include="Flavors\XmlFlavorFinder.cs" />
     <Compile Include="Flavors\XmlFlavorForAssemblyDocumentation.cs" />
     <Compile Include="Flavors\XmlFlavorForConfig.cs" />
+    <Compile Include="Flavors\XmlFlavorForDependencies.cs" />
+    <Compile Include="Flavors\XmlFlavorForDotCover.cs" />
     <Compile Include="Flavors\XmlFlavorForDotNetCoreMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForEdmxV3.cs" />
     <Compile Include="Flavors\XmlFlavorForEnterpriseArchitectExport.cs" />
     <Compile Include="Flavors\XmlFlavorForFxCop.cs" />
+    <Compile Include="Flavors\XmlFlavorForManifest.cs" />
     <Compile Include="Flavors\XmlFlavorForMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForModuleCatalogXaml.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
+    <Compile Include="Flavors\XmlFlavorForNLS.cs" />
     <Compile Include="Flavors\XmlFlavorForNuSpec.cs" />
     <Compile Include="Flavors\XmlFlavorForPackagesConfig.cs" />
     <Compile Include="Flavors\XmlFlavorForRuleSets.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Flavors\XmlFlavorForWixConfiguration.cs" />
     <Compile Include="Flavors\XmlFlavorForWixLocation.cs" />
     <Compile Include="Flavors\XmlFlavorForXaml.cs" />
+    <Compile Include="Flavors\XmlFlavorForXlf.cs" />
     <Compile Include="Flavors\XmlFlavorForXslTransformations.cs" />
     <Compile Include="GapFiller.cs" />
     <Compile Include="NodeType.cs" />
@@ -106,8 +111,8 @@
     <None Include="Parser.ruleset" />
   </ItemGroup>
   <ItemGroup Condition="'$(NCrunch)' != '1'">
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.Unstable.1.1.1.61\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.Unstable.1.1.1.61\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

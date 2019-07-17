@@ -34,7 +34,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     return true;
                 }
 
-                return string.Equals(info.Namespace, "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd", StringComparison.OrdinalIgnoreCase);
+                return info.Namespace.EndsWith("/nuspec.xsd", StringComparison.OrdinalIgnoreCase);
             }
 
             return false;

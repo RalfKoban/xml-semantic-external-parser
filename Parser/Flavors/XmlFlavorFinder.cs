@@ -24,16 +24,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public static IXmlFlavor Find(string filePath)
         {
             var flavors = Flavors.Where(_ => _.Supports(filePath)).ToList();
-            return flavors.Count == 1 ? flavors[0] : GetXmlFlavorForDocument(filePath) ?? new XmlFlavor(); // just in case use XML flavor as fall-back (should never happen)
+            return flavors.Count == 1 ? flavors[0] : GetXmlFlavorForDocument(filePath) ?? new XmlFlavor(); // just in case use XML flavor as fall-back (happens e.g. if XML encoding is wrong and an XmlException gets thrown)
         }
 
         private static IXmlFlavor GetXmlFlavorForDocument(string filePath)
         {
-            var info = GetDocumentInfo(filePath, Flavors.Select(_ => _.PreferredNamespacePrefix).ToHashSet());
+            var info = GetDocumentInfo(filePath);
             return info != null ? Flavors.FirstOrDefault(_ => _.Supports(info)) : null;
         }
 
-        private static DocumentInfo GetDocumentInfo(string filePath, IEnumerable<string> namespaces)
+        private static DocumentInfo GetDocumentInfo(string filePath)
         {
             try
             {
@@ -47,18 +47,30 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                             var name = reader.LocalName;
                             var ns = reader.LookupNamespace(reader.Prefix);
 
+                            var attributes = new List<KeyValuePair<string, string>>();
+                            var attributeCount = reader.AttributeCount;
+                            for (var i = 0; i < attributeCount; i++)
+                            {
+                                reader.MoveToAttribute(i);
+                                var attributeName = reader.LocalName;
+                                var attributeValue = reader.GetAttribute(i);
+                                attributes.Add(new KeyValuePair<string, string>(attributeName, attributeValue));
+                            }
+
                             return new DocumentInfo
                                        {
                                            RootElement = name,
                                            Namespace = ns,
+                                           Attributes = attributes,
                                        };
                         }
                     }
                 }
             }
-            catch (XmlException)
+            catch (XmlException ex)
             {
                 // root element not contained, so ignore
+                Tracer.Trace($"While parsing '{filePath}', following {ex.GetType().Name} was thrown: {ex}", ex);
             }
 
             return null;

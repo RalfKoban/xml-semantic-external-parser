@@ -64,6 +64,7 @@
     <Compile Include="ParserTests_LineEnds.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
     <Compile Include="ParserTests_NDepend.cs" />
+    <Compile Include="ParserTests_NLS.cs" />
     <Compile Include="ParserTests_NuSpec.cs" />
     <Compile Include="ParserTests_PackagesConfig.cs" />
     <Compile Include="ParserTests_RegistryValue.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="ParserTests_WIX_Config.cs" />
     <Compile Include="ParserTests_WrongEncoding.cs" />
     <Compile Include="ParserTests_Xaml_ResourceDictionary.cs" />
+    <Compile Include="ParserTests_Xlf.cs" />
     <Compile Include="ParserTests_Xsl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -110,6 +112,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\NDepend_project.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NLS1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\NuSpec.xml">
@@ -167,14 +172,17 @@
     <Content Include="Resources\test_without_declaration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\xliff1.xlf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Tests.ruleset" />
   </ItemGroup>
   <ItemGroup Condition="'$(NCrunch)' != '1'">
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.Unstable.1.1.1.61\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.Unstable.1.1.1.61\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -28,6 +28,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string Endpoint = "endpoint";
         private const string Behavior = "behavior";
 
+        // Log4net
+        private const string Appender = "appender";
+        private const string Logger = "logger";
+
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             Add,
@@ -43,6 +47,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             SupportedRuntime,
                                                                             DependentAssembly,
                                                                             Probing,
+                                                                            Appender,
+                                                                            Logger,
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -118,6 +124,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case Behavior:
                 case Binding:
                 case Endpoint:
+                    return reader.GetAttribute("name");
+
+                case Appender:
+                case Logger:
                     return reader.GetAttribute("name");
 
                 default:

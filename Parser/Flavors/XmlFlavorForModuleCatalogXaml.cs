@@ -19,8 +19,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool ParseAttributesEnabled => false;
 
-        public override string PreferredNamespacePrefix => "xmlns:Modularity";
-
         public override bool Supports(string filePath) => filePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase);
 
         public override bool Supports(DocumentInfo info) =>

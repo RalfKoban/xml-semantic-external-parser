@@ -15,18 +15,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                            {
-                                                                               ElementNames.ItemGroup,
-                                                                               ElementNames.ItemDefinitionGroup,
+                                                                               ElementNames.Choose,
                                                                                ElementNames.ImportGroup,
+                                                                               ElementNames.ItemDefinitionGroup,
+                                                                               ElementNames.ItemGroup,
+                                                                               ElementNames.Otherwise,
                                                                                ElementNames.Project,
                                                                                ElementNames.ProjectConfiguration,
                                                                                ElementNames.PropertyGroup,
                                                                                ElementNames.Target,
+                                                                               ElementNames.When,
+                                                                               SHFB.ElementNames.ApiFilter,
+                                                                               SHFB.ElementNames.ComponentConfigurations,
                                                                                SHFB.ElementNames.DocumentationSources,
                                                                                SHFB.ElementNames.NamespaceSummaries,
                                                                                SHFB.ElementNames.PlugInConfigurations,
-                                                                               SHFB.ElementNames.ComponentConfigurations,
-                                                                               SHFB.ElementNames.ApiFilter,
                                                                            };
 
         private static readonly Regex VersionNumberRegex = new Regex("(.{1}([0-9]+.{1})+)+"); // format of version numbers is ".1.2.3.4"
@@ -35,11 +38,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(string filePath) => filePath.EndsWith(".builds", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".fsproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".ilproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".jsproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".modelproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".nativeproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".njsproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".proj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".pyproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)
@@ -153,12 +161,26 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 return result;
             }
 
+            if (attributeName == AttributeNames.Condition)
+            {
+                // if it is a condition, we want to have the complete condition name
+                return result;
+            }
+
             // if there is a comma, then we want to get the name before the comma (except that we have a directory at the end)
             var commaIndex = result.IndexOf(',');
             var directorySeparatorIndex = result.LastIndexOfAny(DirectorySeparators);
             if (commaIndex > 0 && commaIndex > directorySeparatorIndex)
             {
                 result = result.Substring(0, commaIndex);
+            }
+
+            const string Marker = "GetPathOfFileAbove('";
+            var mentionedFileIndex = result.IndexOf(Marker);
+            if (mentionedFileIndex >= 0)
+            {
+                result = result.Substring(mentionedFileIndex + Marker.Length);
+                result = result.Substring(0, result.IndexOf('\''));
             }
 
             return GetFileName(result);
@@ -170,7 +192,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (c.Type == SHFB.ElementNames.NamespaceSummaryItem)
             {
-                c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
+                    c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
             }
         }
 
@@ -220,12 +242,27 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        private static string GetFileName(string result)
+        private static new string GetFileName(string result)
         {
             // get rid of backslash or slash as we only are interested in the name, not the path
             // (and just add 1 and we get rid of situation that index might not be available ;))
             var fileName = result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
-            return fileName;
+
+            if (fileName == "*" || fileName == "**")
+            {
+                // get the path
+                var path = GetFilePath(result);
+
+                var pathWithFileName = result.Substring(path.LastIndexOfAny(DirectorySeparators) + 1);
+                return pathWithFileName;
+            }
+
+            // try to get rid of last bracket
+            // (and just add 1 and we get rid of situation that the bracket might not be available ;))
+            var potentialFileName = fileName.Substring(fileName.LastIndexOf(')') + 1);
+            return potentialFileName.Length > 0
+                 ? potentialFileName
+                 : fileName;
         }
 
         private static string GetFilePath(string result)
@@ -326,43 +363,60 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             switch (name)
             {
+/*
                 case ElementNames.AdditionalFiles:
                 case ElementNames.Analyzer:
                 case ElementNames.AssemblyMetadata:
                 case ElementNames.BootstrapperPackage:
-                case ElementNames.CodeAnalysisDictionary:
                 case ElementNames.CodeAnalysisDependentAssemblyPaths:
+                case ElementNames.CodeAnalysisDictionary:
                 case ElementNames.Compile:
                 case ElementNames.Content:
                 case ElementNames.CoreRootProjectLockJsonFiles:
+                case ElementNames.CppCompile:
                 case ElementNames.CrossGenFiles:
+                case ElementNames.DependencyBuildInfo:
                 case ElementNames.EmbeddedResource:
+                case ElementNames.EntityDeploy:
                 case ElementNames.ExcludeList:
                 case ElementNames.ExcludeTraitsItems:
                 case ElementNames.Folder:
                 case ElementNames.IncludeTraitsItems:
                 case ElementNames.NativeProjectBinaries:
                 case ElementNames.None:
+                case ElementNames.OfficialBuildRID:
                 case ElementNames.PackageReference:
                 case ElementNames.Page:
                 case ElementNames.ProductProjectLockJsonFiles:
                 case ElementNames.Project:
                 case ElementNames.ProjectReference:
-                case ElementNames.Reference:
                 case ElementNames.RefProjectLockJsonFiles:
+                case ElementNames.Reference:
+                case ElementNames.RemoteDependencyBuildInfo:
                 case ElementNames.Resource:
+                case ElementNames.Service:
+                case ElementNames.SgenTypes:
+                case ElementNames.StaticDependency:
                 case ElementNames.TestTargetFramework:
-                case ElementNames.Validate:
                 case ElementNames.VCRuntimeFiles:
-                case ElementNames.OfficialBuildRID:
-                case ElementNames.CppCompile:
+                case ElementNames.Validate:
+                case ElementNames.XUnitDependency:
+                case ElementNames.XUnitPerformanceApiDependency:
+                case ElementNames.XmlUpdateStep:
+                case ElementNames.XunitPerformanceDependency:
                     return AttributeNames.Include;
-
+*/
                 case ElementNames.Import:
                     return AttributeNames.Project;
 
+                case ElementNames.MSBuild:
+                    return AttributeNames.Projects;
+
                 case ElementNames.Target:
                     return AttributeNames.Name;
+
+                case ElementNames.CallTarget:
+                    return AttributeNames.Targets;
 
                 case SHFB.ElementNames.ComponentConfig:
                 case SHFB.ElementNames.PlugInConfig:
@@ -381,7 +435,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     return AttributeNames.Condition;
 
                 default:
-                    return null;
+                    return AttributeNames.Include;
             }
         }
 
@@ -411,56 +465,75 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private protected static class ElementNames
         {
-            internal const string AdditionalFiles = "AdditionalFiles";
             internal const string Analyzer = "Analyzer";
-            internal const string AssemblyMetadata = "AssemblyMetadata";
-            internal const string BootstrapperPackage = "BootstrapperPackage";
-            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
-            internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
+            internal const string CallTarget = "CallTarget";
+            internal const string Choose = "Choose";
             internal const string Compile = "Compile";
             internal const string Content = "Content";
-            internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
-            internal const string CrossGenFiles = "CrossGenFiles";
             internal const string DefineConstants = "DefineConstants";
             internal const string EmbeddedResource = "EmbeddedResource";
-            internal const string ExcludeList = "ExcludeList";
             internal const string Folder = "Folder";
             internal const string Import = "Import";
             internal const string ImportGroup = "ImportGroup";
             internal const string ItemDefinitionGroup = "ItemDefinitionGroup";
             internal const string ItemGroup = "ItemGroup";
-            internal const string NativeProjectBinaries = "NativeProjectBinaries";
+            internal const string MSBuild = "MSBuild";
             internal const string None = "None";
+            internal const string Otherwise = "Otherwise";
             internal const string PackageReference = "PackageReference";
             internal const string Page = "Page";
-            internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
+            internal const string PostBuildEvent = "PostBuildEvent";
+            internal const string PreBuildEvent = "PreBuildEvent";
             internal const string Project = "Project";
             internal const string ProjectConfiguration = "ProjectConfiguration";
             internal const string ProjectGuid = "ProjectGuid";
-            internal const string ProjectReference = "ProjectReference";
             internal const string PropertyGroup = "PropertyGroup";
-            internal const string Reference = "Reference";
-            internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
             internal const string Resource = "Resource";
             internal const string Target = "Target";
-            internal const string TestTargetFramework = "TestTargetFramework";
-            internal const string Validate = "Validate";
-            internal const string VCRuntimeFiles = "VCRuntimeFiles";
-            internal const string PostBuildEvent = "PostBuildEvent";
-            internal const string PreBuildEvent = "PreBuildEvent";
-            internal const string IncludeTraitsItems = "IncludeTraitsItems";
-            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
-            internal const string OfficialBuildRID = "OfficialBuildRID";
+            internal const string When = "When";
+/*
+            internal const string AdditionalFiles = "AdditionalFiles";
+            internal const string AssemblyMetadata = "AssemblyMetadata";
+            internal const string BootstrapperPackage = "BootstrapperPackage";
+            internal const string CodeAnalysisDependentAssemblyPaths = "CodeAnalysisDependentAssemblyPaths";
+            internal const string CodeAnalysisDictionary = "CodeAnalysisDictionary";
+            internal const string CoreRootProjectLockJsonFiles = "CoreRootProjectLockJsonFiles";
             internal const string CppCompile = "CppCompile";
+            internal const string CrossGenFiles = "CrossGenFiles";
+            internal const string DependencyBuildInfo = "DependencyBuildInfo";
+            internal const string EntityDeploy = "EntityDeploy";
+            internal const string ExcludeList = "ExcludeList";
+            internal const string ExcludeTraitsItems = "ExcludeTraitsItems";
+            internal const string IncludeTraitsItems = "IncludeTraitsItems";
+            internal const string NativeProjectBinaries = "NativeProjectBinaries";
+            internal const string OfficialBuildRID = "OfficialBuildRID";
+            internal const string ProductProjectLockJsonFiles = "ProductProjectLockJsonFiles";
+            internal const string ProjectReference = "ProjectReference";
+            internal const string RefProjectLockJsonFiles = "RefProjectLockJsonFiles";
+            internal const string Reference = "Reference";
+            internal const string RemoteDependencyBuildInfo = "RemoteDependencyBuildInfo";
+            internal const string Service = "Service";
+            internal const string SgenTypes = "SgenTypes";
+            internal const string StaticDependency = "StaticDependency";
+            internal const string TestTargetFramework = "TestTargetFramework";
+            internal const string VCRuntimeFiles = "VCRuntimeFiles";
+            internal const string Validate = "Validate";
+            internal const string XUnitDependency = "XUnitDependency";
+            internal const string XUnitPerformanceApiDependency = "XUnitPerformanceApiDependency";
+            internal const string XmlUpdateStep = "XmlUpdateStep";
+            internal const string XunitPerformanceDependency = "XunitPerformanceDependency";
+*/
         }
 
         private static class AttributeNames
         {
             internal const string Condition = "Condition";
             internal const string Include = "Include";
-            internal const string Update = "Update";
             internal const string Name = "Name";
             internal const string Project = "Project";
+            internal const string Projects = "Projects";
+            internal const string Targets = "Targets";
+            internal const string Update = "Update";
         }
 
         private static class SHFB
@@ -469,16 +542,16 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
             internal static class ElementNames
             {
-                internal const string DocumentationSources = "DocumentationSources";
+                internal const string ApiFilter = "ApiFilter";
+                internal const string ComponentConfig = "ComponentConfig";
+                internal const string ComponentConfigurations = "ComponentConfigurations";
                 internal const string DocumentationSource = "DocumentationSource";
+                internal const string DocumentationSources = "DocumentationSources";
+                internal const string Filter = "Filter";
                 internal const string NamespaceSummaries = "NamespaceSummaries";
                 internal const string NamespaceSummaryItem = "NamespaceSummaryItem";
-                internal const string PlugInConfigurations = "PlugInConfigurations";
                 internal const string PlugInConfig = "PlugInConfig";
-                internal const string ComponentConfigurations = "ComponentConfigurations";
-                internal const string ComponentConfig = "ComponentConfig";
-                internal const string ApiFilter = "ApiFilter";
-                internal const string Filter = "Filter";
+                internal const string PlugInConfigurations = "PlugInConfigurations";
             }
 
             internal static class AttributeNames

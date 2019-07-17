@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime;
 using System.Threading.Tasks;
 
@@ -44,6 +43,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
                 try
                 {
+                    var parseErrors = false;
                     try
                     {
                         watch.Restart();
@@ -58,7 +58,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
                             YamlWriter.Write(writer, file);
                         }
 
-                        var parseErrors = file.ParsingErrorsDetected == true;
+                        parseErrors = file.ParsingErrorsDetected == true;
                         if (parseErrors)
                         {
                             var parsingError = file.ParsingErrors[0];
@@ -81,22 +81,16 @@ namespace MiKoSolutions.SemanticParsers.Xml
                     }
                     finally
                     {
-                        Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B})");
+                        Tracer.Trace($"Parsing took {watch.Elapsed:s\\.fff} secs  (instance {InstanceId:B}), errors found: {parseErrors}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Tracer.Trace($"Exception: {ex}");
-
-                    var stackTraceLines = ex.StackTrace?.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries) ?? Enumerable.Empty<string>();
-                    foreach (var stackTraceLine in stackTraceLines)
-                    {
-                        Tracer.Trace(stackTraceLine);
-                    }
+                    Tracer.Trace($"Exception: {ex}", ex);
 
                     Console.WriteLine("KO");
 
-                    throw;
+                    return 0;
                 }
             }
         }

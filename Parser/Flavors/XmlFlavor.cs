@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Xml;
 
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
@@ -7,9 +8,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
     public class XmlFlavor : IXmlFlavor
     {
-        public virtual bool ParseAttributesEnabled => true;
+        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
-        public virtual string PreferredNamespacePrefix => "xmlns";
+        public virtual bool ParseAttributesEnabled => false;
 
         public virtual bool Supports(string filePath) => filePath.EndsWith(".xml", StringComparison.OrdinalIgnoreCase);
 
@@ -64,6 +65,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return ShallBeTerminalNode(node)
                 ? node.ToTerminalNode()
                 : node;
+        }
+
+        protected static string GetFileName(string path)
+        {
+            // get rid of backslash or slash as we only are interested in the name, not the path
+            // (and just add 1 and we get rid of situation that index might not be available ;))
+            return path?.Substring(path.LastIndexOfAny(DirectorySeparators) + 1);
         }
 
         protected virtual bool ShallBeTerminalNode(ContainerOrTerminalNode node) => false;

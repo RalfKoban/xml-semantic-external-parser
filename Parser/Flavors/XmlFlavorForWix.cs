@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml;
 
@@ -24,8 +23,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string RegistryValue = "RegistryValue";
 
         private const string Util_RemoveFolderEx = "RemoveFolderEx";
-
-        private static readonly char[] DirectorySeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
@@ -336,6 +333,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                     case Fragment:
                     {
                         var child = c.Children.FirstOrDefault(_ => _.Type == ComponentGroup) ?? c.Children.FirstOrDefault(_ => _.Type == Component);
+
+                        if (child == null && c.Children.Count == 1)
+                        {
+                            child = c.Children.First();
+                        }
+
                         if (child != null)
                         {
                             c.Name = Fragment + $" '{child.Name}'";
@@ -358,14 +361,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
 
             return TerminalNodeNames.Contains(nodeType) || UtilTerminalNodeNames.Contains(nodeType);
-        }
-
-        private static string GetFileName(string result)
-        {
-            // TODO: RKN fix duplicated code
-            // get rid of backslash or slash as we only are interested in the name, not the path
-            // (and just add 1 and we get rid of situation that index might not be available ;))
-            return result.Substring(result.LastIndexOfAny(DirectorySeparators) + 1);
         }
     }
 }

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" ?>
+<localization>
+  <metadata>
+    <version number="1.0">
+      <date>2019-03-26</date>
+      <comment/>
+    </version>
+    <languages>
+      <language lcid="9" code="en">English</language>
+      <language lcid="7" code="de">German</language>
+      <language lcid="1033" code="en">US English</language>
+      <language lcid="1031" code="de">German - Germany</language>
+      <language lcid="1036" code="fr">French - France</language>
+    </languages>
+  </metadata>
+  <descriptions>
+
+    <string key="ID_CATEGORY_OF_DEVICE">
+      <locale code="en">pressure</locale>
+      <locale code="de">Druck</locale>
+    </string>
+
+    <string key="ID_MANUFACTURER">
+      <locale code="en">MiKo Solutions</locale>
+    </string>
+
+    <string key="ABOUTUI_COPYRIGHT">
+      <locale code="en">Copyright (c) 2019 MiKo Solutions</locale>
+    </string>
+  </descriptions>
+</localization>
