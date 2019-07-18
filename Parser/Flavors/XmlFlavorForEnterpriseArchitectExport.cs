@@ -15,21 +15,27 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             Class,
                                                                             Interface,
 
+                                                                            Actor,
                                                                             Association,
                                                                             Classifier,
                                                                             ClassifierRole,
-                                                                            Collaboration,
-                                                                            Comment,
+                                                                            Component,
+                                                                            DataType,
                                                                             Dependency,
                                                                             Diagram,
                                                                             DiagramElement,
                                                                             Expression,
                                                                             Generalization,
+                                                                            Message,
                                                                             Parameter,
+                                                                            SimpleState,
                                                                             Stereotype,
                                                                             TaggedValue,
 
+                                                                            EANoteLink,
                                                                             EAStub,
+
+                                                                            XMI_header,
                                                                         };
 
         private static readonly Dictionary<string, string> SubstitionNodeNames = new Dictionary<string, string>
@@ -39,7 +45,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                          { ModelElement_TaggedValue, "Tagged Values" },
                                                                                          { ModelElement_Stereotype, "Stereotypes" },
                                                                                          { Namespace_OwnedElement, "Types" },
-                                                                                         { Comment, Comment },
                                                                                      };
 
         public override bool ParseAttributesEnabled => false;
@@ -82,7 +87,23 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
+        public override string GetType(XmlTextReader reader)
+        {
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                var name = reader.LocalName;
+                switch (name)
+                {
+                    case Comment:
+                        return UML_Comment;
+
+                    default:
+                        return name;
+                }
+            }
+
+            return base.GetType(reader);
+        }
 
         public override string GetContent(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element && reader.LocalName == TaggedValue ? reader.GetAttribute("value") : base.GetContent(reader);
 
@@ -92,16 +113,39 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 switch (c.Type)
                 {
+                    // TODO: We want to see the collection of tagged elements
                     case ModelElement_TaggedValue:
                         return c.ToTerminalNode();
 
+                    case UML_Comment:
+                    {
+                        var documentation = FindTaggedValue(c, "documentation");
+                        if (documentation != null)
+                        {
+                            c.Name = documentation;
+                        }
+
+                        return c.ToTerminalNode();
+                    }
+
                     case AssociationEnd:
                     {
-                        var associationType = c.Children.OfType<Container>().FirstOrDefault(_ => _.Type == ModelElement_TaggedValue)?.Children.FirstOrDefault(_ => _.Type == TaggedValue && _.Name == "ea_end");
-                        if (associationType != null)
+                        var name = FindTaggedValue(c, "ea_end");
+                        if (name != null)
                         {
-                            c.Name = associationType.Content;
+                            c.Name = name;
                         }
+
+                        break;
+                    }
+
+                    case Association:
+                    case Dependency:
+                    case Generalization:
+                    {
+                        var source = FindTaggedValue(c, "ea_sourceName") ?? "???";
+                        var target = FindTaggedValue(c, "ea_targetName") ?? "???";
+                        c.Name = $"{source} -> {target}";
 
                         break;
                     }
@@ -111,24 +155,49 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.FinalAdjustAfterParsingComplete(node);
         }
 
+        private static string FindTaggedValue(Container container, string name)
+        {
+            var taggedValues = container.Children.FirstOrDefault(_ => _.Type == ModelElement_TaggedValue);
+
+            List<ContainerOrTerminalNode> children = null;
+            if (taggedValues is TerminalNode t)
+            {
+                children = t.Children;
+            }
+            else if (taggedValues is Container c)
+            {
+                children = c.Children;
+            }
+
+            var taggedValue = children?.FirstOrDefault(_ => _.Type == TaggedValue && _.Name == name);
+            return taggedValue?.Content;
+        }
+
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
         private const string Attribute = "Attribute";
         private const string Class = "Class";
         private const string Interface = "Interface";
 
+        private const string Actor = "Actor";
         private const string Association = "Association";
         private const string AssociationEnd = "AssociationEnd";
         private const string Classifier = "Classifier";
         private const string ClassifierRole = "ClassifierRole";
         private const string Collaboration = "Collaboration";
+        private const string Component = "Component";
+        private const string EANoteLink = "EANoteLink";
         private const string Comment = "Comment";
+        private const string UML_Comment = "UML_Comment";
+        private const string DataType = "DataType";
         private const string Dependency = "Dependency";
         private const string Diagram = "Diagram";
         private const string DiagramElement = "DiagramElement";
         private const string Expression = "Expression";
         private const string Generalization = "Generalization";
+        private const string Message = "Message";
         private const string Parameter = "Parameter";
+        private const string SimpleState = "SimpleState";
         private const string Stereotype = "Stereotype";
         private const string TaggedValue = "TaggedValue";
 
@@ -141,6 +210,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private const string EAStub = "EAStub";
 
         private const string XMI = "XMI";
-        private const string XMI_extensions = "extensions";
+        private const string XMI_extensions = "XMI.extensions";
+        private const string XMI_header = "XMI.header";
     }
 }
