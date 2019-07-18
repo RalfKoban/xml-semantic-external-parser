@@ -83,6 +83,7 @@
     <Compile Include="Flavors\XmlFlavorForWixLocation.cs" />
     <Compile Include="Flavors\XmlFlavorForXaml.cs" />
     <Compile Include="Flavors\XmlFlavorForXlf.cs" />
+    <Compile Include="Flavors\XmlFlavorForXsdSchemaDefinitions.cs" />
     <Compile Include="Flavors\XmlFlavorForXslTransformations.cs" />
     <Compile Include="GapFiller.cs" />
     <Compile Include="NodeType.cs" />
