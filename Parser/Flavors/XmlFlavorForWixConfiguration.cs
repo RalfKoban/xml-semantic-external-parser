@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlFlavorForWixConfiguration : XmlFlavor
+    public sealed class XmlFlavorForWixConfiguration : XmlFlavorForWix
     {
         public override bool ParseAttributesEnabled => true;
 

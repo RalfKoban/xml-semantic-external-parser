@@ -3,4 +3,7 @@
   <?define Something = "Cool" ?>
 
   <?define Whatever = "strange" ?>
+
+  <Property Id="some property">some text</Property>
+
 </Include>

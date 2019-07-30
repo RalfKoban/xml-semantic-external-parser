@@ -25,7 +25,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
         [Test]
         public void Root_has_correct_amount_of_children()
         {
-            Assert.That(_root.Children, Has.Count.EqualTo(2));
+            Assert.That(_root.Children, Has.Count.EqualTo(3));
         }
 
         [Test]
@@ -36,6 +36,15 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Assert.That(names.Contains("define 'Something'"), foundNames);
             Assert.That(names.Contains("define 'Whatever'"), foundNames);
+        }
+
+        [Test]
+        public void Property_has_correct_names()
+        {
+            var names = _root.Children.Select(_ => _.Name).ToList();
+            var foundNames = string.Join(",", names);
+
+            Assert.That(names.Contains("some property"), foundNames);
         }
     }
 }

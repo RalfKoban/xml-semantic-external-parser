@@ -7,7 +7,7 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlFlavorForWix : XmlFlavor
+    public class XmlFlavorForWix : XmlFlavor
     {
         private const string Fragment = "Fragment";
         private const string ComponentGroup = "ComponentGroup";
