@@ -28,6 +28,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                         {
                                                                             ElementNames.Button,
                                                                             ElementNames.Binding,
+                                                                            ElementNames.BitmapImage,
                                                                             ElementNames.ColumnDefinition,
                                                                             ElementNames.CheckBox,
                                                                             ElementNames.DataGridTemplateColumn,
@@ -168,6 +169,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             internal const string Button = "Button";
             internal const string Binding = "Binding";
+            internal const string BitmapImage = "BitmapImage";
             internal const string ColumnDefinition = "ColumnDefinition";
             internal const string CheckBox = "CheckBox";
             internal const string ContentPresenter = "ContentPresenter";
