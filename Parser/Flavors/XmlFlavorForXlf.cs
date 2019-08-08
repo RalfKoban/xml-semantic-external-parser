@@ -28,7 +28,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 var name = reader.LocalName;
                 var attr = GetAttributeName(name);
 
-                if (attr is null) return name;
+                if (attr is null)
+                {
+                    return name;
+                }
+
                 return reader.GetAttribute(attr);
             }
 
