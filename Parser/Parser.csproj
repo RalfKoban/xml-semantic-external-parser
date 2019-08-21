@@ -41,14 +41,14 @@
     <StartupObject>MiKoSolutions.SemanticParsers.Xml.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="YamlDotNet, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YamlDotNet.5.2.1\lib\net45\YamlDotNet.dll</HintPath>
     </Reference>
@@ -68,8 +68,8 @@
     <Compile Include="Flavors\XmlFlavorForEdmxV3.cs" />
     <Compile Include="Flavors\XmlFlavorForFxCop.cs" />
     <Compile Include="Flavors\XmlFlavorForManifest.cs" />
-    <Compile Include="Flavors\XmlFlavorForMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForModuleCatalogXaml.cs" />
+    <Compile Include="Flavors\XmlFlavorForMSBuild.cs" />
     <Compile Include="Flavors\XmlFlavorForNDepend.cs" />
     <Compile Include="Flavors\XmlFlavorForNLS.cs" />
     <Compile Include="Flavors\XmlFlavorForNuSpec.cs" />
