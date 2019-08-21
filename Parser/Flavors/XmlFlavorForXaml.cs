@@ -75,6 +75,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                               { ElementNames.Setter, AttributeNames.Property },
                                                                                               { ElementNames.StaticResource, AttributeNames.ResourceKey },
                                                                                               { ElementNames.Style, AttributeNames.TargetType },
+                                                                                              { ElementNames.TextBlock, AttributeNames.Text },
                                                                                               { ElementNames.Trigger, AttributeNames.Property },
                                                                                           };
 
@@ -167,15 +168,15 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static class ElementNames
         {
-            internal const string Button = "Button";
             internal const string Binding = "Binding";
             internal const string BitmapImage = "BitmapImage";
-            internal const string ColumnDefinition = "ColumnDefinition";
+            internal const string Button = "Button";
             internal const string CheckBox = "CheckBox";
+            internal const string ColumnDefinition = "ColumnDefinition";
             internal const string ContentPresenter = "ContentPresenter";
             internal const string Converter = "Converter";
-            internal const string DataTemplate = "DataTemplate";
             internal const string DataGridTemplateColumn = "DataGridTemplateColumn";
+            internal const string DataTemplate = "DataTemplate";
             internal const string EventSetter = "EventSetter";
             internal const string GlobalResourceDictionary = "GlobalResourceDictionary";
             internal const string Image = "Image";
@@ -195,17 +196,18 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static class AttributeNames
         {
             internal const string AutomationId = "AutomationProperties.AutomationId";
-            internal const string Name = "Name";
-            internal const string Key = "Key";
             internal const string Command = "Command";
             internal const string Content = "Content";
             internal const string DataType = "DataType";
             internal const string Event = "Event";
             internal const string ItemsSource = "ItemsSource";
+            internal const string Key = "Key";
+            internal const string Name = "Name";
             internal const string Property = "Property";
             internal const string ResourceKey = "ResourceKey";
             internal const string Source = "Source";
             internal const string TargetType = "TargetType";
+            internal const string Text = "Text";
         }
     }
 }
