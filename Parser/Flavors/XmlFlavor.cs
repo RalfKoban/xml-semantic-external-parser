@@ -16,7 +16,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public virtual bool Supports(DocumentInfo info) => true;
 
-        public virtual string GetName(XmlTextReader reader)
+        public virtual string GetName(XmlReader reader)
         {
             switch (reader.NodeType)
             {
@@ -42,7 +42,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public virtual string GetType(XmlTextReader reader)
+        public virtual string GetType(XmlReader reader)
         {
             switch (reader.NodeType)
             {
@@ -58,7 +58,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public virtual string GetContent(XmlTextReader reader) => reader.Value;
+        public virtual string GetContent(XmlReader reader) => reader.Value;
 
         public virtual ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {

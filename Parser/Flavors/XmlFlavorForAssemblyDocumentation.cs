@@ -39,9 +39,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "doc", StringComparison.OrdinalIgnoreCase);
 
-        public override string GetName(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? GetElementName(reader, reader.Name) : base.GetName(reader);
+        public override string GetName(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? GetElementName(reader, reader.Name) : base.GetName(reader);
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
@@ -60,7 +60,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
-        private static string GetElementName(XmlTextReader reader, string name) => (reader.GetAttribute("name") ?? reader.GetAttribute("cref")) ?? GetElementNameMapped(name);
+        private static string GetElementName(XmlReader reader, string name) => (reader.GetAttribute("name") ?? reader.GetAttribute("cref")) ?? GetElementNameMapped(name);
 
         private static string GetElementNameMapped(string name) => NameMap.TryGetValue(name, out var mappedName) ? mappedName : name;
     }

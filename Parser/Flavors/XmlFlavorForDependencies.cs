@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+
 using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
@@ -16,7 +17,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, ElementNames.Dependencies, StringComparison.OrdinalIgnoreCase);
 
-        public override string GetName(XmlTextReader reader)
+        public override string GetName(XmlReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
@@ -30,7 +31,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
@@ -46,7 +47,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        private static string GetAttribute(XmlTextReader reader, string attributeName) => attributeName is null ? null : reader.GetAttribute(attributeName);
+        private static string GetAttribute(XmlReader reader, string attributeName) => attributeName is null ? null : reader.GetAttribute(attributeName);
 
         private static class ElementNames
         {

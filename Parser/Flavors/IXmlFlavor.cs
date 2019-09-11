@@ -8,11 +8,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
     {
         bool ParseAttributesEnabled { get; }
 
-        string GetName(XmlTextReader reader);
+        string GetName(XmlReader reader);
 
-        string GetType(XmlTextReader reader);
+        string GetType(XmlReader reader);
 
-        string GetContent(XmlTextReader reader);
+        string GetContent(XmlReader reader);
 
         ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node);
     }

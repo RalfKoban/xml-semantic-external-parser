@@ -28,7 +28,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, RootElement, StringComparison.Ordinal)
                                                          && info.Namespace is null;
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {

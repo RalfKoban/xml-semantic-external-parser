@@ -67,7 +67,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public override string GetName(XmlTextReader reader)
+        public override string GetName(XmlReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
@@ -80,9 +80,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
-        public override string GetContent(XmlTextReader reader)
+        public override string GetContent(XmlReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
@@ -147,7 +147,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static bool IsNonTerminalNodeName(string type, string nonTerminalNodeName) => type == nonTerminalNodeName || (type.Length > nonTerminalNodeName.Length && type.StartsWith(nonTerminalNodeName + " ", StringComparison.Ordinal));
 
-        private static string GetName(XmlTextReader reader, string name, string attributeName, string alternativeAttributeName)
+        private static string GetName(XmlReader reader, string name, string attributeName, string alternativeAttributeName)
         {
             var result = GetAttribute(reader, attributeName) ?? GetAttribute(reader, alternativeAttributeName);
             if (result is null)
@@ -186,13 +186,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return GetFileName(result);
         }
 
-        private static string GetAttribute(XmlTextReader reader, string attributeName) => attributeName is null ? null : reader.GetAttribute(attributeName);
+        private static string GetAttribute(XmlReader reader, string attributeName) => attributeName is null ? null : reader.GetAttribute(attributeName);
 
         private static void FinalAdjustNodeWithContent(Container c, IEnumerable<TerminalNode> attributes, string content)
         {
             if (c.Type == SHFB.ElementNames.NamespaceSummaryItem)
             {
-                    c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
+                c.Name = attributes.FirstOrDefault(_ => _.Name == SHFB.AttributeNames.Name)?.Content;
             }
         }
 

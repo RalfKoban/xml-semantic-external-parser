@@ -246,7 +246,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "Wix", StringComparison.OrdinalIgnoreCase);
 
-        public override string GetName(XmlTextReader reader)
+        public override string GetName(XmlReader reader)
         {
             switch (reader.NodeType)
             {
@@ -311,7 +311,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {

@@ -13,7 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "packages", StringComparison.OrdinalIgnoreCase);
 
-        public override string GetName(XmlTextReader reader)
+        public override string GetName(XmlReader reader)
         {
             switch (reader.NodeType)
             {
@@ -34,7 +34,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public override string GetType(XmlTextReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => node?.Type == "package";
     }
