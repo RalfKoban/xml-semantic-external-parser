@@ -20,6 +20,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             "Dependency",
                                                                             "Asset",
                                                                             "Prerequisite",
+                                                                            "Preview",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
