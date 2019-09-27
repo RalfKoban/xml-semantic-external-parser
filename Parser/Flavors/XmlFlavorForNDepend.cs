@@ -43,14 +43,15 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                var name = reader.Name;
+                var name = reader.LocalName;
+
                 return reader.GetAttribute("Name") ?? reader.GetAttribute("MetricName") ?? reader.GetAttribute("Path") ?? name;
             }
 
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {

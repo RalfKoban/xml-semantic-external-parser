@@ -19,12 +19,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             {
                 case XmlNodeType.Element:
                 {
-                    return reader.GetAttribute("id") ?? reader.Name;
+                    return reader.GetAttribute("id") ?? reader.LocalName;
                 }
 
                 case XmlNodeType.Attribute:
                 {
-                    return $"{reader.Name} '{reader.Value}'";
+                    return $"{reader.LocalName} '{reader.Value}'";
                 }
 
                 default:
@@ -34,7 +34,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             }
         }
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => node?.Type == "package";
     }
