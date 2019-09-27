@@ -16,7 +16,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.ProcessingInstruction)
             {
-                var name = reader.Name;
+                var name = reader.LocalName;
                 var parts = reader.Value.Split('=');
                 var identifier = parts.Any() ? parts[0].Trim() : null;
                 return identifier is null ? name : $"{name} '{identifier}'";
@@ -25,6 +25,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
     }
 }
