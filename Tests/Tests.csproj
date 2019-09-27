@@ -62,6 +62,7 @@
     <Compile Include="ParserTests_EdmxV3.cs" />
     <Compile Include="ParserTests_FxCop.cs" />
     <Compile Include="ParserTests_LineEnds.cs" />
+    <Compile Include="ParserTests_Manifest.cs" />
     <Compile Include="ParserTests_ModuleCatalog_Xaml.cs" />
     <Compile Include="ParserTests_NDepend.cs" />
     <Compile Include="ParserTests_NLS.cs" />
@@ -87,6 +88,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\ApplicationManifest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\AssemblyDocumentation.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
