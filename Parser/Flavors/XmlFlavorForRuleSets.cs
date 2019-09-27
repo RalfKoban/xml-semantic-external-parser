@@ -29,7 +29,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                var name = reader.Name;
+                var name = reader.LocalName;
                 var attributeName = GetAttribute(name);
                 var identifier = string.IsNullOrWhiteSpace(attributeName) ? null : reader.GetAttribute(attributeName);
                 return identifier ?? name;
@@ -38,7 +38,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
