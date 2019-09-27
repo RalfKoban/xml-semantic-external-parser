@@ -39,9 +39,9 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "doc", StringComparison.OrdinalIgnoreCase);
 
-        public override string GetName(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? GetElementName(reader, reader.Name) : base.GetName(reader);
+        public override string GetName(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? GetElementName(reader, reader.LocalName) : base.GetName(reader);
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
