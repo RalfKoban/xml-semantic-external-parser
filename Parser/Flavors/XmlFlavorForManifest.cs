@@ -11,7 +11,6 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static readonly HashSet<string> NonTerminalNodeNames = new HashSet<string>
                                                                            {
                                                                                ElementNames.Assembly,
-                                                                               ElementNames.AssemblyIdentity,
                                                                                ElementNames.Dependency,
                                                                                ElementNames.DependentAssembly,
                                                                                ElementNames.File,
