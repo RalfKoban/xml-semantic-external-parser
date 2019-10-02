@@ -62,7 +62,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Assert.Multiple(() =>
             {
-                Assert.That(node.Type, Is.EqualTo("xsl:output"));
+                Assert.That(node.Type, Is.EqualTo("output"));
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(5, 1)), "Wrong start");
                 Assert.That(node.LocationSpan.End, Is.EqualTo(new LineInfo(5, 45)), "Wrong end");
 
@@ -77,7 +77,7 @@ namespace MiKoSolutions.SemanticParsers.Xml
 
             Assert.Multiple(() =>
             {
-                Assert.That(node.Type, Is.EqualTo("xsl:template"));
+                Assert.That(node.Type, Is.EqualTo("template"));
                 Assert.That(node.Name, Is.EqualTo("@* | node()"));
 
                 Assert.That(node.LocationSpan.Start, Is.EqualTo(new LineInfo(6, 1)), "Wrong start");

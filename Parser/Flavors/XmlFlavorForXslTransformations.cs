@@ -13,11 +13,11 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
-                                                                            "xsl:key",
-                                                                            "xsl:output",
-                                                                            "xsl:strip-space",
-                                                                            "xsl:template",
-                                                                            "xsl:apply-templates",
+                                                                            "key",
+                                                                            "output",
+                                                                            "strip-space",
+                                                                            "template",
+                                                                            "apply-templates",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -25,14 +25,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         public override bool Supports(string filePath) => filePath.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase);
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "xsl:stylesheet", StringComparison.OrdinalIgnoreCase)
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "stylesheet", StringComparison.OrdinalIgnoreCase)
                                                          && string.Equals(info.Namespace, Namespace, StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                var name = reader.Name;
+                var name = reader.LocalName;
                 var identifier = GetIdentifier(reader, "name", "match");
                 return identifier ?? name;
             }
@@ -40,7 +40,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             return base.GetName(reader);
         }
 
-        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.Name : base.GetType(reader);
+        public override string GetType(XmlReader reader) => reader.NodeType == XmlNodeType.Element ? reader.LocalName : base.GetType(reader);
 
         protected override bool ShallBeTerminalNode(ContainerOrTerminalNode node) => TerminalNodeNames.Contains(node?.Type);
 
