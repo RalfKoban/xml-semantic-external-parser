@@ -71,12 +71,15 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                                               { ElementNames.DataTemplate, AttributeNames.DataType },
                                                                                               { ElementNames.EventSetter, AttributeNames.Event },
                                                                                               { ElementNames.GlobalResourceDictionary, AttributeNames.Source },
+                                                                                              { ElementNames.Image, AttributeNames.Source },
                                                                                               { ElementNames.ListView, AttributeNames.ItemsSource },
                                                                                               { ElementNames.Setter, AttributeNames.Property },
                                                                                               { ElementNames.StaticResource, AttributeNames.ResourceKey },
                                                                                               { ElementNames.Style, AttributeNames.TargetType },
                                                                                               { ElementNames.TextBlock, AttributeNames.Text },
                                                                                               { ElementNames.Trigger, AttributeNames.Property },
+                                                                                              { ElementNames.UserControl, AttributeNames.Class },
+                                                                                              { ElementNames.Window, AttributeNames.Class },
                                                                                           };
 
         public override bool ParseAttributesEnabled => false;
@@ -191,11 +194,14 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string TextBlock = "TextBlock";
             internal const string TextBox = "TextBox";
             internal const string Trigger = "Trigger";
+            internal const string UserControl = "UserControl";
+            internal const string Window = "Window";
         }
 
         private static class AttributeNames
         {
             internal const string AutomationId = "AutomationProperties.AutomationId";
+            internal const string Class = "x:Class";
             internal const string Command = "Command";
             internal const string Content = "Content";
             internal const string DataType = "DataType";
