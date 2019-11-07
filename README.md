@@ -51,7 +51,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | Visual Studio Visual Basic Project | .vbproj
 | Visual Studio Installer XML | .vsixmanifest
 | WPF | .xaml
-| [Wix Toolkit](http://wixtoolset.org/) | .wxi, .wxl, .wxs
+| [Wix Toolkit](http://wixtoolset.org/) | .wxi, .wxl, .wxs, .wixproj
 | XML Localization Interchange File Format | .xlf
 | XML | .xml
 | XSD | .xsd
