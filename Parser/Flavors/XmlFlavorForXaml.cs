@@ -113,9 +113,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                // some have a name, some have a key, and some might have an AutomationId
+                // some have a name, some have a key, and some might have an AutomationId or a Uid
                 var defaultName = reader.GetAttribute(AttributeNames.Name, XamlNamespace)
                                ?? reader.GetAttribute(AttributeNames.Key, XamlNamespace)
+                               ?? reader.GetAttribute(AttributeNames.Uid, XamlNamespace)
                                ?? reader.GetAttribute(AttributeNames.AutomationId);
 
                 if (defaultName is null)
@@ -214,6 +215,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
             internal const string Source = "Source";
             internal const string TargetType = "TargetType";
             internal const string Text = "Text";
+            internal const string Uid = "Uid";
         }
     }
 }
