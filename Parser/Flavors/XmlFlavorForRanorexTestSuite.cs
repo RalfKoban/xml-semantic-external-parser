@@ -6,30 +6,29 @@ using MiKoSolutions.SemanticParsers.Xml.Yaml;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 {
-    public sealed class XmlFlavorForRanorexRepository : XmlFlavor
+    public sealed class XmlFlavorForRanorexTestSuite : XmlFlavor
     {
-        private const string SpecialElement = "basepath";
+        private const string SpecialElement = "reference";
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             SpecialElement,
-                                                                            "codegen",
-                                                                            "icon",
-                                                                            "item",
-                                                                            "var",
+                                                                            "testmodule",
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
 
-        public override bool Supports(string filePath) => filePath.EndsWith(".rxrep", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(string filePath) => filePath.EndsWith(".rxtst", StringComparison.OrdinalIgnoreCase) // test suite
+                                                       || filePath.EndsWith(".rxtmg", StringComparison.OrdinalIgnoreCase); // module group
 
-        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "repository", StringComparison.OrdinalIgnoreCase);
+        public override bool Supports(DocumentInfo info) => string.Equals(info.RootElement, "testsuitedoc", StringComparison.OrdinalIgnoreCase)
+                                                         || string.Equals(info.RootElement, "modulegroupdoc", StringComparison.OrdinalIgnoreCase);
 
         public override string GetName(XmlReader reader)
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                return reader.GetAttribute("name") ?? reader.GetAttribute("classname") ?? reader.LocalName;
+                return reader.GetAttribute("name") ?? reader.LocalName;
             }
 
             return base.GetName(reader);
