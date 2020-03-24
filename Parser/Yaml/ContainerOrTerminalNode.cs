@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 
 namespace MiKoSolutions.SemanticParsers.Xml.Yaml
 {
-    [DebuggerDisplay("Type={Type}, Name={Name}")]
+    [DebuggerDisplay("{GetType().Name} Type={Type}, Name={Name}")]
     public abstract class ContainerOrTerminalNode
     {
         [YamlIgnore]
