@@ -36,6 +36,8 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | NuGet Configuration | _packages.config_
 | NuGet Manifest | .nuspec
 | Ranorex (Repositories) | .rxrep
+| Ranorex (TestModuleGroups) | .rxtmg
+| Ranorex (TestSuites) | .rxtst
 | [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) Project  | .shfbproj
 | Visual Build | .bld
 | Visual Studio C++ Project | .vcxproj
