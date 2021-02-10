@@ -30,7 +30,13 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         // Log4net
         private const string Appender = "appender";
+        private const string AppenderRef = "appender-ref";
+        private const string Level = "level";
         private const string Logger = "logger";
+
+        // folder
+        private const string Folder = "folder";
+        private const string Assembly = "assembly";
 
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
@@ -48,7 +54,10 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                                             DependentAssembly,
                                                                             Probing,
                                                                             Appender,
+                                                                            AppenderRef,
+                                                                            Level,
                                                                             Logger,
+                                                                            Assembly,
                                                                         };
 
         public override bool ParseAttributesEnabled => false;
@@ -129,6 +138,12 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 case Appender:
                 case Logger:
                     return reader.GetAttribute("name");
+
+                case AppenderRef:
+                    return reader.GetAttribute("ref");
+
+                case Folder:
+                    return reader.GetAttribute("relativepath") ?? reader.GetAttribute("name");
 
                 default:
                     return reader.GetAttribute("name") ?? reader.GetAttribute("key");
