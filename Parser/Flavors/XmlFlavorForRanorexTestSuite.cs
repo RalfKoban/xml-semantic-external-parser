@@ -13,8 +13,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             SpecialElement,
-                                                                            "setup",
-                                                                            "teardown",
+                                                                            "testcontainer",
                                                                             "testmodule",
                                                                         };
 
@@ -36,6 +35,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                 {
                     case "setup":
                     case "teardown":
+                    case "testcontainer":
                     case "testmodule":
                     {
                         var id = reader.GetAttribute("id");
@@ -54,9 +54,31 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
 
         public override ContainerOrTerminalNode FinalAdjustAfterParsingComplete(ContainerOrTerminalNode node)
         {
-            if (node is Container c && c.Children.Count == 1 && c.Type == SpecialElement)
+            if (node is Container c)
             {
-                node.Name = c.Children[0]?.Content?.Trim();
+                switch (c.Type)
+                {
+                    case SpecialElement:
+                    {
+                        if (c.Children.Count == 1)
+                        {
+                            node.Name = c.Children[0]?.Content?.Trim();
+                        }
+
+                        break;
+                    }
+
+                    case "flatlistofchildren":
+                    {
+                        for (var index = 0; index < c.Children.Count; index++)
+                        {
+                            var child = c.Children[index];
+                            c.Children[index] = child.ToTerminalNode();
+                        }
+
+                        break;
+                    }
+                }
             }
 
             return base.FinalAdjustAfterParsingComplete(node);
