@@ -13,6 +13,8 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         private static readonly HashSet<string> TerminalNodeNames = new HashSet<string>
                                                                         {
                                                                             SpecialElement,
+                                                                            "setup",
+                                                                            "teardown",
                                                                             "testmodule",
                                                                         };
 
@@ -28,7 +30,21 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                return reader.GetAttribute("name") ?? reader.LocalName;
+                var name = reader.GetAttribute("name") ?? reader.LocalName;
+
+                switch (reader.Name)
+                {
+                    case "setup":
+                    case "teardown":
+                    case "testmodule":
+                    {
+                        var id = reader.GetAttribute("id");
+                        return $"{name} ({id})";
+                    }
+
+                    default:
+                        return name;
+                }
             }
 
             return base.GetName(reader);
