@@ -32,6 +32,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | FxCop | _CustomDictionary.xml_
 | Microsoft Build Engine (MSBuild) | .proj, .targets, .props, .projitems
 | Microsoft Prism (Library 5.0 for WPF) Module catalog | .xaml
+| NCrunch Solution | .v3.ncrunchsolution
 | [NDepend](https://www.ndepend.com/) | .ndproj, .ndrules
 | NuGet Configuration | _packages.config_
 | NuGet Manifest | .nuspec
