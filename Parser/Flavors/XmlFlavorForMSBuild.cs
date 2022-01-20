@@ -48,6 +48,7 @@ namespace MiKoSolutions.SemanticParsers.Xml.Flavors
                                                        || filePath.EndsWith(".props", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".pyproj", StringComparison.OrdinalIgnoreCase)
+                                                       || filePath.EndsWith(".pubxml", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".sqlproj", StringComparison.OrdinalIgnoreCase)
                                                        || filePath.EndsWith(".targets", StringComparison.OrdinalIgnoreCase)

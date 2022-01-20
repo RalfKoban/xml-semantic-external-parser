@@ -35,6 +35,7 @@ Please do not hijack unrelated issues, I would rather you create a new issue tha
 | [NDepend](https://www.ndepend.com/) | .ndproj, .ndrules
 | NuGet Configuration | _packages.config_
 | NuGet Manifest | .nuspec
+| Publish Profile | .pubxml
 | Ranorex (Repositories) | .rxrep
 | Ranorex (TestModuleGroups) | .rxtmg
 | Ranorex (TestSuites) | .rxtst
